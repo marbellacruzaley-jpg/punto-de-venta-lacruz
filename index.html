@@ -815,7 +815,7 @@ function toEscPos(L){
     for(let i=0;i<s.length;i++) o.push(s.charCodeAt(i));
     o.push(0x0A);
   });
-  o.push(0x1B,0x45,0, 0x1D,0x21,0, 0x1B,0x61,0, 0x1B,0x64,3);
+  o.push(0x1B,0x45,0, 0x1D,0x21,0, 0x1B,0x61,0, 0x1B,0x64,3, 0x1D,0x56,0x42,0x03);
   return new Uint8Array(o);
 }
 function b64(bytes){ let s=''; for(let i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return btoa(s); }
