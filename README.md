@@ -19,11 +19,25 @@ Abre la dirección de GitHub Pages en **Chrome para Android** (menú ⋮ ▸ **A
 
 Usuarios: **Mauricio**, **Alejandro** y **Fabiola**. La contraseña inicial la tiene la encargada (no se publica aquí). Cada quien puede cambiarla en **Ajustes ▸ Mi contraseña**.
 
-## Conectar la mini impresora
+## Conectar la mini impresora (celular, Bluetooth)
 
 1. Enciende la impresora (papel de 58 mm).
 2. Haz una venta y en el recibo toca **Imprimir por Bluetooth**. Chrome muestra la lista de dispositivos: elige la impresora.
 3. Mientras siga conectada, cada venta nueva se imprime sola.
+
+### Impresora USB en la computadora (Windows)
+
+1. Instala la impresora térmica en Windows con su driver y haz una página de prueba desde Windows.
+2. En **Configuración ▸ Impresoras y escáneres**, márcala como **predeterminada**. En sus **Preferencias de impresión**, elige el papel de 58 mm (por ejemplo "58 x 3276 mm" o "Roll paper 58").
+3. En el sistema: **Ajustes ▸ Impresora de este dispositivo ▸ Al registrar una venta: Imprimir por USB**. Cada computadora o celular guarda su propia opción.
+4. **Para que imprima directo, sin ventana de impresión**, crea un acceso directo en el escritorio (clic derecho ▸ Nuevo ▸ Acceso directo) con esta ubicación, en una sola línea:
+
+   ```
+   "C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir="C:\PuntoDeVentaChrome" --kiosk-printing --app=https://marbellacruzaley-jpg.github.io/punto-de-venta-lacruz/
+   ```
+
+   Nómbralo **Punto de venta** y ábrelo siempre desde ahí. La primera vez pide iniciar sesión. Si Chrome está en otra carpeta, cambia la ruta del `chrome.exe`.
+5. Sin el acceso directo también funciona: Chrome muestra la ventana de impresión. Elige la impresora térmica, márgenes **Ninguno** y escala **100 %**.
 
 Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la app gratuita RawBT de Play Store, vincúlala con la impresora y en el recibo toca **Imprimir con RawBT**. En **Ajustes ▸ Mini impresora** hay un ticket de prueba.
 

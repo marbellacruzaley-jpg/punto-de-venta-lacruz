@@ -240,6 +240,19 @@ input{max-width:100%;min-width:0}
 .session button{border:0;background:none;color:var(--danger);font-weight:700;padding:6px 0}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Impresión por USB (impresora instalada en la computadora) */
+#printArea{display:none}
+@media print{
+  @page{margin:0}
+  html,body{background:#fff!important;padding:0!important;margin:0!important}
+  body::before{display:none!important}
+  body > *:not(#printArea){display:none!important}
+  #printArea{display:block!important;margin:0 auto;color:#000;font-family:"Courier New",Consolas,monospace;font-size:2.5mm;line-height:1.3;padding:1mm 0 6mm 0}
+  #printArea div{white-space:pre;overflow:hidden}
+  #printArea .b,#printArea .h{font-weight:700}
+}
+.prefs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.prefs select{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;min-height:46px;width:100%;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -347,9 +360,25 @@ input{max-width:100%;min-width:0}
     </div>
     <button class="btn primary lg" id="aGuardar">Guardar ajustes</button>
     <div class="panel" style="display:flex;flex-direction:column;gap:12px">
-      <h2>Mini impresora (58 mm)</h2>
+      <h2>Impresora de este dispositivo</h2>
+      <div class="prefs">
+        <label class="f">Al registrar una venta
+          <select id="impModo">
+            <option value="usb">Imprimir por USB (computadora)</option>
+            <option value="bt">Imprimir por Bluetooth (celular)</option>
+            <option value="no">No imprimir solo</option>
+          </select>
+        </label>
+        <label class="f">Ancho del papel
+          <select id="impAncho">
+            <option value="58">58 mm</option>
+            <option value="80">80 mm</option>
+          </select>
+        </label>
+      </div>
       <div class="help">
         <ul>
+          <li><b>USB (computadora con Windows):</b> la impresora debe estar instalada en Windows. Al imprimir, Chrome abre la ventana de impresión: elige la impresora térmica, márgenes «Ninguno» y escala 100 %. Para que imprima directo, sin preguntar, usa el acceso directo especial de la guía.</li>
           <li><b>RawBT (Android, respaldo):</b> instala la app gratuita RawBT, vincula la impresora por Bluetooth y elígela en RawBT. El botón «Imprimir con RawBT» le manda el recibo.</li>
           <li><b>Copiar ticket:</b> copia el texto y pégalo en la app de tu impresora.</li>
           <li><b>Bluetooth directo:</b> abre el sistema en Chrome para Android, toca «Imprimir por Bluetooth» y elige la impresora. Después de la primera vez, cada venta se imprime sola mientras la impresora siga conectada.</li>
@@ -462,6 +491,7 @@ input{max-width:100%;min-width:0}
 </div>
 
 <div class="toast" id="toast" hidden></div>
+<div id="printArea" aria-hidden="true"></div>
 
 <script>
 (function(){
@@ -711,7 +741,10 @@ window.addEventListener('online', ()=>{ enLinea=true; setSync(); enviarPendiente
 window.addEventListener('offline', ()=>{ enLinea=false; setSync(); });
 
 /* ---------- Ticket (58 mm = 32 columnas) ---------- */
-const W = 32, HR = '-'.repeat(W);
+/* Preferencias de impresión de ESTE dispositivo (cada celular o computadora tiene su impresora) */
+let impPref = Object.assign({modo:'bt', ancho:58}, lsGet('pos_impresora', {}));
+let W = impPref.ancho==80 ? 48 : 32, HR = '-'.repeat(W);
+function aplicarAncho(){ W = impPref.ancho==80 ? 48 : 32; HR = '-'.repeat(W); }
 function strip(s){ return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/¡/g,'!').replace(/¿/g,'?').replace(/[^\x20-\x7E]/g,'?'); }
 function lr(l,r){ l=strip(l); r=strip(r); if(l.length+r.length+1>W) l=l.slice(0, Math.max(0,W-r.length-1)); return l+' '.repeat(W-l.length-r.length)+r; }
 function wrap(s){ const words=strip(s).split(/\s+/).filter(Boolean), out=[]; let cur=''; words.forEach(w=>{ if(w.length>W) w=w.slice(0,W); if(!cur) cur=w; else if((cur+' '+w).length<=W) cur+=' '+w; else { out.push(cur); cur=w; } }); if(cur) out.push(cur); return out; }
@@ -769,7 +802,7 @@ function ticketCorte(dia){
   return L;
 }
 function ticketPrueba(){
-  return [{t:strip(cfg.linea1),a:'c',b:1},{t:'Prueba de impresion',a:'c'},{t:HR},{t:lr('Ancho 58 mm','32 col')},{t:'0123456789ABCDEFGHIJKLMNOPQRSTUV'},{t:HR},{t:'Impresora lista',a:'c',b:1},{t:''}];
+  return [{t:strip(cfg.linea1),a:'c',b:1},{t:'Prueba de impresion',a:'c'},{t:HR},{t:lr('Ancho '+impPref.ancho+' mm', W+' col')},{t:'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn'.slice(0,W)},{t:HR},{t:'Impresora lista',a:'c',b:1},{t:''}];
 }
 function centerTxt(s){ s=strip(s); const p=Math.max(0,Math.floor((W-s.length)/2)); return ' '.repeat(p)+s; }
 function toText(L){ return L.map(l=>l.a==='c'?centerTxt(l.t):strip(l.t)).join('\n'); }
@@ -826,10 +859,22 @@ function btError(e){
   return 'No se pudo imprimir: '+((e&&e.message)||'error desconocido');
 }
 
+/* USB / impresora instalada en Windows: imprime con la ventana de impresión de Chrome.
+   Con el acceso directo --kiosk-printing sale directo a la impresora predeterminada, sin preguntar. */
+function imprimirUSB(L){
+  const area = $('printArea');
+  area.style.width = (impPref.ancho==80 ? 72 : 48) + 'mm';
+  area.innerHTML = toHTML(L);
+  const limpiar = ()=>{ area.innerHTML=''; window.removeEventListener('afterprint', limpiar); };
+  window.addEventListener('afterprint', limpiar);
+  setTimeout(()=>{ try{ window.print(); }catch(e){ toast('No se pudo abrir la impresión.'); } }, 60);
+}
+
 /* Panel de impresión reutilizable */
 function mountPrint(el, getLines){
   el.innerHTML = `
-    <button class="btn primary wide" data-a="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimir por Bluetooth</button>
+    <button class="btn ${impPref.modo==='usb'?'primary':'gold'} wide" data-a="usb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Imprimir por USB (computadora)</button>
+    <button class="btn ${impPref.modo==='usb'?'gold':'primary'} wide" data-a="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimir por Bluetooth</button>
     <div class="actions">
       <a class="btn gold" data-a="rawbt" href="#">Imprimir con RawBT</a>
       <button class="btn ghost" data-a="copy">Copiar ticket</button>
@@ -847,6 +892,7 @@ function mountPrint(el, getLines){
     try{ await btWrite(toEscPos(getLines())); say('Ticket enviado a '+((BT.dev&&BT.dev.name)||'la impresora')+'.','ok'); }
     catch(e){ say(btError(e),'err'); }
   });
+  el.querySelector('[data-a=usb]').addEventListener('click', ()=>{ imprimirUSB(getLines()); say('Enviado a la impresora de la computadora.','ok'); });
   el.querySelector('[data-a=copy]').addEventListener('click', ()=>{
     const text = toText(getLines()); const ta = el.querySelector('[data-a=txt]');
     const fallback = ()=>{ ta.value=text; ta.hidden=false; ta.focus(); ta.select(); say('Selecciona el texto y cópialo.'); };
@@ -1078,7 +1124,8 @@ $('pRegistrar').onclick = async ()=>{
   cart=[]; otroN=0;
   showRecibo(sv);
   toast(sv.folio ? 'Venta #'+pad(sv.folio,4)+' registrada' : 'Sin internet: la venta quedó en el teléfono y se enviará sola');
-  if(BT.ch && BT.dev && BT.dev.gatt.connected){ try{ await btWrite(toEscPos(ticketVenta(sv))); }catch(e){} }
+  if(impPref.modo==='usb'){ imprimirUSB(ticketVenta(sv)); }
+  else if(BT.ch && BT.dev && BT.dev.gatt.connected){ try{ await btWrite(toEscPos(ticketVenta(sv))); }catch(e){} }
 };
 
 /* ---------- Recibo ---------- */
@@ -1154,10 +1201,18 @@ function renderAjustes(){
       <input type="number" id="ap-${k}" inputmode="decimal" min="0" step="0.5" value="${p.precio||''}" placeholder="—" ${p.fijo?'':'disabled'} aria-label="Precio fijo de ${esc(p.nombre)}">`}
     </div>`; }).join('');
   $('aProds').querySelectorAll('[id^=af-]').forEach(cb=>cb.onchange=()=>{ const inp=$('ap-'+cb.id.slice(3)); inp.disabled=!cb.checked; if(cb.checked) inp.focus(); });
-  if(!$('aPrint')._refresh) mountPrint($('aPrint'), ticketPrueba);
+  $('impModo').value = impPref.modo; $('impAncho').value = String(impPref.ancho);
+  mountPrint($('aPrint'), ticketPrueba);
   if(!$('rDesde').value){ const h=localDay(); $('rDesde').value=h.slice(0,8)+'01'; $('rHasta').value=h; }
   cargarUsuarios();
 }
+function guardarImpresora(){
+  impPref = {modo:$('impModo').value, ancho:+$('impAncho').value};
+  lsSet('pos_impresora', impPref); aplicarAncho(); mountPrint($('aPrint'), ticketPrueba);
+  toast(impPref.modo==='usb' ? 'Este dispositivo imprimirá por USB' : impPref.modo==='bt' ? 'Este dispositivo imprimirá por Bluetooth' : 'Este dispositivo no imprimirá solo');
+}
+$('impModo').addEventListener('change', guardarImpresora);
+$('impAncho').addEventListener('change', guardarImpresora);
 $('aGuardar').onclick = async ()=>{
   cfg.linea1 = $('aL1').value.trim() || 'Punto de venta';
   cfg.linea2 = $('aL2').value.trim();
