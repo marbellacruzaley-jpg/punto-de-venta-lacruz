@@ -12,42 +12,33 @@ Punto de venta para celular. Registra las ventas de artículos religiosos, impri
 | `index.html` | Todas las pantallas (un solo archivo) |
 | `config.js` | Dirección y llave pública del proyecto de Supabase |
 | `supabase-esquema.sql` | Tablas, reglas de seguridad, funciones y usuarios iniciales |
+| `sw.js`, `manifest.webmanifest`, `icon-*.png` | App instalable y carga instantánea en el celular |
 
-## Entrar
+## Entrar e instalar en el celular
 
-Abre la dirección de GitHub Pages en **Chrome para Android** (menú ⋮ ▸ **Agregar a la pantalla principal** para tenerla como app).
+1. Abre la dirección de GitHub Pages en **Chrome para Android**.
+2. Menú ⋮ ▸ **Instalar app** (o **Agregar a la pantalla principal**). Queda con ícono propio, abre a pantalla completa y carga al instante aunque la señal esté lenta.
 
-Usuarios: **Mauricio**, **Alejandro** y **Fabiola**. La contraseña inicial la tiene la encargada (no se publica aquí). Cada quien puede cambiarla en **Ajustes ▸ Mi contraseña**.
+Usuarios: **Mauricio**, **Alejandro** y **Fabiola**. La contraseña inicial la tiene la encargada (no se publica aquí). Cada quien puede cambiarla en **Ajustes ▸ Mi contraseña**. Mientras la sesión siga abierta, el sistema entra directo a la caja.
 
-## Conectar la mini impresora (celular, Bluetooth)
+## Conectar la mini impresora (Bluetooth, 58 mm)
 
-1. Enciende la impresora (papel de 58 mm).
-2. Haz una venta y en el recibo toca **Imprimir por Bluetooth**. Chrome muestra la lista de dispositivos: elige la impresora.
-3. Mientras siga conectada, cada venta nueva se imprime sola.
+1. Enciende la impresora.
+2. En la caja toca el **ícono de impresora** (arriba) y elige la impresora en la lista de Chrome. El punto verde indica que está conectada.
+3. Listo: cada venta se imprime y se corta sola. Se conecta una vez cada que abres el sistema.
 
-### Impresora USB en la computadora (Windows)
+Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la app gratuita RawBT de Play Store, vincúlala con la impresora y en el recibo toca **Imprimir con RawBT**. En **Ajustes ▸ Mini impresora** hay un ticket de prueba y la opción de imprimir o no cada venta automáticamente.
 
-1. Instala la impresora térmica en Windows con su driver y haz una página de prueba desde Windows.
-2. En **Configuración ▸ Impresoras y escáneres**, márcala como **predeterminada**. En sus **Preferencias de impresión**, elige el papel de 58 mm (por ejemplo "58 x 3276 mm" o "Roll paper 58").
-3. En el sistema: **Ajustes ▸ Impresora de este dispositivo ▸ Al registrar una venta: Imprimir por USB**. Cada computadora o celular guarda su propia opción.
-4. **Para que imprima directo, sin ventana de impresión**, crea un acceso directo en el escritorio (clic derecho ▸ Nuevo ▸ Acceso directo) con esta ubicación, en una sola línea:
+## Vender rápido
 
-   ```
-   "C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir="C:\PuntoDeVentaChrome" --kiosk-printing --app=https://marbellacruzaley-jpg.github.io/punto-de-venta-lacruz/
-   ```
-
-   Nómbralo **Punto de venta** y ábrelo siempre desde ahí. La primera vez pide iniciar sesión. Si Chrome está en otra carpeta, cambia la ruta del `chrome.exe`.
-5. Sin el acceso directo también funciona: Chrome muestra la ventana de impresión. Elige la impresora térmica, márgenes **Ninguno** y escala **100 %**.
-
-Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la app gratuita RawBT de Play Store, vincúlala con la impresora y en el recibo toca **Imprimir con RawBT**. En **Ajustes ▸ Mini impresora** hay un ticket de prueba.
-
-## Uso diario
-
-- **Nueva venta:** toca los productos. Sal ($20), Aceite ($20) y Microdosis ($30) tienen precio fijo; los demás piden el precio al tocarlos.
-- **Cobrar:** efectivo (calcula el cambio), transferencia o tarjeta. El folio lo asigna la base de datos.
-- **Sin internet:** la venta se guarda en el teléfono, el recibo dice "Folio pendiente" y se envía sola al volver la conexión. El estado se ve arriba a la derecha: ● verde **En línea** · ● amarillo **N por enviar** · ● rojo **Sin conexión**.
-- **Corte:** elige el día. Total por producto, por forma de pago y por usuario, con ticket imprimible y CSV.
-- **Cancelar venta:** desde el recibo. Queda marcada como cancelada y no cuenta en el corte.
+- **Productos con precio fijo** (Sal $20, Aceite $20, Microdosis $30): un toque los agrega. El botón **−** del mosaico quita uno.
+- **Productos sin precio fijo**: se abre un teclado numérico grande (no el del celular). Los últimos precios usados aparecen como botones **+ $50**: un toque y queda agregado.
+- **Cobrar**: en efectivo, un solo toque registra la venta: **Pago exacto** o el billete con que pagan (el botón ya muestra el cambio). **Otra cantidad** abre el teclado. Para transferencia o tarjeta, elige la pestaña y toca **Registrar**.
+- **Después de cobrar** la caja queda lista para la siguiente venta. Un aviso verde muestra el folio y el cambio, con botones para ver el recibo o reimprimir.
+- La venta se guarda al instante en el teléfono y se envía al servidor por detrás, así nunca esperas a la red. Arriba se ve el estado: ● verde **En línea** · ● amarillo **N por enviar** · ● rojo **Sin conexión**. Sin internet se sigue vendiendo y todo se envía solo al volver la señal.
+- **☰ (arriba a la izquierda)**: resumen del día, últimas ventas, corte, ajustes y cerrar sesión.
+- **Cancelar venta**: desde el recibo. Queda marcada como cancelada y no cuenta en el corte.
+- **Corte**: elige el día. Total por producto, por forma de pago y por usuario, con ticket imprimible y CSV.
 
 ## Ajustes
 
@@ -63,4 +54,4 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 
 ## Actualizar las pantallas
 
-Edita `index.html` en GitHub (ícono de lápiz ▸ **Commit changes**). GitHub Pages publica el cambio en uno o dos minutos. Las ventas no se tocan: viven en Supabase.
+Edita `index.html` en GitHub (ícono de lápiz ▸ **Commit changes**). GitHub Pages publica el cambio en uno o dos minutos. En el celular aparece el aviso «Hay una versión nueva · toca para actualizar». Las ventas no se tocan: viven en Supabase.

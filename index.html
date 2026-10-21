@@ -7,11 +7,16 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Punto de Venta La Cruz</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
-<script src="config.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://xiuaimbmnibrmrzueoaw.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script defer src="config.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap" media="print" onload="this.media='all'">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{margin:0}
@@ -238,28 +243,60 @@ input{max-width:100%;min-width:0}
 .session{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:.92rem}
 .session b{color:var(--ink)}
 .session button{border:0;background:none;color:var(--danger);font-weight:700;padding:6px 0}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(68px + env(safe-area-inset-top,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-/* Impresión por USB (impresora instalada en la computadora) */
-#printArea{display:none}
-@media print{
-  @page{margin:0}
-  html,body{background:#fff!important;padding:0!important;margin:0!important}
-  body::before{display:none!important}
-  body > *:not(#printArea){display:none!important}
-  #printArea{display:block!important;margin:0 auto;color:#000;font-family:"Courier New",Consolas,monospace;font-size:2.5mm;line-height:1.3;padding:1mm 0 6mm 0}
-  #printArea div{white-space:pre;overflow:hidden}
-  #printArea .b,#printArea .h{font-weight:700}
-}
-.prefs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.prefs select{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;min-height:46px;width:100%;color:var(--ink)}
+/* Encabezado de la caja */
+.ttlbox{flex:1;min-width:0;display:flex;flex-direction:column}
+.ttlbox h1{flex:none!important}
+.ttlbox small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{border:0;background:var(--surface-2);width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--ink);position:relative}
+.iconbtn svg{width:22px;height:22px}
+.iconbtn.on{background:var(--accent-soft);color:var(--accent)}
+.iconbtn.on::after{content:"";position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.chip.mini span{display:none}
+/* Mosaico: quitar uno */
+.tile .menos{position:absolute;top:5px;left:5px;width:34px;height:34px;border-radius:50%;background:var(--surface-2);color:var(--ink);font-size:1.4rem;font-weight:700;display:grid;place-items:center;line-height:1}
+.tile .menos:active{background:var(--line)}
+/* Barra de cobro */
+#btnCobrar{flex:1.2;font-size:1.15rem;gap:10px}
+#btnCobrar .num{font-size:1.2rem}
+/* Cobro con un toque */
+.pstack{display:flex;flex-direction:column;gap:10px}
+.paygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.paybtn{border:1px solid var(--line);background:var(--surface);border-radius:16px;min-height:70px;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:700;font-size:1.3rem;transition:transform .08s}
+.paybtn small{font-size:.78rem;color:var(--muted);font-weight:700}
+.paybtn.exacto{grid-column:1/-1;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);min-height:76px;font-size:1.45rem}
+.paybtn.exacto small{color:inherit;opacity:.85}
+.paybtn:active{transform:scale(.97)}
+/* Teclado numérico propio (sin abrir el teclado del celular) */
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pad button{border:0;background:var(--surface-2);border-radius:14px;min-height:54px;font-size:1.5rem;font-weight:700;color:var(--ink)}
+.pad button:active{background:var(--line)}
+.display{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:8px 14px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.display b{font-size:2.1rem}
+.display small{color:var(--muted);font-weight:700}
+.quick button.add{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+/* Aviso de venta registrada */
+.exito{position:fixed;left:0;right:0;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:7;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));pointer-events:none}
+.exito .card{pointer-events:auto;max-width:720px;margin:0 auto;background:var(--accent);color:var(--accent-ink);border-radius:18px;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;box-shadow:0 12px 28px -12px rgba(0,0,0,.55);animation:up .18s ease}
+.exito .exl{display:flex;flex-direction:column;min-width:0}
+.exito .exl span{opacity:.85;font-size:.9rem}
+.exito .exr{text-align:right}
+.exito .exr small{display:block;opacity:.85;font-weight:700;font-size:.8rem}
+.exito .exr b{font-size:1.7rem;line-height:1}
+.exito .exbtns{grid-column:1/-1;display:flex;gap:8px}
+.exito .exbtns button{flex:1;border:1px solid color-mix(in srgb, currentColor 35%, transparent);background:transparent;color:inherit;border-radius:10px;min-height:36px;font-weight:700;font-size:.92rem}
+body.conaviso main{padding-bottom:230px}
+.exito .exbtns button.x{flex:none;width:44px}
 </style>
 </head>
 <body>
 
 <header class="top">
   <button class="back" id="btnBack" aria-label="Regresar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <h1 id="ttl">Punto de venta</h1>
+  <button class="iconbtn" id="btnMenu" aria-label="Resumen, corte y ajustes" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="ttlbox"><h1 id="ttl">Punto de venta</h1><small id="ttlSub" hidden></small></div>
+  <button class="iconbtn" id="btnImp" aria-label="Conectar impresora" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg></button>
   <span class="chip" id="sync"><i></i><span>Cargando…</span></span>
 </header>
 
@@ -284,7 +321,7 @@ input{max-width:100%;min-width:0}
     <div class="session"><span>Atiende: <b id="sesNombre"></b></span><button id="btnSalir">Cerrar sesión</button></div>
     <button class="hero-btn" id="btnNueva">
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M24 15v18M15 24h18"/></svg>
-      <div><b>Nueva venta</b><span>Elige productos y cobra</span></div>
+      <div><b>Vender</b><span>Regresar a la caja</span></div>
     </button>
     <div class="panel">
       <div class="eyebrow" id="hoyLbl">Hoy</div>
@@ -296,7 +333,7 @@ input{max-width:100%;min-width:0}
     </div>
     <div class="navrow">
       <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte</b><small>Ventas por día</small></div></button>
-      <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios e impresora</small></div></button>
+      <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios, impresora y usuarios</small></div></button>
     </div>
     <div class="panel">
       <h2>Últimas ventas</h2>
@@ -314,8 +351,8 @@ input{max-width:100%;min-width:0}
     <div class="ticketwrap"><div class="ticket" id="recTicket"></div></div>
     <div class="printbox" id="recPrint"></div>
     <div class="actions">
-      <button class="btn primary lg" id="recNueva">Nueva venta</button>
-      <button class="btn ghost lg" id="recInicio">Inicio</button>
+      <button class="btn primary lg" id="recNueva">Seguir vendiendo</button>
+      <button class="btn ghost lg" id="recInicio">Resumen</button>
     </div>
     <button class="btn danger" id="recCancelar">Cancelar esta venta</button>
   </section>
@@ -360,28 +397,13 @@ input{max-width:100%;min-width:0}
     </div>
     <button class="btn primary lg" id="aGuardar">Guardar ajustes</button>
     <div class="panel" style="display:flex;flex-direction:column;gap:12px">
-      <h2>Impresora de este dispositivo</h2>
-      <div class="prefs">
-        <label class="f">Al registrar una venta
-          <select id="impModo">
-            <option value="usb">Imprimir por USB (computadora)</option>
-            <option value="bt">Imprimir por Bluetooth (celular)</option>
-            <option value="no">No imprimir solo</option>
-          </select>
-        </label>
-        <label class="f">Ancho del papel
-          <select id="impAncho">
-            <option value="58">58 mm</option>
-            <option value="80">80 mm</option>
-          </select>
-        </label>
-      </div>
+      <h2>Mini impresora Bluetooth (58 mm)</h2>
+      <label class="chk" style="font-size:1rem;color:var(--ink)"><input type="checkbox" id="impAuto"> Imprimir cada venta automáticamente</label>
       <div class="help">
         <ul>
-          <li><b>USB (computadora con Windows):</b> la impresora debe estar instalada en Windows. Al imprimir, Chrome abre la ventana de impresión: elige la impresora térmica, márgenes «Ninguno» y escala 100 %. Para que imprima directo, sin preguntar, usa el acceso directo especial de la guía.</li>
-          <li><b>RawBT (Android, respaldo):</b> instala la app gratuita RawBT, vincula la impresora por Bluetooth y elígela en RawBT. El botón «Imprimir con RawBT» le manda el recibo.</li>
+          <li><b>Conectar:</b> en la caja toca el ícono de la impresora (arriba) y elígela. El punto verde indica que está conectada. Se hace una vez cada que abres el sistema.</li>
+          <li><b>RawBT (respaldo):</b> instala la app gratuita RawBT, vincula la impresora y elígela en RawBT. El botón «Imprimir con RawBT» le manda el recibo.</li>
           <li><b>Copiar ticket:</b> copia el texto y pégalo en la app de tu impresora.</li>
-          <li><b>Bluetooth directo:</b> abre el sistema en Chrome para Android, toca «Imprimir por Bluetooth» y elige la impresora. Después de la primera vez, cada venta se imprime sola mientras la impresora siga conectada.</li>
         </ul>
       </div>
       <div class="printbox" id="aPrint"></div>
@@ -419,8 +441,8 @@ input{max-width:100%;min-width:0}
 </main>
 
 <div class="cartbar" id="cartbar" hidden>
-  <button class="cartsum" id="btnCarrito"><small id="cbN">0 artículos · ver</small><b class="num" id="cbTotal">$0.00</b></button>
-  <button class="btn primary lg" id="btnCobrar" disabled>Cobrar</button>
+  <button class="cartsum" id="btnCarrito"><small id="cbN">Sin productos</small><b id="cbVer">Toca uno</b></button>
+  <button class="btn primary lg" id="btnCobrar" disabled>Cobrar <span class="num" id="cbTotal">$0.00</span></button>
 </div>
 
 <!-- Hoja: carrito -->
@@ -441,19 +463,18 @@ input{max-width:100%;min-width:0}
 <!-- Hoja: capturar precio -->
 <div class="sheet" id="sh-precio" hidden>
   <div class="scrim" data-close></div>
-  <form class="card" id="formPrecio" role="dialog" aria-label="Precio del producto">
+  <div class="card" role="dialog" aria-label="Precio del producto">
     <div class="grab"></div>
     <div class="phead"><span class="ico" id="ppIco"></span><h3 id="ppNom">Producto</h3></div>
-    <label class="f" id="ppDescBox">Descripción<input type="text" id="ppDesc" placeholder="Ej. Crucifijo de pared" maxlength="40"></label>
-    <label class="f">Precio por pieza
-      <span class="bigprice">$<input type="number" id="ppPrecio" inputmode="decimal" min="0" step="0.5" placeholder="0.00"></span>
-    </label>
+    <label class="f" id="ppDescBox">Descripción (opcional)<input type="text" id="ppDesc" placeholder="Ej. Crucifijo de pared" maxlength="40"></label>
     <div class="quick" id="ppRecientes"></div>
+    <div class="display"><small>Precio por pieza</small><b class="num" id="ppVer">$0</b></div>
+    <div class="pad" id="ppPad"></div>
     <div class="qrow"><span>Cantidad</span>
       <div class="step"><button type="button" id="ppMenos" aria-label="Quitar uno">−</button><span class="num" id="ppCant">1</span><button type="button" id="ppMas" aria-label="Agregar uno">+</button></div>
     </div>
-    <button class="btn primary lg" type="submit" id="ppAgregar">Agregar a la venta</button>
-  </form>
+    <button class="btn primary lg" type="button" id="ppAgregar" disabled>Agregar</button>
+  </div>
 </div>
 
 <!-- Hoja: cobro -->
@@ -461,18 +482,23 @@ input{max-width:100%;min-width:0}
   <div class="scrim" data-close></div>
   <div class="card" role="dialog" aria-label="Cobro">
     <div class="grab"></div>
-    <div class="totalbox"><h3>Cobrar</h3><b class="num" id="pTotal">$0.00</b></div>
+    <div class="totalbox"><h3>Total</h3><b class="num" id="pTotal">$0.00</b></div>
     <div class="seg" id="pMetodo">
       <button type="button" data-m="efectivo" aria-pressed="true">Efectivo</button>
       <button type="button" data-m="transferencia" aria-pressed="false">Transferencia</button>
       <button type="button" data-m="tarjeta" aria-pressed="false">Tarjeta</button>
     </div>
-    <div id="pEfectivo" style="display:flex;flex-direction:column;gap:10px">
-      <label class="f">Recibido<input type="number" id="pRecibido" inputmode="decimal" min="0" step="0.5" placeholder="Pago exacto"></label>
-      <div class="quick" id="pQuick"></div>
-      <div class="change num" id="pCambio"><span>Cambio</span><span>$0.00</span></div>
+    <div id="pEfectivo" class="pstack">
+      <div class="eyebrow">¿Con cuánto paga? Un toque registra la venta</div>
+      <div class="paygrid" id="pQuick"></div>
+      <div id="pOtra" class="pstack" hidden>
+        <div class="display"><small>Recibido</small><b class="num" id="pVer">$0</b></div>
+        <div class="change num" id="pCambio"><span>Cambio</span><span>$0.00</span></div>
+        <div class="pad" id="pPad"></div>
+        <button class="btn primary lg" type="button" id="pOtraOk" disabled>Cobrar</button>
+      </div>
     </div>
-    <button class="btn primary lg" id="pRegistrar">Registrar venta</button>
+    <button class="btn primary lg" type="button" id="pRegistrar" hidden>Registrar</button>
   </div>
 </div>
 
@@ -490,11 +516,18 @@ input{max-width:100%;min-width:0}
   </div>
 </div>
 
+<div class="exito" id="exito" hidden>
+  <div class="card" role="status">
+    <div class="exl"><b id="exTit">Venta registrada</b><span id="exSub"></span></div>
+    <div class="exr" id="exCambio"></div>
+    <div class="exbtns"><button type="button" id="exRecibo">Ver recibo</button><button type="button" id="exImp">Imprimir</button><button type="button" class="x" id="exX" aria-label="Cerrar aviso">✕</button></div>
+  </div>
+</div>
 <div class="toast" id="toast" hidden></div>
-<div id="printArea" aria-hidden="true"></div>
+<div class="toast" id="nuevaVersion" hidden style="top:calc(118px + env(safe-area-inset-top,0px));cursor:pointer">Hay una versión nueva · toca para actualizar</div>
 
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', function(){
 "use strict";
 
 /* ---------- Íconos de productos ---------- */
@@ -629,7 +662,7 @@ async function api(accion, datos){
         return {ajustes: await leerAjustes()};
       case 'venta': {
         const folio = await q(sb.rpc('registrar_venta', {p:datos}));
-        return {venta: await ventaPorFolio(folio)};
+        return {folio: +folio};
       }
       case 'cancelar':
         await q(sb.rpc('cancelar_venta', {p_folio:datos.folio}));
@@ -692,32 +725,26 @@ async function cargarDia(dia){
   finally{ setSync(); }
 }
 
-async function registrarVenta(v){
-  try{
-    const r = await api('venta', ventaParaEnviar(v));
-    enLinea = true; const sv = normVenta(r.venta); merge([sv]); setSync(); return sv;
-  }catch(e){
-    if(e.status===0 || e.status>=500){
-      if(e.status===0) enLinea=false;
-      pendientes.push(v); guardarPendientes(); merge([v]); setSync(); return v;
-    }
-    throw e;
-  }
-}
 let enviando = false;
+/* Envía en orden las ventas guardadas en el teléfono. La venta ya se mostró como registrada;
+   aquí solo se le asigna su folio del servidor. */
 async function enviarPendientes(){
-  if(enviando || !yo || !pendientes.length){ setSync(); return; }
+  if(enviando || !yo){ setSync(); return; }
   enviando = true;
+  const fallidas = new Set();
   try{
-    for(const p of pendientes.slice()){
+    while(true){
+      const p = pendientes.find(x=>!fallidas.has(x.id));
+      if(!p) break;
       try{
         const r = await api('venta', ventaParaEnviar(p));
         enLinea = true; quitarPendiente(p.id);
-        const v = normVenta(r.venta); merge([v]);
-        if(recSale && recSale.id===v.id){ recSale=v; if(view==='recibo') showRecibo(v); }
+        const v = normVenta(Object.assign({}, p, {folio:r.folio}));
+        merge([v]); alRegistrar(v);
       }catch(e){
         if(e.status===0){ enLinea=false; break; }
         if(e.status===401 || e.status>=500) break;
+        fallidas.add(p.id);
         toast('Una venta sin enviar fue rechazada: '+e.message);
       }
     }
@@ -741,10 +768,8 @@ window.addEventListener('online', ()=>{ enLinea=true; setSync(); enviarPendiente
 window.addEventListener('offline', ()=>{ enLinea=false; setSync(); });
 
 /* ---------- Ticket (58 mm = 32 columnas) ---------- */
-/* Preferencias de impresión de ESTE dispositivo (cada celular o computadora tiene su impresora) */
-let impPref = Object.assign({modo:'bt', ancho:58}, lsGet('pos_impresora', {}));
-let W = impPref.ancho==80 ? 48 : 32, HR = '-'.repeat(W);
-function aplicarAncho(){ W = impPref.ancho==80 ? 48 : 32; HR = '-'.repeat(W); }
+const W = 32, HR = '-'.repeat(W);
+let autoImp = lsGet('pos_autoimp', true);
 function strip(s){ return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/¡/g,'!').replace(/¿/g,'?').replace(/[^\x20-\x7E]/g,'?'); }
 function lr(l,r){ l=strip(l); r=strip(r); if(l.length+r.length+1>W) l=l.slice(0, Math.max(0,W-r.length-1)); return l+' '.repeat(W-l.length-r.length)+r; }
 function wrap(s){ const words=strip(s).split(/\s+/).filter(Boolean), out=[]; let cur=''; words.forEach(w=>{ if(w.length>W) w=w.slice(0,W); if(!cur) cur=w; else if((cur+' '+w).length<=W) cur+=' '+w; else { out.push(cur); cur=w; } }); if(cur) out.push(cur); return out; }
@@ -802,7 +827,7 @@ function ticketCorte(dia){
   return L;
 }
 function ticketPrueba(){
-  return [{t:strip(cfg.linea1),a:'c',b:1},{t:'Prueba de impresion',a:'c'},{t:HR},{t:lr('Ancho '+impPref.ancho+' mm', W+' col')},{t:'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn'.slice(0,W)},{t:HR},{t:'Impresora lista',a:'c',b:1},{t:''}];
+  return [{t:strip(cfg.linea1),a:'c',b:1},{t:'Prueba de impresion',a:'c'},{t:HR},{t:lr('Ancho 58 mm', W+' col')},{t:'0123456789ABCDEFGHIJKLMNOPQRSTUV'},{t:HR},{t:'Impresora lista',a:'c',b:1},{t:''}];
 }
 function centerTxt(s){ s=strip(s); const p=Math.max(0,Math.floor((W-s.length)/2)); return ' '.repeat(p)+s; }
 function toText(L){ return L.map(l=>l.a==='c'?centerTxt(l.t):strip(l.t)).join('\n'); }
@@ -831,7 +856,7 @@ async function btFindChar(server){
 async function btConnect(){
   if(!navigator.bluetooth) { const e=new Error('nobt'); e.name='NoBT'; throw e; }
   const dev = await navigator.bluetooth.requestDevice({acceptAllDevices:true, optionalServices:SERVICES});
-  BT.dev = dev; dev.addEventListener('gattserverdisconnected',()=>{ BT.ch=null; });
+  BT.dev = dev; dev.addEventListener('gattserverdisconnected',()=>{ BT.ch=null; actualizarImp(); });
   const server = await dev.gatt.connect();
   BT.ch = await btFindChar(server);
   return dev.name || 'Impresora';
@@ -859,22 +884,10 @@ function btError(e){
   return 'No se pudo imprimir: '+((e&&e.message)||'error desconocido');
 }
 
-/* USB / impresora instalada en Windows: imprime con la ventana de impresión de Chrome.
-   Con el acceso directo --kiosk-printing sale directo a la impresora predeterminada, sin preguntar. */
-function imprimirUSB(L){
-  const area = $('printArea');
-  area.style.width = (impPref.ancho==80 ? 72 : 48) + 'mm';
-  area.innerHTML = toHTML(L);
-  const limpiar = ()=>{ area.innerHTML=''; window.removeEventListener('afterprint', limpiar); };
-  window.addEventListener('afterprint', limpiar);
-  setTimeout(()=>{ try{ window.print(); }catch(e){ toast('No se pudo abrir la impresión.'); } }, 60);
-}
-
 /* Panel de impresión reutilizable */
 function mountPrint(el, getLines){
   el.innerHTML = `
-    <button class="btn ${impPref.modo==='usb'?'primary':'gold'} wide" data-a="usb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Imprimir por USB (computadora)</button>
-    <button class="btn ${impPref.modo==='usb'?'gold':'primary'} wide" data-a="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimir por Bluetooth</button>
+    <button class="btn primary wide" data-a="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimir por Bluetooth</button>
     <div class="actions">
       <a class="btn gold" data-a="rawbt" href="#">Imprimir con RawBT</a>
       <button class="btn ghost" data-a="copy">Copiar ticket</button>
@@ -889,10 +902,9 @@ function mountPrint(el, getLines){
   raw.addEventListener('click', ()=>{ refreshHref(); say('Enviando a RawBT… si no se abre, instala RawBT o usa «Copiar ticket».'); });
   el.querySelector('[data-a=bt]').addEventListener('click', async ()=>{
     say('Conectando con la impresora…');
-    try{ await btWrite(toEscPos(getLines())); say('Ticket enviado a '+((BT.dev&&BT.dev.name)||'la impresora')+'.','ok'); }
+    try{ await btWrite(toEscPos(getLines())); actualizarImp(); say('Ticket enviado a '+((BT.dev&&BT.dev.name)||'la impresora')+'.','ok'); }
     catch(e){ say(btError(e),'err'); }
   });
-  el.querySelector('[data-a=usb]').addEventListener('click', ()=>{ imprimirUSB(getLines()); say('Enviado a la impresora de la computadora.','ok'); });
   el.querySelector('[data-a=copy]').addEventListener('click', ()=>{
     const text = toText(getLines()); const ta = el.querySelector('[data-a=txt]');
     const fallback = ()=>{ ta.value=text; ta.hidden=false; ta.focus(); ta.select(); say('Selecciona el texto y cópialo.'); };
@@ -902,22 +914,32 @@ function mountPrint(el, getLines){
 }
 
 /* ---------- Navegación ---------- */
-let view = 'inicio';
-const TITLES = {venta:'Nueva venta', recibo:'Recibo', corte:'Corte del día', ajustes:'Ajustes'};
+let view = 'login';
+const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', ajustes:'Ajustes'};
 function go(v){
   if(!yo) v = 'login';
   view = v;
   ['login','inicio','venta','recibo','corte','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
-  $('btnBack').hidden = v==='inicio' || v==='login';
-  $('ttl').textContent = (v==='inicio'||v==='login') ? cfg.linea1 : TITLES[v];
+  $('btnBack').hidden = !['inicio','recibo','corte','ajustes'].includes(v);
+  $('btnMenu').hidden = v!=='venta';
+  $('btnImp').hidden = !(v==='venta' || v==='recibo');
+  $('ttlSub').hidden = v!=='venta';
+  $('sync').classList.toggle('mini', v==='venta');
+  $('ttl').textContent = v==='login' ? cfg.linea1 : TITLES[v];
   if(v==='login') renderLogin();
   $('cartbar').hidden = v!=='venta';
+  if(v!=='venta' && typeof ocultarExito==='function') ocultarExito();
   document.querySelectorAll('.sheet').forEach(s=>s.hidden=true);
   window.scrollTo(0,0);
   if(v==='inicio') renderInicio();
-  if(v==='venta') { renderGrid(); renderCart(); }
+  if(v==='venta') { renderGrid(); renderCart(); actualizarSub(); actualizarImp(); }
   if(v==='corte') renderCorte();
   if(v==='ajustes') renderAjustes();
+}
+function actualizarSub(){
+  if(!yo) return;
+  const c = corteData(localDay());
+  $('ttlSub').textContent = 'Hoy '+money(c.total)+' · '+c.ok.length+' venta'+(c.ok.length===1?'':'s')+' · '+yo.nombre;
 }
 /* ---------- Acceso ---------- */
 let lgUser = null;
@@ -930,9 +952,12 @@ function renderLogin(){
 }
 $('lgVer').onclick = ()=>{ const p=$('lgPass'); const ver=p.type==='password'; p.type=ver?'text':'password'; $('lgVer').textContent=ver?'Ocultar':'Ver'; };
 function entrar(u, ajustes){
+  const yaDentro = yo && yo.usuario===u.usuario && view!=='login';
   yo = u; lsSet('pos_yo', {u, exp:Date.now()+SES_HORAS*3600000});
   if(ajustes){ cfg = normCfg(ajustes); lsSet('pos_cfg', cfg); }
-  go('inicio'); cargarHoy(); enviarPendientes();
+  if(yaDentro){ if(view==='venta') renderGrid(); }
+  else go('venta');
+  cargarHoy(); enviarPendientes();
 }
 $('formLogin').addEventListener('submit', async e=>{
   e.preventDefault();
@@ -957,11 +982,12 @@ $('btnSalir').onclick = ()=>{
 };
 
 function refresh(){
+  if(view==='venta') actualizarSub();
   if(view==='inicio') renderInicio();
   if(view==='corte') renderCorte();
-  if(view==='inicio') $('ttl').textContent = cfg.linea1;
 }
-$('btnBack').onclick = ()=>go('inicio');
+$('btnBack').onclick = ()=>go(view==='corte'||view==='ajustes' ? 'inicio' : 'venta');
+$('btnMenu').onclick = ()=>go('inicio');
 $('btnNueva').onclick = ()=>go('venta');
 $('btnCorte').onclick = ()=>go('corte');
 $('btnAjustes').onclick = ()=>go('ajustes');
@@ -993,26 +1019,63 @@ function renderInicio(){
 
 /* ---------- Venta ---------- */
 let cart = []; let otroN = 0;
+function vibrar(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 function renderGrid(){
   $('grid').innerHTML = BASE.map(([k])=>{
     const p = cfg.productos[k];
-    return `<button class="tile" data-k="${k}"><span class="qty" hidden></span><span class="ico">${ICONS[k]}</span><span class="nm">${esc(p.nombre)}</span>${esFijo(k)?`<span class="pr num">${money(p.precio)}</span>`:'<span class="pr var">Poner precio</span>'}</button>`;
+    return `<button class="tile" data-k="${k}"><span class="qty" hidden></span><span class="menos" data-menos="${k}" role="button" aria-label="Quitar uno" hidden>−</span><span class="ico">${ICONS[k]}</span><span class="nm">${esc(p.nombre)}</span>${esFijo(k)?`<span class="pr num">${money(p.precio)}</span>`:'<span class="pr var">Poner precio</span>'}</button>`;
   }).join('');
-  $('grid').querySelectorAll('.tile').forEach(t=>t.onclick=()=>{
-    const k=t.dataset.k;
-    if(!esFijo(k)){ openPrecio(k); return; }
-    addItem(k, cfg.productos[k].nombre, cfg.productos[k].precio, 1);
-    t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump');
-  });
   updateBadges();
 }
+$('grid').addEventListener('click', e=>{
+  if(Date.now() < pausaGrid) return;
+  const m = e.target.closest('[data-menos]');
+  if(m){ e.stopPropagation(); quitarUno(m.dataset.menos); vibrar(8); return; }
+  const t = e.target.closest('.tile'); if(!t) return;
+  const k = t.dataset.k;
+  if(!esFijo(k)){ openPrecio(k); return; }
+  addItem(k, cfg.productos[k].nombre, cfg.productos[k].precio, 1);
+  t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); vibrar(10);
+});
+function quitarUno(k){
+  for(let i=cart.length-1;i>=0;i--){ if(cart[i].k===k){ cart[i].cant--; if(cart[i].cant<1) cart.splice(i,1); break; } }
+  renderCart();
+}
+
+/* Teclado numérico propio: no abre el teclado del celular */
+function montarPad(el, onChange){
+  const keys = ['1','2','3','4','5','6','7','8','9','.','0','⌫'];
+  el.innerHTML = keys.map(k=>`<button type="button" data-k="${k}" aria-label="${k==='⌫'?'Borrar':k}">${k}</button>`).join('');
+  const st = {v:''};
+  el.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    const k = b.dataset.k;
+    if(k==='⌫') st.v = st.v.slice(0,-1);
+    else if(k==='.'){ if(!st.v.includes('.')) st.v = (st.v||'0')+'.'; }
+    else {
+      if(st.v.includes('.') && st.v.split('.')[1].length>=2) return;
+      if(st.v.replace('.','').length>=7) return;
+      st.v = (st.v==='0' ? '' : st.v) + k;
+    }
+    onChange(st.v);
+  });
+  return { set(v){ st.v = v ? String(v) : ''; onChange(st.v); }, get(){ return parseFloat(st.v)||0; } };
+}
+
 /* Captura de precio para productos sin precio fijo */
 let ppK = null, ppCant = 1;
 function preciosRecientes(k){
   const vistos = [];
-  for(const v of sales){ if(v.estado==='cancelada') continue; for(const it of v.items){ if(it.k===k && it.precio>0 && !vistos.includes(it.precio)) vistos.push(it.precio); if(vistos.length>=5) return vistos; } }
+  for(const v of sales){ if(v.estado==='cancelada') continue; for(const it of v.items){ if(it.k===k && it.precio>0 && !vistos.includes(it.precio)) vistos.push(it.precio); if(vistos.length>=4) return vistos; } }
   return vistos;
 }
+function pintarPP(){
+  const n = ppPad.get();
+  $('ppCant').textContent = ppCant;
+  $('ppAgregar').disabled = !(n>0);
+  $('ppAgregar').textContent = n>0 ? 'Agregar '+(ppCant>1?ppCant+' × ':'')+money(n)+(ppCant>1?' = '+money(n*ppCant):'') : 'Escribe el precio';
+}
+const ppPad = montarPad($('ppPad'), v=>{ $('ppVer').textContent = v ? '$'+v : '$0'; pintarPP(); });
 function openPrecio(k){
   ppK = k; ppCant = 1;
   const p = cfg.productos[k];
@@ -1020,30 +1083,29 @@ function openPrecio(k){
   $('ppNom').textContent = k==='otros' ? 'Otro producto' : p.nombre;
   $('ppDescBox').hidden = k!=='otros';
   $('ppDesc').value = '';
-  $('ppPrecio').value = p.precio>0 ? p.precio : '';
-  $('ppCant').textContent = '1';
   const rec = preciosRecientes(k);
-  $('ppRecientes').innerHTML = rec.map(x=>`<button type="button" data-v="${x}">${money(x)}</button>`).join('');
+  $('ppRecientes').innerHTML = rec.map(x=>`<button type="button" class="add" data-v="${x}">+ ${money(x)}</button>`).join('');
   $('ppRecientes').hidden = !rec.length;
-  $('ppRecientes').querySelectorAll('button').forEach(b=>b.onclick=()=>{ $('ppPrecio').value=b.dataset.v; });
+  ppPad.set(p.precio>0 ? p.precio : '');
   openSheet('sh-precio');
-  setTimeout(()=>(k==='otros'?$('ppDesc'):$('ppPrecio')).focus(),60);
 }
-$('ppMenos').onclick = ()=>{ ppCant=Math.max(1,ppCant-1); $('ppCant').textContent=ppCant; };
-$('ppMas').onclick = ()=>{ ppCant++; $('ppCant').textContent=ppCant; };
-$('formPrecio').addEventListener('submit', e=>{
-  e.preventDefault();
-  const precio = parseFloat($('ppPrecio').value);
-  if(!(precio>0)){ $('ppPrecio').focus(); toast('Escribe el precio.'); return; }
+function agregarPP(precio){
+  if(!(precio>0)) return;
   const nombre = ppK==='otros' ? ($('ppDesc').value.trim() || 'Otros') : cfg.productos[ppK].nombre;
-  addItem(ppK, nombre, precio, ppCant); closeSheet('sh-precio');
+  addItem(ppK, nombre, precio, ppCant); closeSheet('sh-precio'); vibrar(10);
   const t = $('grid').querySelector(`[data-k="${ppK}"]`); if(t){ t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); }
-});
+}
+$('ppRecientes').addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) agregarPP(+b.dataset.v); });
+$('ppMenos').onclick = ()=>{ ppCant=Math.max(1,ppCant-1); pintarPP(); };
+$('ppMas').onclick = ()=>{ ppCant++; pintarPP(); };
+$('ppAgregar').onclick = ()=>agregarPP(r2(ppPad.get()));
+
 function addItem(k, nombre, precio, cant){
   precio = r2(precio);
   const id = k==='otros' ? 'o'+(++otroN) : k+'@'+precio;
   const ex = cart.find(c=>c.id===id);
-  if(ex) ex.cant += cant; else cart.push({id,k,nombre,precio:r2(precio),cant});
+  if(ex) ex.cant += cant; else cart.push({id,k,nombre,precio,cant});
+  ocultarExito();
   renderCart();
 }
 function cartTotal(){ return r2(cart.reduce((s,c)=>s+c.cant*c.precio,0)); }
@@ -1051,11 +1113,13 @@ function updateBadges(){
   $('grid').querySelectorAll('.tile').forEach(t=>{
     const q = cart.filter(c=>c.k===t.dataset.k).reduce((s,c)=>s+c.cant,0);
     const b=t.querySelector('.qty'); b.hidden=!q; b.textContent=q; t.classList.toggle('in',!!q);
+    t.querySelector('.menos').hidden = !q;
   });
 }
 function renderCart(){
   const n = cart.reduce((s,c)=>s+c.cant,0), tot = cartTotal();
-  $('cbN').textContent = n ? `${n} artículo${n>1?'s':''} · ver venta` : 'Toca un producto';
+  $('cbN').textContent = n ? 'Ver venta' : 'Sin productos';
+  $('cbVer').textContent = n ? `${n} artículo${n>1?'s':''}` : 'Toca uno';
   $('cbTotal').textContent = money(tot);
   $('btnCobrar').disabled = !n || tot<=0;
   $('cartCobrar').disabled = !n || tot<=0;
@@ -1065,68 +1129,138 @@ function renderCart(){
       <div class="n">${esc(c.nombre)}</div><div class="t num">${money(c.cant*c.precio)}</div>
       <div class="ctl">
         <div class="step"><button data-i="${i}" data-d="-1" aria-label="Quitar uno">−</button><span class="num">${c.cant}</span><button data-i="${i}" data-d="1" aria-label="Agregar uno">+</button></div>
-        <label class="pricein">$<input type="number" inputmode="decimal" min="0" step="0.5" value="${c.precio}" data-p="${i}" id="cp-${esc(c.id)}" aria-label="Precio de ${esc(c.nombre)}"> c/u</label>
+        <span class="pricein num">${money(c.precio)} c/u</span>
         <button class="rm" data-rm="${i}">Quitar</button>
       </div>
     </div>`).join('') : '<div class="empty">No hay productos en la venta.</div>';
-  $('cartLines').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ const c=cart[+b.dataset.i]; c.cant+=+b.dataset.d; if(c.cant<1) cart.splice(+b.dataset.i,1); renderCart(); });
-  $('cartLines').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ cart.splice(+b.dataset.rm,1); renderCart(); });
-  $('cartLines').querySelectorAll('[data-p]').forEach(inp=>inp.onchange=()=>{ const v=parseFloat(inp.value); cart[+inp.dataset.p].precio = r2(isFinite(v)&&v>=0?v:0); renderCart(); });
   if(view==='venta') updateBadges();
 }
-$('btnCarrito').onclick = ()=>openSheet('sh-carrito');
+$('cartLines').addEventListener('click', e=>{
+  const d = e.target.closest('[data-d]'), rm = e.target.closest('[data-rm]');
+  if(d){ const c=cart[+d.dataset.i]; c.cant+=+d.dataset.d; if(c.cant<1) cart.splice(+d.dataset.i,1); renderCart(); if(!cart.length) closeSheet('sh-carrito'); }
+  if(rm){ cart.splice(+rm.dataset.rm,1); renderCart(); if(!cart.length) closeSheet('sh-carrito'); }
+});
+$('btnCarrito').onclick = ()=>{ if(cart.length) openSheet('sh-carrito'); };
 $('cartVaciar').onclick = ()=>{ if(!cart.length) return; cart=[]; renderCart(); closeSheet('sh-carrito'); };
 
-/* ---------- Cobro ---------- */
+/* ---------- Cobro con un toque ---------- */
 let metodo = 'efectivo';
+const pPad = montarPad($('pPad'), v=>{
+  const t = cartTotal(), rec = parseFloat(v)||0, ch = r2(rec-t), box = $('pCambio');
+  $('pVer').textContent = v ? '$'+v : '$0';
+  box.classList.toggle('short', ch<0);
+  box.innerHTML = ch<0 ? `<span>Falta</span><span>${money(-ch)}</span>` : `<span>Cambio</span><span>${money(ch)}</span>`;
+  $('pOtraOk').disabled = !(rec>=t && t>0);
+  $('pOtraOk').textContent = rec>=t && t>0 ? 'Cobrar · cambio '+money(ch) : 'Cobrar';
+});
 function openCobro(){
   if(!cart.length) return;
   closeSheet('sh-carrito');
   const t = cartTotal();
   $('pTotal').textContent = money(t);
-  $('pRecibido').value = '';
-  const opts = [...new Set([50,100,200,500,1000].filter(x=>x>=t))].slice(0,4);
-  $('pQuick').innerHTML = `<button type="button" data-v="${t}">Exacto</button>` + opts.map(x=>`<button type="button" data-v="${x}">${money(x).replace('.00','')}</button>`).join('');
-  $('pQuick').querySelectorAll('button').forEach(b=>b.onclick=()=>{ $('pRecibido').value=b.dataset.v; calcCambio(); });
-  setMetodo('efectivo'); openSheet('sh-cobro');
+  const billetes = [20,50,100,200,500,1000].filter(x=>x>t).slice(0,3);
+  $('pQuick').innerHTML = `<button type="button" class="paybtn exacto" data-v="${t}"><small>Pago exacto</small>${money(t)}</button>`
+    + billetes.map(x=>`<button type="button" class="paybtn" data-v="${x}"><small>Cambio ${money(r2(x-t))}</small>${money(x).replace('.00','')}</button>`).join('')
+    + `<button type="button" class="paybtn" data-otra="1"><small>Escribir</small>Otra cantidad</button>`;
+  $('pQuick').hidden = false; $('pOtra').hidden = true; pPad.set('');
+  setMetodo('efectivo');
+  openSheet('sh-cobro');
 }
-function setMetodo(m){ metodo=m; $('pMetodo').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.m===m))); $('pEfectivo').hidden = m!=='efectivo'; calcCambio(); }
+$('pQuick').addEventListener('click', e=>{
+  const b = e.target.closest('.paybtn'); if(!b) return;
+  if(b.dataset.otra){ $('pQuick').hidden = true; $('pOtra').hidden = false; pPad.set(''); return; }
+  cobrar('efectivo', +b.dataset.v);
+});
+function setMetodo(m){
+  metodo = m;
+  $('pMetodo').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.m===m)));
+  $('pEfectivo').hidden = m!=='efectivo';
+  $('pRegistrar').hidden = m==='efectivo';
+  $('pRegistrar').textContent = 'Registrar '+money(cartTotal())+' · '+METODOS[m];
+}
 $('pMetodo').querySelectorAll('button').forEach(b=>b.onclick=()=>setMetodo(b.dataset.m));
-function calcCambio(){
-  const t=cartTotal(); const raw=$('pRecibido').value; const rec = raw===''?t:parseFloat(raw)||0;
-  const ch = r2(rec-t); const box=$('pCambio');
-  if(metodo!=='efectivo'){ $('pRegistrar').disabled=false; return; }
-  box.classList.toggle('short', ch<0);
-  box.innerHTML = ch<0 ? `<span>Falta</span><span>${money(-ch)}</span>` : `<span>Cambio</span><span>${money(ch)}</span>`;
-  $('pRegistrar').disabled = ch<0;
-}
-$('pRecibido').addEventListener('input', calcCambio);
 $('btnCobrar').onclick = openCobro;
 $('cartCobrar').onclick = openCobro;
-$('pRegistrar').onclick = async ()=>{
-  const t = cartTotal(); if(!cart.length || t<=0) return;
-  const raw=$('pRecibido').value; const rec = metodo==='efectivo' ? (raw===''?t:r2(parseFloat(raw)||0)) : t;
-  if(metodo==='efectivo' && rec<t) return;
+$('pRegistrar').onclick = ()=>cobrar(metodo, cartTotal());
+$('pOtraOk').onclick = ()=>{ const rec = r2(pPad.get()); if(rec>=cartTotal()) cobrar('efectivo', rec); };
+
+/* La venta se guarda al instante en el teléfono y se envía al servidor en segundo plano */
+let pausaGrid = 0;   // evita que un doble toque en "Cobrar" agregue un producto a la siguiente venta
+function cobrar(m, recibido){
+  const t = cartTotal();
+  if(!cart.length || t<=0) return;
+  if(m==='efectivo' && recibido < t) return;
+  pausaGrid = Date.now() + 350;
   const now = Date.now();
   const cid = 'v'+now.toString(36)+Math.random().toString(36).slice(2,10);
+  const rec = m==='efectivo' ? r2(recibido) : t;
   const v = {
     id: cid, client_id: cid, folio: null, ts: now, dia: localDay(new Date(now)), hora: hhmm(now),
     items: cart.map(c=>({k:c.k, nombre:c.nombre, cant:c.cant, precio:c.precio})),
-    total: t, metodo, recibido: rec, cambio: r2(rec-t), estado:'ok',
+    total: t, metodo: m, recibido: rec, cambio: r2(rec-t), estado:'ok',
     vendedor: yo ? yo.nombre : '', por: yo ? yo.usuario : ''
   };
-  const btn = $('pRegistrar');
-  btn.disabled = true; btn.textContent = 'Guardando…';
-  let sv;
-  try{ sv = await registrarVenta(v); }
-  catch(e){ toast(e.message); btn.disabled=false; btn.textContent='Registrar venta'; return; }
-  btn.textContent = 'Registrar venta';
-  cart=[]; otroN=0;
-  showRecibo(sv);
-  toast(sv.folio ? 'Venta #'+pad(sv.folio,4)+' registrada' : 'Sin internet: la venta quedó en el teléfono y se enviará sola');
-  if(impPref.modo==='usb'){ imprimirUSB(ticketVenta(sv)); }
-  else if(BT.ch && BT.dev && BT.dev.gatt.connected){ try{ await btWrite(toEscPos(ticketVenta(sv))); }catch(e){} }
+  pendientes.push(v); guardarPendientes(); merge([v]); setSync();
+  cart = []; otroN = 0;
+  closeSheet('sh-cobro'); closeSheet('sh-carrito');
+  renderCart(); actualizarSub();
+  mostrarExito(v); vibrar(30);
+  enviarPendientes();
+  imprimirAuto(v);
+}
+
+/* Aviso de venta registrada (no detiene la siguiente venta) */
+let exId = null, exT = null;
+function pintarExito(v){
+  $('exTit').textContent = v.folio ? 'Venta #'+pad(v.folio,4)+' registrada' : (enLinea ? 'Venta registrada · asignando folio…' : 'Venta guardada sin internet');
+  $('exSub').textContent = money(v.total)+' · '+METODOS[v.metodo];
+  $('exCambio').innerHTML = v.metodo==='efectivo' && v.cambio>0 ? `<small>Cambio</small><b class="num">${money(v.cambio)}</b>` : '';
+}
+function ocultarExito(){ $('exito').hidden = true; document.body.classList.remove('conaviso'); }
+function mostrarExito(v){
+  exId = v.id; pintarExito(v); $('exito').hidden = false; document.body.classList.add('conaviso');
+  clearTimeout(exT); exT = setTimeout(ocultarExito, 7000);
+}
+function alRegistrar(v){
+  if(exId===v.id && !$('exito').hidden) pintarExito(v);
+  if(recSale && recSale.id===v.id){ recSale=v; if(view==='recibo') showRecibo(v); }
+}
+$('exX').onclick = ocultarExito;
+$('exRecibo').onclick = ()=>{ const v=sales.find(s=>s.id===exId); if(v) showRecibo(v); };
+$('exImp').onclick = async ()=>{
+  const v = sales.find(s=>s.id===exId); if(!v) return;
+  if(!btListo()){ try{ toast('Elige la impresora…'); await btConnect(); actualizarImp(); }catch(e){ toast(btError(e)); return; } }
+  imprimirBT(v, true);
 };
+
+/* ---------- Impresora Bluetooth ---------- */
+function btListo(){ return !!(BT.ch && BT.dev && BT.dev.gatt && BT.dev.gatt.connected); }
+function actualizarImp(){
+  const on = btListo();
+  $('btnImp').classList.toggle('on', on);
+  $('btnImp').setAttribute('aria-label', on ? 'Impresora conectada' : 'Conectar impresora');
+}
+$('btnImp').onclick = async ()=>{
+  if(btListo()){ toast('Impresora conectada: '+(BT.dev.name||'lista')); return; }
+  try{ toast('Elige la impresora…'); await btConnect(); actualizarImp(); toast('Impresora lista'); }
+  catch(e){ toast(btError(e)); }
+};
+let btCola = Promise.resolve();
+function imprimirBT(v, manual){
+  btCola = btCola.then(async ()=>{
+    const actual = sales.find(s=>s.id===v.id) || v;
+    try{ await btWrite(toEscPos(ticketVenta(actual))); }
+    catch(e){ toast((manual?'':'No se imprimió: ')+btError(e)); }
+    actualizarImp();
+  });
+  return btCola;
+}
+async function imprimirAuto(v){
+  if(!autoImp || !btListo()) return;
+  const t0 = Date.now();
+  while(Date.now()-t0 < 1800){ const s = sales.find(x=>x.id===v.id); if(s && s.folio) break; await new Promise(r=>setTimeout(r,120)); }
+  imprimirBT(v, false);
+}
 
 /* ---------- Recibo ---------- */
 let recSale = null;
@@ -1201,18 +1335,15 @@ function renderAjustes(){
       <input type="number" id="ap-${k}" inputmode="decimal" min="0" step="0.5" value="${p.precio||''}" placeholder="—" ${p.fijo?'':'disabled'} aria-label="Precio fijo de ${esc(p.nombre)}">`}
     </div>`; }).join('');
   $('aProds').querySelectorAll('[id^=af-]').forEach(cb=>cb.onchange=()=>{ const inp=$('ap-'+cb.id.slice(3)); inp.disabled=!cb.checked; if(cb.checked) inp.focus(); });
-  $('impModo').value = impPref.modo; $('impAncho').value = String(impPref.ancho);
+  $('impAuto').checked = !!autoImp;
   mountPrint($('aPrint'), ticketPrueba);
   if(!$('rDesde').value){ const h=localDay(); $('rDesde').value=h.slice(0,8)+'01'; $('rHasta').value=h; }
   cargarUsuarios();
 }
-function guardarImpresora(){
-  impPref = {modo:$('impModo').value, ancho:+$('impAncho').value};
-  lsSet('pos_impresora', impPref); aplicarAncho(); mountPrint($('aPrint'), ticketPrueba);
-  toast(impPref.modo==='usb' ? 'Este dispositivo imprimirá por USB' : impPref.modo==='bt' ? 'Este dispositivo imprimirá por Bluetooth' : 'Este dispositivo no imprimirá solo');
-}
-$('impModo').addEventListener('change', guardarImpresora);
-$('impAncho').addEventListener('change', guardarImpresora);
+$('impAuto').addEventListener('change', ()=>{
+  autoImp = $('impAuto').checked; lsSet('pos_autoimp', autoImp);
+  toast(autoImp ? 'Cada venta se imprimirá sola' : 'Las ventas ya no se imprimirán solas');
+});
 $('aGuardar').onclick = async ()=>{
   cfg.linea1 = $('aL1').value.trim() || 'Punto de venta';
   cfg.linea2 = $('aL2').value.trim();
@@ -1285,18 +1416,28 @@ async function arrancar(){
     enLinea = true; setSync();
     usuariosLogin = r.usuarios || [];
     if(r.usuario){ entrar(r.usuario, r.ajustes); return; }
-    lsDel('pos_yo'); go('login');
+    lsDel('pos_yo'); yo = null; go('login');
   }catch(e){
     if(e.status===0){ enLinea=false; setSync(); }
     // Sin internet: si alguien había entrado en este teléfono, se puede seguir vendiendo
     const c = lsGet('pos_yo', null);
-    if(e.status===0 && c && c.exp>Date.now()){ yo=c.u; go('inicio'); toast('Sin internet: las ventas se guardan en el teléfono'); return; }
-    go('login'); $('lgErr').textContent = e.message;
+    if(e.status===0 && c && c.exp>Date.now()){ yo=c.u; if(view!=='venta') go('venta'); toast('Sin internet: las ventas se guardan en el teléfono'); return; }
+    yo = null; go('login'); $('lgErr').textContent = e.message;
   }
 }
-go('login');
-arrancar();
+(function(){
+  const c0 = lsGet('pos_yo', null);
+  if(c0 && c0.exp>Date.now()){ yo = c0.u; go('venta'); } else go('login');
 })();
+arrancar();
+
+/* App instalable y carga instantánea: guarda las pantallas en el teléfono */
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('message', e=>{ if(e.data==='nueva-version') $('nuevaVersion').hidden = false; });
+}
+$('nuevaVersion').onclick = ()=>location.reload();
+});
 </script>
 </body>
 </html>
