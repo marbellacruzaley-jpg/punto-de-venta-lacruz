@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1E5A47">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Punto de Venta La Cruz</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0}
+img{max-width:100%}
+/* Layout: app móvil de una columna; cuadrícula de productos 3×; barra de cobro fija abajo; hojas deslizantes para carrito y cobro */
+:root{
+  --bg:#EDF1EE; --surface:#FFFFFF; --surface-2:#E2E9E4; --ink:#17231F; --muted:#56665F; --line:#CCD7D0;
+  --accent:#1E5A47; --accent-ink:#FFFFFF; --accent-soft:#D8EAE1;
+  --gold:#9A6F17; --gold-soft:#F3E6C6;
+  --danger:#A8342A; --danger-soft:#F7DFDB; --ok:#2B7A4B;
+  --paper:#FFFFFF; --paper-ink:#1B1B1B; --paper-edge:#D9D9D2;
+  --scrim:rgba(14,22,19,.45);
+  --f-display:"Alegreya", Georgia, "Times New Roman", serif;
+  --f-ui:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1513; --surface:#18201D; --surface-2:#222C28; --ink:#E5ECE8; --muted:#9BAAA3; --line:#2F3A35;
+    --accent:#6CC3A1; --accent-ink:#06241A; --accent-soft:#1C3A2F;
+    --gold:#E2B456; --gold-soft:#3A301E;
+    --danger:#F0897D; --danger-soft:#3E2320; --ok:#71C792;
+    --paper:#F6F6F0; --paper-ink:#1B1B1B; --paper-edge:#3A433F;
+    --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1513; --surface:#18201D; --surface-2:#222C28; --ink:#E5ECE8; --muted:#9BAAA3; --line:#2F3A35;
+  --accent:#6CC3A1; --accent-ink:#06241A; --accent-soft:#1C3A2F;
+  --gold:#E2B456; --gold-soft:#3A301E;
+  --danger:#F0897D; --danger-soft:#3E2320; --ok:#71C792;
+  --paper:#F6F6F0; --paper-ink:#1B1B1B; --paper-edge:#3A433F;
+  --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:16px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;
+  display:flex;align-items:center;gap:10px;min-height:58px}
+.back{border:0;background:var(--surface-2);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.back svg{width:22px;height:22px}
+.top h1{font-family:var(--f-display);font-weight:700;font-size:1.25rem;margin:0;line-height:1.15;flex:1;min-width:0;text-wrap:balance}
+.chip{font-size:.75rem;padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap;flex:none;display:flex;align-items:center;gap:6px}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.chip.cloud i{background:var(--ok)}
+.chip.local i{background:var(--gold)}
+.chip.off i{background:var(--danger)}
+
+main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 120px;max-width:720px;margin:0 auto}
+section{display:flex;flex-direction:column;gap:16px}
+
+/* Inicio */
+.hero-btn{border:0;border-radius:20px;background:var(--accent);color:var(--accent-ink);padding:22px 20px;display:flex;align-items:center;gap:16px;text-align:left;box-shadow:0 6px 18px -8px rgba(20,60,45,.55)}
+.hero-btn svg{width:44px;height:44px;flex:none}
+.hero-btn b{display:block;font-family:var(--f-display);font-size:1.7rem;line-height:1.1}
+.hero-btn span{font-size:.95rem;opacity:.85}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.panel h2{font-family:var(--f-display);font-size:1.15rem;margin:0 0 10px}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.today{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;align-items:end}
+.today .big{font-size:2rem;font-weight:700;line-height:1.1}
+.today .sub{color:var(--muted);font-size:.9rem}
+.methods{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pill{font-size:.8rem;padding:4px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+.navrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.navbtn{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px;display:flex;gap:10px;align-items:center;text-align:left}
+.navbtn svg{width:26px;height:26px;color:var(--accent);flex:none}
+.navbtn b{display:block}
+.navbtn small{color:var(--muted)}
+.salelist{display:flex;flex-direction:column}
+.salerow{border:0;background:none;border-top:1px solid var(--line);padding:11px 2px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
+.salerow:first-child{border-top:0}
+.salerow .fol{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.salerow .what{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.salerow .amt{font-weight:700}
+.salerow.cancel .what,.salerow.cancel .amt{text-decoration:line-through;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:18px 8px}
+.example-note{background:var(--gold-soft);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:.88rem}
+.example-note button{border:0;background:none;color:var(--gold);font-weight:700;text-decoration:underline;padding:0}
+
+/* Productos */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (min-width:560px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tile{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:132px;transition:transform .12s ease,border-color .12s}
+.tile:active{transform:scale(.96)}
+.tile .ico{width:62px;height:62px;border-radius:50%;background:var(--gold-soft);display:grid;place-items:center;color:var(--accent)}
+.tile .ico svg{width:44px;height:44px}
+.tile .nm{font-weight:700;font-size:.9rem;line-height:1.15;text-align:center;text-wrap:balance}
+.tile .pr{font-size:.82rem;color:var(--muted)}
+.tile .qty{position:absolute;top:6px;right:6px;min-width:26px;height:26px;border-radius:13px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.85rem;display:grid;place-items:center;padding:0 6px}
+.tile.in{border-color:var(--accent)}
+.tile.bump{animation:bump .25s ease}
+@keyframes bump{50%{transform:scale(1.05)}}
+
+/* Barra de cobro */
+.cartbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:stretch}
+.cartsum{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:8px 12px;text-align:left;display:flex;flex-direction:column}
+.cartsum small{color:var(--muted)}
+.cartsum b{font-size:1.3rem}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:700;background:var(--surface-2);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center;min-height:48px}
+.btn svg{width:20px;height:20px;flex:none}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.gold{background:var(--gold-soft);color:var(--ink)}
+.btn.danger{background:var(--danger-soft);color:var(--danger)}
+.btn.ghost{background:none;border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.wide{width:100%}
+.btn.lg{font-size:1.1rem;min-height:56px}
+
+/* Hojas */
+.sheet{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet .card{position:relative;background:var(--surface);border-radius:22px 22px 0 0;max-height:88%;overflow:auto;
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  padding-top:10px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;max-width:720px;width:100%;margin:0 auto;animation:up .2s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.6}}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
+.sheet h3{font-family:var(--f-display);font-size:1.35rem;margin:0}
+.line{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.line .n{font-weight:700;min-width:0}
+.line .t{font-weight:700;text-align:right}
+.line .ctl{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.step{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step button{border:0;background:var(--surface-2);width:42px;height:40px;font-size:1.3rem;font-weight:700}
+.step span{min-width:36px;text-align:center;font-weight:700}
+.pricein{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:.9rem}
+.pricein input{width:84px}
+.rm{margin-left:auto;border:0;background:none;color:var(--danger);font-weight:700;padding:8px}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.92rem}
+input[type=text],input[type=number],input[type=date],input[type=password],input:not([type]){border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 12px;min-height:46px;width:100%}
+.totalbox{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.totalbox b{font-size:2.2rem}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface-2);padding:5px;border-radius:14px}
+.seg button{border:0;background:none;border-radius:10px;padding:10px 4px;font-weight:700;font-size:.92rem}
+.seg button[aria-pressed=true]{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.12);color:var(--accent)}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+.quick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700}
+.change{display:flex;justify-content:space-between;padding:12px 14px;border-radius:12px;background:var(--accent-soft);font-weight:700;font-size:1.1rem}
+.change.short{background:var(--danger-soft);color:var(--danger)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+label.f{min-width:0}
+input{max-width:100%;min-width:0}
+
+/* Ticket */
+.ticketwrap{display:flex;justify-content:center;padding:6px 0}
+.ticket{background:var(--paper);color:var(--paper-ink);font-family:var(--f-mono);font-size:12.5px;line-height:1.45;padding:16px 14px 22px;width:100%;max-width:330px;
+  border:1px solid var(--paper-edge);box-shadow:0 10px 26px -14px rgba(0,0,0,.45);
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat, radial-gradient(circle 5px at 50% 100%,transparent 98%,#000) bottom/12px 9px repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat, radial-gradient(circle 5px at 50% 100%,transparent 98%,#000) bottom/12px 9px repeat-x;overflow-x:auto}
+.ticket div{white-space:pre;min-height:1.45em}
+.ticket .b{font-weight:600}
+.ticket .h{font-size:15px;line-height:1.6}
+.ticket .c{text-align:center}
+.printbox{display:flex;flex-direction:column;gap:10px}
+.printbox .msg{font-size:.88rem;color:var(--muted);text-align:center;min-height:1.2em}
+.printbox .msg.err{color:var(--danger)}
+.printbox .msg.ok{color:var(--ok)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Corte */
+.ctab{width:100%;border-collapse:collapse}
+.ctab th,.ctab td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+.ctab th{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ctab td.r,.ctab th.r{text-align:right}
+.ctab tfoot td{font-weight:700;border-bottom:0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:1.25rem}
+.stat small{color:var(--muted)}
+
+/* Ajustes */
+.prodedit{display:grid;grid-template-columns:44px minmax(0,1fr) auto 88px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.prodedit input:disabled{opacity:.4}
+.chk{display:flex;align-items:center;gap:5px;font-size:.85rem;font-weight:700;color:var(--muted)}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+.phead{display:flex;align-items:center;gap:12px}
+.phead .ico{width:56px;height:56px;border-radius:50%;background:var(--gold-soft);color:var(--accent);display:grid;place-items:center;flex:none}
+.phead .ico svg{width:40px;height:40px}
+.bigprice{display:flex;align-items:center;gap:6px;font-size:1.8rem;font-weight:700}
+.bigprice input{font-size:1.8rem;font-weight:700;min-height:62px}
+.qrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700}
+.tile .pr.var{color:var(--gold)}
+.prodedit .mini{width:44px;height:44px;border-radius:50%;background:var(--gold-soft);color:var(--accent);display:grid;place-items:center}
+.prodedit .mini svg{width:30px;height:30px}
+.prodedit input{min-height:42px;padding:8px 10px}
+.help{color:var(--muted);font-size:.9rem;margin:0}
+.help li{margin:6px 0}
+.help ul{padding-left:18px;margin:6px 0}
+
+/* Usuarios */
+.urow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.urow .uinfo{display:flex;flex-direction:column;min-width:0}
+.urow small{color:var(--muted)}
+.urow.off b{color:var(--muted)}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:.88rem}
+.tag{font-size:.8rem;font-weight:700;color:var(--accent);padding:0 8px}
+/* Acceso */
+.login{max-width:420px;margin:24px auto 0;display:flex;flex-direction:column;gap:18px}
+.login .seal{width:84px;height:84px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;margin:0 auto}
+.login .seal svg{width:46px;height:46px}
+.login h2{font-family:var(--f-display);font-size:1.6rem;text-align:center;margin:0;text-wrap:balance}
+.login p{margin:0;text-align:center;color:var(--muted)}
+.users{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.users button{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 4px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:6px}
+.users button i{width:38px;height:38px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;font-style:normal;font-family:var(--f-display);font-size:1.2rem}
+.users button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
+.pwd{display:flex;gap:6px}
+.pwd input{flex:1;min-width:0}
+.pwd button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 12px;font-weight:700;font-size:.85rem}
+.lerr{color:var(--danger);text-align:center;font-weight:700;min-height:1.3em;margin:0}
+.session{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:.92rem}
+.session b{color:var(--ink)}
+.session button{border:0;background:none;color:var(--danger);font-weight:700;padding:6px 0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="back" id="btnBack" aria-label="Regresar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <h1 id="ttl">Punto de venta</h1>
+  <span class="chip" id="sync"><i></i><span>Cargando…</span></span>
+</header>
+
+<main>
+  <!-- ACCESO -->
+  <section id="v-login" hidden>
+    <form class="login" id="formLogin" autocomplete="off">
+      <div class="seal"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6v36M14 16h20"/></svg></div>
+      <h2 id="lgTitulo">Punto de venta</h2>
+      <p>¿Quién atiende la caja?</p>
+      <div class="users" id="lgUsers"></div>
+      <label class="f">Contraseña
+        <span class="pwd"><input type="password" id="lgPass" autocomplete="current-password"><button type="button" id="lgVer">Ver</button></span>
+      </label>
+      <p class="lerr" id="lgErr" role="alert"></p>
+      <button class="btn primary lg" type="submit" id="lgEntrar">Entrar</button>
+    </form>
+  </section>
+
+  <!-- INICIO -->
+  <section id="v-inicio">
+    <div class="session"><span>Atiende: <b id="sesNombre"></b></span><button id="btnSalir">Cerrar sesión</button></div>
+    <button class="hero-btn" id="btnNueva">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M24 15v18M15 24h18"/></svg>
+      <div><b>Nueva venta</b><span>Elige productos y cobra</span></div>
+    </button>
+    <div class="panel">
+      <div class="eyebrow" id="hoyLbl">Hoy</div>
+      <div class="today">
+        <div><div class="big num" id="hoyTotal">$0.00</div><div class="sub">vendido hoy</div></div>
+        <div><div class="big num" id="hoyN">0</div><div class="sub">ventas</div></div>
+      </div>
+      <div class="methods" id="hoyMet"></div>
+    </div>
+    <div class="navrow">
+      <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte</b><small>Ventas por día</small></div></button>
+      <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios e impresora</small></div></button>
+    </div>
+    <div class="panel">
+      <h2>Últimas ventas</h2>
+      <div class="salelist" id="ultimas"></div>
+    </div>
+  </section>
+
+  <!-- NUEVA VENTA -->
+  <section id="v-venta" hidden>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- RECIBO -->
+  <section id="v-recibo" hidden>
+    <div class="ticketwrap"><div class="ticket" id="recTicket"></div></div>
+    <div class="printbox" id="recPrint"></div>
+    <div class="actions">
+      <button class="btn primary lg" id="recNueva">Nueva venta</button>
+      <button class="btn ghost lg" id="recInicio">Inicio</button>
+    </div>
+    <button class="btn danger" id="recCancelar">Cancelar esta venta</button>
+  </section>
+
+  <!-- CORTE -->
+  <section id="v-corte" hidden>
+    <label class="f">Día del corte<input type="date" id="corteDia"></label>
+    <div class="stats">
+      <div class="stat"><small>Total</small><b class="num" id="cTotal">$0</b></div>
+      <div class="stat"><small>Ventas</small><b class="num" id="cN">0</b></div>
+      <div class="stat"><small>Canceladas</small><b class="num" id="cCan">0</b></div>
+    </div>
+    <div class="panel">
+      <h2>Por producto</h2>
+      <div style="overflow-x:auto"><table class="ctab num" id="cTab"></table></div>
+      <div class="methods" id="cMet"></div>
+    </div>
+    <div class="panel">
+      <h2>Ventas del día</h2>
+      <div class="salelist" id="cLista"></div>
+    </div>
+    <div class="panel">
+      <h2>Ticket de corte</h2>
+      <div class="ticketwrap"><div class="ticket" id="cTicket"></div></div>
+      <div class="printbox" id="cPrint"></div>
+    </div>
+    <button class="btn gold" id="cCsv">Exportar ventas del día (CSV)</button>
+  </section>
+
+  <!-- AJUSTES -->
+  <section id="v-ajustes" hidden>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <h2>Encabezado del recibo</h2>
+      <label class="f">Nombre<input type="text" id="aL1" maxlength="64"></label>
+      <label class="f">Segunda línea (dirección o teléfono)<input type="text" id="aL2" maxlength="64"></label>
+      <label class="f">Mensaje al final<input type="text" id="aPie" maxlength="64"></label>
+    </div>
+    <div class="panel">
+      <h2>Productos y precios</h2>
+      <p class="help">Marca «Fijo» y pon el precio para que el producto se agregue con un toque. Sin marcar, el precio se escribe en cada venta.</p>
+      <div id="aProds"></div>
+    </div>
+    <button class="btn primary lg" id="aGuardar">Guardar ajustes</button>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <h2>Mini impresora (58 mm)</h2>
+      <div class="help">
+        <ul>
+          <li><b>RawBT (Android, respaldo):</b> instala la app gratuita RawBT, vincula la impresora por Bluetooth y elígela en RawBT. El botón «Imprimir con RawBT» le manda el recibo.</li>
+          <li><b>Copiar ticket:</b> copia el texto y pégalo en la app de tu impresora.</li>
+          <li><b>Bluetooth directo:</b> abre el sistema en Chrome para Android, toca «Imprimir por Bluetooth» y elige la impresora. Después de la primera vez, cada venta se imprime sola mientras la impresora siga conectada.</li>
+        </ul>
+      </div>
+      <div class="printbox" id="aPrint"></div>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <h2>Usuarios</h2>
+      <div id="uLista"></div>
+      <form id="formUsuario" class="row2" autocomplete="off">
+        <label class="f">Usuario<input type="text" id="uUsuario" placeholder="ej. salma" maxlength="30" autocapitalize="none"></label>
+        <label class="f">Nombre en el recibo<input type="text" id="uNombre" placeholder="ej. Salma" maxlength="40"></label>
+        <button class="btn gold" type="submit" style="grid-column:1/-1">Agregar usuario</button>
+      </form>
+      <p class="help">Los usuarios nuevos entran con la contraseña inicial y pueden cambiarla abajo.</p>
+    </div>
+    <div class="panel">
+      <h2>Mi contraseña</h2>
+      <form id="formPass" style="display:flex;flex-direction:column;gap:10px" autocomplete="off">
+        <label class="f">Contraseña actual<input type="password" id="pwActual" autocomplete="current-password"></label>
+        <label class="f">Contraseña nueva<input type="password" id="pwNueva" autocomplete="new-password" minlength="6"></label>
+        <label class="f">Repite la nueva<input type="password" id="pwNueva2" autocomplete="new-password" minlength="6"></label>
+        <button class="btn ghost" type="submit">Cambiar contraseña</button>
+      </form>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <h2>Reportes y respaldo</h2>
+      <div class="row2">
+        <label class="f">Desde<input type="date" id="rDesde"></label>
+        <label class="f">Hasta<input type="date" id="rHasta"></label>
+      </div>
+      <button class="btn gold" id="rCsv">Descargar ventas (CSV para Excel)</button>
+      <button class="btn ghost" id="rRespaldo">Descargar respaldo completo</button>
+      <p class="help">Haz un respaldo al menos una vez al mes.</p>
+    </div>
+  </section>
+</main>
+
+<div class="cartbar" id="cartbar" hidden>
+  <button class="cartsum" id="btnCarrito"><small id="cbN">0 artículos · ver</small><b class="num" id="cbTotal">$0.00</b></button>
+  <button class="btn primary lg" id="btnCobrar" disabled>Cobrar</button>
+</div>
+
+<!-- Hoja: carrito -->
+<div class="sheet" id="sh-carrito" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Carrito">
+    <div class="grab"></div>
+    <h3>Venta actual</h3>
+    <div id="cartLines"></div>
+    <div class="totalbox"><span>Total</span><b class="num" id="cartTotal">$0.00</b></div>
+    <div class="actions">
+      <button class="btn ghost" id="cartVaciar">Vaciar</button>
+      <button class="btn primary" id="cartCobrar">Cobrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hoja: capturar precio -->
+<div class="sheet" id="sh-precio" hidden>
+  <div class="scrim" data-close></div>
+  <form class="card" id="formPrecio" role="dialog" aria-label="Precio del producto">
+    <div class="grab"></div>
+    <div class="phead"><span class="ico" id="ppIco"></span><h3 id="ppNom">Producto</h3></div>
+    <label class="f" id="ppDescBox">Descripción<input type="text" id="ppDesc" placeholder="Ej. Crucifijo de pared" maxlength="40"></label>
+    <label class="f">Precio por pieza
+      <span class="bigprice">$<input type="number" id="ppPrecio" inputmode="decimal" min="0" step="0.5" placeholder="0.00"></span>
+    </label>
+    <div class="quick" id="ppRecientes"></div>
+    <div class="qrow"><span>Cantidad</span>
+      <div class="step"><button type="button" id="ppMenos" aria-label="Quitar uno">−</button><span class="num" id="ppCant">1</span><button type="button" id="ppMas" aria-label="Agregar uno">+</button></div>
+    </div>
+    <button class="btn primary lg" type="submit" id="ppAgregar">Agregar a la venta</button>
+  </form>
+</div>
+
+<!-- Hoja: cobro -->
+<div class="sheet" id="sh-cobro" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Cobro">
+    <div class="grab"></div>
+    <div class="totalbox"><h3>Cobrar</h3><b class="num" id="pTotal">$0.00</b></div>
+    <div class="seg" id="pMetodo">
+      <button type="button" data-m="efectivo" aria-pressed="true">Efectivo</button>
+      <button type="button" data-m="transferencia" aria-pressed="false">Transferencia</button>
+      <button type="button" data-m="tarjeta" aria-pressed="false">Tarjeta</button>
+    </div>
+    <div id="pEfectivo" style="display:flex;flex-direction:column;gap:10px">
+      <label class="f">Recibido<input type="number" id="pRecibido" inputmode="decimal" min="0" step="0.5" placeholder="Pago exacto"></label>
+      <div class="quick" id="pQuick"></div>
+      <div class="change num" id="pCambio"><span>Cambio</span><span>$0.00</span></div>
+    </div>
+    <button class="btn primary lg" id="pRegistrar">Registrar venta</button>
+  </div>
+</div>
+
+<!-- Hoja: confirmar -->
+<div class="sheet" id="sh-confirm" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Confirmar">
+    <div class="grab"></div>
+    <h3 id="cfTxt">¿Confirmar?</h3>
+    <p class="help" id="cfSub"></p>
+    <div class="actions">
+      <button class="btn ghost" data-close>Regresar</button>
+      <button class="btn danger" id="cfOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Íconos de productos ---------- */
+const S = 'viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"';
+const dot = (x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r||1.7}" fill="currentColor" stroke="none"/>`;
+const ring = (x,y)=>`<circle cx="${x}" cy="${y}" r="2.2"/>`;
+const ICONS = {
+  sal:`<svg ${S}><path d="M17 19h14l2 21a2 2 0 0 1-2 2H17a2 2 0 0 1-2-2z"/><path d="M17.5 19c0-6.5 2.9-11 6.5-11s6.5 4.5 6.5 11"/>${dot(21.5,13,1)}${dot(26.5,13,1)}${dot(24,16,1)}<path d="M19 29h10"/></svg>`,
+  agua:`<svg ${S}><path d="M20 6h8v5l3 4v25a2 2 0 0 1-2 2H19a2 2 0 0 1-2-2V15l3-4z"/><path d="M20 11h8"/><path d="M24 21v11M19.5 25.5h9"/></svg>`,
+  aceite:`<svg ${S}><rect x="20" y="9" width="8" height="6" rx="1"/><path d="M19 15h10v4l3 3v18a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V22l3-3z"/><path d="M24 26c-2.6 3.1-3.6 4.8-3.6 6.2a3.6 3.6 0 0 0 7.2 0c0-1.4-1-3.1-3.6-6.2z"/></svg>`,
+  rosario:`<svg ${S}>${[[24,6],[29.5,7.5],[33.5,11.5],[35,17],[33.5,22.5],[29.5,26.5],[18.5,26.5],[14.5,22.5],[13,17],[14.5,11.5],[18.5,7.5]].map(p=>dot(p[0],p[1])).join('')}${dot(24,28,2)}<path d="M24 30v4"/><path d="M24 34v10M20 37.5h8" stroke-width="2.6"/></svg>`,
+  pulsera:`<svg ${S}>${[[39,24],[37,28.5],[31.5,31.8],[16.5,31.8],[11,28.5],[9,24],[11,19.5],[16.5,16.2],[24,15],[31.5,16.2],[37,19.5]].map(p=>ring(p[0],p[1])).join('')}<path d="M24 32v12M20.5 36h7" stroke-width="2.4"/></svg>`,
+  escapulario:`<svg ${S}><path d="M14 26C14 7 34 7 34 26"/><rect x="8.5" y="26" width="11" height="14" rx="1.5"/><rect x="28.5" y="26" width="11" height="14" rx="1.5"/><path d="M14 29.5v7M11.5 32h5M34 29.5v7M31.5 32h5"/></svg>`,
+  estampa:`<svg ${S}><rect x="12" y="5" width="24" height="38" rx="2"/><path d="M18.5 16a5.5 5.5 0 0 1 11 0"/><circle cx="24" cy="18.5" r="3"/><path d="M16.5 37c0-6.5 3.4-11 7.5-11s7.5 4.5 7.5 11z"/></svg>`,
+  libro:`<svg ${S}><path d="M12 9h20a4 4 0 0 1 4 4v26H16a4 4 0 0 1-4-4z"/><path d="M12 35a4 4 0 0 1 4-4h20"/><path d="M24 14v12M20 18h8"/></svg>`,
+  cirio:`<svg ${S}><rect x="19" y="17" width="10" height="26" rx="1.5"/><path d="M24 3.5c-2.6 3.3-3.3 5.1-3.3 6.6a3.3 3.3 0 0 0 6.6 0c0-1.5-.7-3.3-3.3-6.6z"/><path d="M24 13.5V17"/><path d="M24 24v9M21 27h6"/><path d="M19 38h10"/></svg>`,
+  vela:`<svg ${S}><path d="M24 9c-2.4 3.1-3.1 4.7-3.1 6.1a3.1 3.1 0 0 0 6.2 0c0-1.4-.7-3-3.1-6.1z"/><path d="M24 18.5V23"/><path d="M14 23h20l-2.2 18.2a2 2 0 0 1-2 1.8H18.2a2 2 0 0 1-2-1.8z"/><path d="M16.5 29h15"/></svg>`,
+  imagen:`<svg ${S}><path d="M11 43V18a13 13 0 0 1 26 0v25z"/><path d="M19.5 17.5a4.5 4.5 0 0 1 9 0"/><circle cx="24" cy="20" r="2.6"/><path d="M18 39c0-7.5 2.7-13 6-13s6 5.5 6 13z"/></svg>`,
+  llavero:`<svg ${S}><circle cx="15" cy="13" r="7.5"/><path d="M20.5 18.5l6.5 3.5"/><path d="M27.5 22h5v6h5.5v4.5h-5.5V43h-5V32.5H22V28h5.5z"/></svg>`,
+  medalla:`<svg ${S}><path d="M17 4l7 14 7-14"/><circle cx="24" cy="29.5" r="11.5"/><circle cx="24" cy="29.5" r="7.5"/><path d="M24 25.5v8M20.5 28.5h7"/></svg>`,
+  microdosis:`<svg ${S}><path d="M21 17V9a3 3 0 0 1 6 0v8"/><path d="M19 21v-4h10v4"/><rect x="15" y="21" width="18" height="21" rx="3"/><path d="M24 27c-1.8 2.2-2.5 3.4-2.5 4.5a2.5 2.5 0 0 0 5 0c0-1.1-.7-2.3-2.5-4.5z"/></svg>`,
+  otros:`<svg ${S}><rect x="9" y="9" width="30" height="30" rx="7" stroke-dasharray="4 3.2"/><path d="M24 17v14M17 24h14"/></svg>`
+};
+
+/* ---------- Catálogo y ajustes por defecto ---------- */
+/* [clave, nombre, precio fijo (0 = se captura al vender)] */
+const BASE = [
+  ['sal','Sal',20],['agua','Agua',0],['aceite','Aceite',20],['microdosis','Microdosis',30],
+  ['rosario','Rosario',0],['pulsera','Pulsera',0],['escapulario','Escapulario',0],['estampa','Estampa',0],
+  ['libro','Libro',0],['cirio','Cirio',0],['vela','Vela',0],['imagen','Imagen religiosa',0],
+  ['llavero','Llavero',0],['medalla','Medalla',0],['otros','Otros',0]
+];
+const CFG_VER = 2;
+function defaultCfg(){
+  const productos = {};
+  BASE.forEach(([k,n,p])=>productos[k]={nombre:n, precio:p, fijo:p>0});
+  return {ver:CFG_VER, linea1:'Rectoría del Templo de la Cruz', linea2:'Morelia, Michoacán', pie:'¡Dios le bendiga!', productos};
+}
+function normCfg(c){
+  const d = defaultCfg();
+  if(!c || typeof c!=='object') return d;
+  const out = {ver:CFG_VER, linea1: c.linea1 ?? d.linea1, linea2: c.linea2 ?? d.linea2, pie: c.pie ?? d.pie, productos:{}};
+  const old = c.ver===CFG_VER ? (c.productos||{}) : {};
+  BASE.forEach(([k])=>{ const p = old[k]; const dp = d.productos[k];
+    out.productos[k] = p ? {nombre: p.nombre || dp.nombre, precio: Number.isFinite(+p.precio) ? +p.precio : 0, fijo: !!p.fijo && k!=='otros'} : dp; });
+  return out;
+}
+function esFijo(k){ const p=cfg.productos[k]; return k!=='otros' && p.fijo && p.precio>0; }
+
+/* ---------- Utilidades ---------- */
+const $ = id=>document.getElementById(id);
+const fmt = new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'});
+const money = n=>fmt.format(+n||0);
+const m2 = n=>'$'+(Math.round((+n||0)*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const r2 = n=>Math.round((+n||0)*100)/100;
+const pad = (n,w)=>String(n).padStart(w,'0');
+function localDay(d){ d=d||new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2); }
+function hhmm(ts){ const d=new Date(ts); return pad(d.getHours(),2)+':'+pad(d.getMinutes(),2); }
+function dmy(dia){ const [y,mo,d]=dia.split('-'); return d+'/'+mo+'/'+y; }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+const METODOS = {efectivo:'Efectivo', transferencia:'Transferencia', tarjeta:'Tarjeta'};
+function lsGet(k,def){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+let toastT;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,3200); }
+
+/* ---------- Servidor: Supabase ---------- */
+const SES_HORAS = 12;
+const DOMINIO = '@caja.lacruz';
+const SEL = 'folio,client_id,ts,dia,hora,vendedor,total,metodo,recibido,cambio,estado,cancelada_por,partidas(id,clave,nombre,cantidad,precio)';
+function ErrApi(msg, status){ const e=new Error(msg); e.status=status; return e; }
+const CFG_OK = !!(window.POS_CONFIG && /^https:\/\/.+/.test(window.POS_CONFIG.url||'') && window.POS_CONFIG.anonKey && window.supabase);
+const sb = CFG_OK ? window.supabase.createClient(window.POS_CONFIG.url, window.POS_CONFIG.anonKey, {auth:{persistSession:true, autoRefreshToken:true, storageKey:'pos-lacruz-sesion'}}) : null;
+
+function errDe(e){
+  const msg = String((e && (e.message || e.error_description)) || '');
+  if(e && (e.status===0 || /Failed to fetch|NetworkError|Load failed|network|fetch/i.test(msg)) && !e.code) return ErrApi('Sin conexión con el servidor. Revisa el internet.', 0);
+  if(e && (e.code==='28000' || e.code==='PGRST301' || e.code==='PGRST303' || /JWT|jwt|session/i.test(msg))) return ErrApi('Tu sesión terminó. Vuelve a entrar.', 401);
+  if(e && (e.status===429 || /rate limit/i.test(msg))) return ErrApi('Demasiados intentos. Espera unos minutos.', 429);
+  return ErrApi(msg || 'El servidor no respondió como se esperaba.', 400);
+}
+async function q(promesa){ const r = await promesa; if(r.error) throw errDe(r.error); return r.data; }
+function deFila(f){
+  return {folio:+f.folio, client_id:f.client_id, ts:Date.parse(f.ts), dia:f.dia, hora:f.hora, vendedor:f.vendedor,
+    total:+f.total, metodo:f.metodo, recibido:+f.recibido, cambio:+f.cambio, estado:f.estado, cancelada_por:f.cancelada_por,
+    items:(f.partidas||[]).slice().sort((a,b)=>a.id-b.id).map(p=>({k:p.clave, nombre:p.nombre, cant:p.cantidad, precio:+p.precio}))};
+}
+async function ventaPorFolio(folio){ return deFila(await q(sb.from('ventas').select(SEL).eq('folio', folio).single())); }
+async function miPerfil(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return null;
+  const pr = await sb.from('perfiles').select('usuario,nombre,activo').eq('id', session.user.id).maybeSingle();
+  if(pr.error) throw errDe(pr.error);
+  if(!pr.data || !pr.data.activo){ await sb.auth.signOut({scope:'local'}); return null; }
+  return {usuario:pr.data.usuario, nombre:pr.data.nombre};
+}
+async function leerAjustes(){ const r = await q(sb.from('ajustes').select('valor').eq('clave','general').maybeSingle()); return r ? r.valor : null; }
+async function todas(consulta){
+  const out=[]; for(let i=0;;i+=1000){ const lote = await q(consulta().range(i, i+999)); out.push(...lote); if(lote.length<1000) break; } return out;
+}
+
+/* Misma forma de respuesta que usaba la versión PHP */
+async function api(accion, datos){
+  if(!sb) throw ErrApi('Falta configurar Supabase en config.js.', 500);
+  const [nombre, ...qs] = accion.split('&');
+  const prm = Object.fromEntries(qs.map(x=>x.split('=')));
+  try{
+    switch(nombre){
+      case 'estado': {
+        const usuarios = await q(sb.rpc('usuarios_acceso'));
+        const u = await miPerfil();
+        return {usuarios, usuario:u, ajustes: u ? await leerAjustes() : null};
+      }
+      case 'login': {
+        const r = await sb.auth.signInWithPassword({email:String(datos.usuario).toLowerCase()+DOMINIO, password:datos.password||''});
+        if(r.error){ const e=errDe(r.error); if(e.status===400) throw ErrApi('Contraseña incorrecta.', 401); throw e; }
+        const u = await miPerfil();
+        if(!u) throw ErrApi('Ese usuario está desactivado.', 401);
+        return {usuario:u, ajustes: await leerAjustes()};
+      }
+      case 'logout': await sb.auth.signOut({scope:'local'}); return {};
+      case 'password': {
+        if(String(datos.nueva||'').length < 6) throw ErrApi('La contraseña nueva debe tener al menos 6 caracteres.', 400);
+        const chk = await sb.auth.signInWithPassword({email:yo.usuario+DOMINIO, password:datos.actual||''});
+        if(chk.error) throw ErrApi('La contraseña actual no es correcta.', 400);
+        const r = await sb.auth.updateUser({password:datos.nueva}); if(r.error) throw errDe(r.error);
+        return {};
+      }
+      case 'ajustes':
+        if(datos!==undefined){ await q(sb.from('ajustes').upsert({clave:'general', valor:datos, actualizado:new Date().toISOString()})); return {ajustes:datos}; }
+        return {ajustes: await leerAjustes()};
+      case 'venta': {
+        const folio = await q(sb.rpc('registrar_venta', {p:datos}));
+        return {venta: await ventaPorFolio(folio)};
+      }
+      case 'cancelar':
+        await q(sb.rpc('cancelar_venta', {p_folio:datos.folio}));
+        return {venta: await ventaPorFolio(datos.folio)};
+      case 'ventas': {
+        const filas = prm.ultimas
+          ? await q(sb.from('ventas').select(SEL).order('folio',{ascending:false}).limit(+prm.ultimas||10))
+          : await q(sb.from('ventas').select(SEL).eq('dia', prm.dia).order('ts',{ascending:false}).limit(1000));
+        return {ventas: filas.map(deFila)};
+      }
+      case 'usuarios': {
+        const l = await q(sb.from('perfiles').select('usuario,nombre,activo').order('creado'));
+        return {usuarios: l.map(u=>Object.assign(u,{bloqueado:false}))};
+      }
+      case 'usuario_nuevo':  await q(sb.rpc('alta_usuario', {p_usuario:datos.usuario, p_nombre:datos.nombre})); return {};
+      case 'usuario_reset':  await q(sb.rpc('restablecer_password', {p_usuario:datos.usuario})); return {};
+      case 'usuario_activo': await q(sb.rpc('activar_usuario', {p_usuario:datos.usuario, p_activo:!!datos.activo})); return {};
+    }
+    throw ErrApi('Acción desconocida.', 404);
+  }catch(e){
+    const err = (e && e.status!==undefined) ? e : errDe(e);
+    if(err.status===401 && nombre!=='login') sesionTerminada();
+    throw err;
+  }
+}
+
+let yo = null;                                   // {usuario, nombre}
+let usuariosLogin = [];
+let cfg = normCfg(lsGet('pos_cfg', null));
+let pendientes = lsGet('pos_pendientes', []);    // ventas hechas sin internet, aún no guardadas en el servidor
+let sales = pendientes.slice();                  // ventas conocidas en este teléfono
+let enLinea = true;
+function usuarioActual(){ return yo; }
+
+function setSync(){
+  const c=$('sync'), n=pendientes.length;
+  c.className = 'chip '+(!enLinea ? 'off' : n ? 'local' : 'cloud');
+  c.lastElementChild.textContent = !enLinea ? (n ? n+' sin enviar' : 'Sin conexión') : n ? n+' por enviar' : 'En línea';
+}
+function sortSales(){ sales.sort((a,b)=>b.ts-a.ts); }
+function normVenta(v){ v.id = v.client_id; return v; }
+function merge(list){
+  list.forEach(v=>{ normVenta(v); const i=sales.findIndex(x=>x.id===v.id); if(i>=0) sales[i]=v; else sales.push(v); });
+  sortSales();
+}
+function guardarPendientes(){ lsSet('pos_pendientes', pendientes); }
+function quitarPendiente(id){ pendientes = pendientes.filter(x=>x.id!==id); guardarPendientes(); }
+function ventaParaEnviar(v){ return {client_id:v.id, ts:v.ts, items:v.items, metodo:v.metodo, recibido:v.recibido, por:v.por}; }
+
+async function cargarHoy(){
+  try{
+    const [a,b] = await Promise.all([api('ventas&dia='+localDay()), api('ventas&ultimas=10')]);
+    enLinea = true; merge(a.ventas); merge(b.ventas);
+  }catch(e){ if(e.status===0) enLinea=false; }
+  setSync(); refresh();
+}
+async function cargarDia(dia){
+  try{ const r = await api('ventas&dia='+dia); enLinea=true; merge(r.ventas); return true; }
+  catch(e){ if(e.status===0) enLinea=false; return false; }
+  finally{ setSync(); }
+}
+
+async function registrarVenta(v){
+  try{
+    const r = await api('venta', ventaParaEnviar(v));
+    enLinea = true; const sv = normVenta(r.venta); merge([sv]); setSync(); return sv;
+  }catch(e){
+    if(e.status===0 || e.status>=500){
+      if(e.status===0) enLinea=false;
+      pendientes.push(v); guardarPendientes(); merge([v]); setSync(); return v;
+    }
+    throw e;
+  }
+}
+let enviando = false;
+async function enviarPendientes(){
+  if(enviando || !yo || !pendientes.length){ setSync(); return; }
+  enviando = true;
+  try{
+    for(const p of pendientes.slice()){
+      try{
+        const r = await api('venta', ventaParaEnviar(p));
+        enLinea = true; quitarPendiente(p.id);
+        const v = normVenta(r.venta); merge([v]);
+        if(recSale && recSale.id===v.id){ recSale=v; if(view==='recibo') showRecibo(v); }
+      }catch(e){
+        if(e.status===0){ enLinea=false; break; }
+        if(e.status===401 || e.status>=500) break;
+        toast('Una venta sin enviar fue rechazada: '+e.message);
+      }
+    }
+  } finally { enviando=false; setSync(); refresh(); }
+}
+async function cancelarVenta(v){
+  if(!v.folio){ quitarPendiente(v.id); sales = sales.filter(x=>x.id!==v.id); setSync(); return null; }
+  const r = await api('cancelar', {folio:v.folio}); const sv = normVenta(r.venta); merge([sv]); return sv;
+}
+async function saveCfg(){
+  const r = await api('ajustes', cfg);
+  cfg = normCfg(r.ajustes); lsSet('pos_cfg', cfg);
+}
+function sesionTerminada(){
+  if(!yo) return;
+  yo = null; lsDel('pos_yo'); go('login'); toast('Tu sesión terminó. Vuelve a entrar.');
+}
+setInterval(()=>{ if(pendientes.length) enviarPendientes(); }, 30000);
+setInterval(()=>{ if(yo && document.visibilityState==='visible' && view==='inicio') cargarHoy(); }, 60000);
+window.addEventListener('online', ()=>{ enLinea=true; setSync(); enviarPendientes(); if(yo) cargarHoy(); });
+window.addEventListener('offline', ()=>{ enLinea=false; setSync(); });
+
+/* ---------- Ticket (58 mm = 32 columnas) ---------- */
+const W = 32, HR = '-'.repeat(W);
+function strip(s){ return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/¡/g,'!').replace(/¿/g,'?').replace(/[^\x20-\x7E]/g,'?'); }
+function lr(l,r){ l=strip(l); r=strip(r); if(l.length+r.length+1>W) l=l.slice(0, Math.max(0,W-r.length-1)); return l+' '.repeat(W-l.length-r.length)+r; }
+function wrap(s){ const words=strip(s).split(/\s+/).filter(Boolean), out=[]; let cur=''; words.forEach(w=>{ if(w.length>W) w=w.slice(0,W); if(!cur) cur=w; else if((cur+' '+w).length<=W) cur+=' '+w; else { out.push(cur); cur=w; } }); if(cur) out.push(cur); return out; }
+function ticketVenta(v){
+  const L=[];
+  wrap(cfg.linea1).forEach(t=>L.push({t,a:'c',b:1}));
+  if(cfg.linea2) wrap(cfg.linea2).forEach(t=>L.push({t,a:'c'}));
+  L.push({t:HR});
+  L.push({t:lr('Folio '+(v.folio?pad(v.folio,6):'pendiente'), dmy(v.dia).slice(0,6)+v.dia.slice(2,4)+' '+v.hora)});
+  if(v.vendedor) L.push({t:'Atendio: '+v.vendedor});
+  if(v.estado==='cancelada') L.push({t:'*** VENTA CANCELADA ***',a:'c',b:1});
+  L.push({t:HR});
+  v.items.forEach(it=>{
+    L.push({t:lr(it.cant+' x '+it.nombre, m2(it.cant*it.precio))});
+    if(it.cant>1) L.push({t:'    '+m2(it.precio)+' c/u'});
+  });
+  L.push({t:HR});
+  L.push({t:lr('TOTAL', m2(v.total)), b:1, h:1});
+  if(v.metodo==='efectivo'){
+    L.push({t:lr('Efectivo', m2(v.recibido))});
+    L.push({t:lr('Cambio', m2(v.cambio))});
+  } else {
+    L.push({t:lr('Pago: '+METODOS[v.metodo], m2(v.total))});
+  }
+  L.push({t:HR});
+  if(cfg.pie) wrap(cfg.pie).forEach(t=>L.push({t,a:'c'}));
+  L.push({t:''});
+  return L;
+}
+function corteData(dia){
+  const del = sales.filter(v=>v.dia===dia);
+  const ok = del.filter(v=>v.estado!=='cancelada');
+  const prods = {}; const met = {efectivo:0,transferencia:0,tarjeta:0}; const vend = {};
+  ok.forEach(v=>{ met[v.metodo]=(met[v.metodo]||0)+v.total; const vn=v.vendedor||'Sin usuario'; vend[vn]=r2((vend[vn]||0)+v.total); v.items.forEach(it=>{ const k=it.nombre; prods[k]=prods[k]||{nombre:k,cant:0,imp:0}; prods[k].cant+=it.cant; prods[k].imp+=it.cant*it.precio; }); });
+  const lista = Object.values(prods).sort((a,b)=>b.imp-a.imp);
+  return {del, ok, lista, met, vend, total: r2(ok.reduce((s,v)=>s+v.total,0)), canceladas: del.length-ok.length};
+}
+function ticketCorte(dia){
+  const c = corteData(dia), L=[];
+  wrap(cfg.linea1).forEach(t=>L.push({t,a:'c',b:1}));
+  L.push({t:'CORTE DEL DIA',a:'c',b:1,h:1});
+  L.push({t:dmy(dia),a:'c'});
+  L.push({t:'Impreso '+dmy(localDay()).slice(0,6)+localDay().slice(2,4)+' '+hhmm(Date.now()),a:'c'});
+  L.push({t:HR});
+  L.push({t:lr('Ventas: '+c.ok.length, 'Canceladas: '+c.canceladas)});
+  L.push({t:HR});
+  if(!c.lista.length) L.push({t:'Sin ventas',a:'c'});
+  c.lista.forEach(p=>L.push({t:lr(p.cant+' '+p.nombre, m2(p.imp))}));
+  L.push({t:HR});
+  Object.keys(METODOS).forEach(k=>{ if(c.met[k]) L.push({t:lr(METODOS[k], m2(c.met[k]))}); });
+  if(Object.keys(c.vend).length){ L.push({t:HR}); L.push({t:'Por usuario:'}); Object.keys(c.vend).forEach(n=>L.push({t:lr('  '+n, m2(c.vend[n]))})); }
+  L.push({t:HR});
+  L.push({t:lr('TOTAL', m2(c.total)), b:1, h:1});
+  L.push({t:''});
+  return L;
+}
+function ticketPrueba(){
+  return [{t:strip(cfg.linea1),a:'c',b:1},{t:'Prueba de impresion',a:'c'},{t:HR},{t:lr('Ancho 58 mm','32 col')},{t:'0123456789ABCDEFGHIJKLMNOPQRSTUV'},{t:HR},{t:'Impresora lista',a:'c',b:1},{t:''}];
+}
+function centerTxt(s){ s=strip(s); const p=Math.max(0,Math.floor((W-s.length)/2)); return ' '.repeat(p)+s; }
+function toText(L){ return L.map(l=>l.a==='c'?centerTxt(l.t):strip(l.t)).join('\n'); }
+function toHTML(L){ return L.map(l=>`<div class="${l.b?'b ':''}${l.h?'h ':''}">${esc(l.a==='c'?centerTxt(l.t):strip(l.t))}</div>`).join(''); }
+function toEscPos(L){
+  const o=[0x1B,0x40];
+  L.forEach(l=>{
+    o.push(0x1B,0x61,l.a==='c'?1:0, 0x1B,0x45,l.b?1:0, 0x1D,0x21,l.h?0x01:0x00);
+    const s = strip(l.a==='c'?l.t.trim():l.t);
+    for(let i=0;i<s.length;i++) o.push(s.charCodeAt(i));
+    o.push(0x0A);
+  });
+  o.push(0x1B,0x45,0, 0x1D,0x21,0, 0x1B,0x61,0, 0x1B,0x64,3);
+  return new Uint8Array(o);
+}
+function b64(bytes){ let s=''; for(let i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return btoa(s); }
+
+/* ---------- Bluetooth (Web Bluetooth, impresoras ESC/POS) ---------- */
+const BT = {dev:null, ch:null};
+const SERVICES = [0x18f0,0xff00,0xffe0,0xfff0,0xae30,0xffe5,'e7810a71-73ae-499d-8c15-faa9aef0c3f2','49535343-fe7d-4ae5-8fa9-9fafd205e455'];
+async function btFindChar(server){
+  const svcs = await server.getPrimaryServices();
+  for(const s of svcs){ try{ const chs = await s.getCharacteristics(); for(const c of chs){ if(c.properties.write || c.properties.writeWithoutResponse) return c; } }catch(e){} }
+  throw new Error('La impresora no ofrece un canal de escritura compatible.');
+}
+async function btConnect(){
+  if(!navigator.bluetooth) { const e=new Error('nobt'); e.name='NoBT'; throw e; }
+  const dev = await navigator.bluetooth.requestDevice({acceptAllDevices:true, optionalServices:SERVICES});
+  BT.dev = dev; dev.addEventListener('gattserverdisconnected',()=>{ BT.ch=null; });
+  const server = await dev.gatt.connect();
+  BT.ch = await btFindChar(server);
+  return dev.name || 'Impresora';
+}
+async function btEnsure(){
+  if(BT.ch && BT.dev && BT.dev.gatt.connected) return;
+  if(BT.dev){ const server = await BT.dev.gatt.connect(); BT.ch = await btFindChar(server); return; }
+  await btConnect();
+}
+async function btWrite(bytes){
+  await btEnsure();
+  const ch=BT.ch, N=100, noResp = ch.properties.writeWithoutResponse;
+  for(let i=0;i<bytes.length;i+=N){
+    const part = bytes.slice(i,i+N);
+    if(noResp && ch.writeValueWithoutResponse) await ch.writeValueWithoutResponse(part);
+    else if(ch.writeValueWithResponse) await ch.writeValueWithResponse(part);
+    else await ch.writeValue(part);
+    await new Promise(r=>setTimeout(r,25));
+  }
+}
+function btError(e){
+  const n = e && e.name;
+  if(n==='NotFoundError') return 'No se eligió ninguna impresora.';
+  if(n==='NoBT' || n==='SecurityError' || n==='NotAllowedError' || n==='NotSupportedError') return 'Aquí no se permite Bluetooth directo. Usa «Imprimir con RawBT» o «Copiar ticket».';
+  return 'No se pudo imprimir: '+((e&&e.message)||'error desconocido');
+}
+
+/* Panel de impresión reutilizable */
+function mountPrint(el, getLines){
+  el.innerHTML = `
+    <button class="btn primary wide" data-a="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimir por Bluetooth</button>
+    <div class="actions">
+      <a class="btn gold" data-a="rawbt" href="#">Imprimir con RawBT</a>
+      <button class="btn ghost" data-a="copy">Copiar ticket</button>
+    </div>
+    <textarea data-a="txt" aria-label="Texto del ticket" hidden readonly style="width:100%;min-height:160px;font-family:var(--f-mono);font-size:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:10px"></textarea>
+    <div class="msg" data-a="msg" role="status">${BT.ch?'Impresora conectada.':''}</div>`;
+  const msg = el.querySelector('[data-a=msg]');
+  const say = (t,cls)=>{ msg.textContent=t; msg.className='msg '+(cls||''); };
+  const raw = el.querySelector('[data-a=rawbt]');
+  const refreshHref = ()=>{ raw.href = 'rawbt:base64,'+b64(toEscPos(getLines())); };
+  refreshHref();
+  raw.addEventListener('click', ()=>{ refreshHref(); say('Enviando a RawBT… si no se abre, instala RawBT o usa «Copiar ticket».'); });
+  el.querySelector('[data-a=bt]').addEventListener('click', async ()=>{
+    say('Conectando con la impresora…');
+    try{ await btWrite(toEscPos(getLines())); say('Ticket enviado a '+((BT.dev&&BT.dev.name)||'la impresora')+'.','ok'); }
+    catch(e){ say(btError(e),'err'); }
+  });
+  el.querySelector('[data-a=copy]').addEventListener('click', ()=>{
+    const text = toText(getLines()); const ta = el.querySelector('[data-a=txt]');
+    const fallback = ()=>{ ta.value=text; ta.hidden=false; ta.focus(); ta.select(); say('Selecciona el texto y cópialo.'); };
+    try{ navigator.clipboard.writeText(text).then(()=>say('Ticket copiado. Pégalo en la app de tu impresora.','ok'), fallback); }catch(e){ fallback(); }
+  });
+  el._refresh = refreshHref;
+}
+
+/* ---------- Navegación ---------- */
+let view = 'inicio';
+const TITLES = {venta:'Nueva venta', recibo:'Recibo', corte:'Corte del día', ajustes:'Ajustes'};
+function go(v){
+  if(!yo) v = 'login';
+  view = v;
+  ['login','inicio','venta','recibo','corte','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
+  $('btnBack').hidden = v==='inicio' || v==='login';
+  $('ttl').textContent = (v==='inicio'||v==='login') ? cfg.linea1 : TITLES[v];
+  if(v==='login') renderLogin();
+  $('cartbar').hidden = v!=='venta';
+  document.querySelectorAll('.sheet').forEach(s=>s.hidden=true);
+  window.scrollTo(0,0);
+  if(v==='inicio') renderInicio();
+  if(v==='venta') { renderGrid(); renderCart(); }
+  if(v==='corte') renderCorte();
+  if(v==='ajustes') renderAjustes();
+}
+/* ---------- Acceso ---------- */
+let lgUser = null;
+function renderLogin(){
+  $('lgTitulo').textContent = cfg.linea1;
+  $('lgUsers').innerHTML = usuariosLogin.length
+    ? usuariosLogin.map(x=>`<button type="button" data-u="${esc(x.usuario)}" aria-pressed="${lgUser===x.usuario}"><i>${esc((x.nombre||'?')[0])}</i>${esc(x.nombre)}</button>`).join('')
+    : '<p style="grid-column:1/-1">No hay conexión con el servidor. Toca «Entrar» para reintentar.</p>';
+  $('lgUsers').querySelectorAll('button').forEach(b=>b.onclick=()=>{ lgUser=b.dataset.u; $('lgErr').textContent=''; renderLogin(); $('lgPass').focus(); });
+}
+$('lgVer').onclick = ()=>{ const p=$('lgPass'); const ver=p.type==='password'; p.type=ver?'text':'password'; $('lgVer').textContent=ver?'Ocultar':'Ver'; };
+function entrar(u, ajustes){
+  yo = u; lsSet('pos_yo', {u, exp:Date.now()+SES_HORAS*3600000});
+  if(ajustes){ cfg = normCfg(ajustes); lsSet('pos_cfg', cfg); }
+  go('inicio'); cargarHoy(); enviarPendientes();
+}
+$('formLogin').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const err = $('lgErr');
+  if(!usuariosLogin.length){ err.textContent='Conectando…'; await arrancar(); return; }
+  if(!lgUser){ err.textContent='Elige tu nombre.'; return; }
+  $('lgEntrar').disabled = true; err.textContent = '';
+  try{
+    const r = await api('login', {usuario:lgUser, password:$('lgPass').value});
+    enLinea = true; setSync();
+    $('lgPass').value=''; $('lgPass').type='password'; $('lgVer').textContent='Ver';
+    entrar(r.usuario, r.ajustes); toast('Bienvenido, '+r.usuario.nombre);
+  }catch(ex){
+    if(ex.status===0){ enLinea=false; setSync(); }
+    err.textContent = ex.message; $('lgPass').value=''; $('lgPass').focus();
+  }finally{ $('lgEntrar').disabled = false; }
+});
+$('btnSalir').onclick = ()=>{
+  const salir = async ()=>{ try{ await api('logout', {}); }catch(e){} yo=null; lgUser=null; cart=[]; lsDel('pos_yo'); go('login'); };
+  if(pendientes.length) confirmar('Hay '+pendientes.length+' venta(s) sin enviar', 'Se enviarán con tu nombre en cuanto alguien entre con internet. ¿Cerrar sesión de todos modos?', 'Cerrar sesión', salir);
+  else salir();
+};
+
+function refresh(){
+  if(view==='inicio') renderInicio();
+  if(view==='corte') renderCorte();
+  if(view==='inicio') $('ttl').textContent = cfg.linea1;
+}
+$('btnBack').onclick = ()=>go('inicio');
+$('btnNueva').onclick = ()=>go('venta');
+$('btnCorte').onclick = ()=>go('corte');
+$('btnAjustes').onclick = ()=>go('ajustes');
+
+function openSheet(id){ $(id).hidden=false; }
+function closeSheet(id){ $(id).hidden=true; }
+document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{ if(e.target.closest('[data-close]')) sh.hidden=true; }));
+let cfAction=null;
+function confirmar(txt, sub, okLabel, fn){ $('cfTxt').textContent=txt; $('cfSub').textContent=sub||''; $('cfOk').textContent=okLabel; cfAction=fn; openSheet('sh-confirm'); }
+$('cfOk').onclick = ()=>{ closeSheet('sh-confirm'); if(cfAction) cfAction(); cfAction=null; };
+
+/* ---------- Inicio ---------- */
+function saleRow(v){
+  const what = v.items.map(it=>(it.cant>1?it.cant+'× ':'')+it.nombre).join(', ');
+  return `<button class="salerow ${v.estado==='cancelada'?'cancel':''}" data-id="${esc(v.id)}"><span class="fol num">${v.folio?'#'+pad(v.folio,4):'Sin enviar'}<br>${esc(v.hora)}</span><span class="what">${esc(what)}</span><span class="amt num">${money(v.total)}</span></button>`;
+}
+function bindRows(el){ el.querySelectorAll('.salerow').forEach(b=>b.onclick=()=>{ const v=sales.find(s=>s.id===b.dataset.id); if(v) showRecibo(v); }); }
+function renderInicio(){
+  const hoy = localDay(); const c = corteData(hoy);
+  $('hoyLbl').textContent = 'Hoy · '+dmy(hoy);
+  $('sesNombre').textContent = usuarioActual() ? usuarioActual().nombre : '';
+  $('hoyTotal').textContent = money(c.total);
+  $('hoyN').textContent = c.ok.length;
+  $('hoyMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('') || '<span class="pill">Aún sin ventas hoy</span>';
+  const ult = sales.slice(0,8);
+  $('ultimas').innerHTML = ult.length ? ult.map(saleRow).join('') : '<div class="empty">Las ventas que registres aparecerán aquí.</div>';
+  bindRows($('ultimas'));
+}
+
+/* ---------- Venta ---------- */
+let cart = []; let otroN = 0;
+function renderGrid(){
+  $('grid').innerHTML = BASE.map(([k])=>{
+    const p = cfg.productos[k];
+    return `<button class="tile" data-k="${k}"><span class="qty" hidden></span><span class="ico">${ICONS[k]}</span><span class="nm">${esc(p.nombre)}</span>${esFijo(k)?`<span class="pr num">${money(p.precio)}</span>`:'<span class="pr var">Poner precio</span>'}</button>`;
+  }).join('');
+  $('grid').querySelectorAll('.tile').forEach(t=>t.onclick=()=>{
+    const k=t.dataset.k;
+    if(!esFijo(k)){ openPrecio(k); return; }
+    addItem(k, cfg.productos[k].nombre, cfg.productos[k].precio, 1);
+    t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump');
+  });
+  updateBadges();
+}
+/* Captura de precio para productos sin precio fijo */
+let ppK = null, ppCant = 1;
+function preciosRecientes(k){
+  const vistos = [];
+  for(const v of sales){ if(v.estado==='cancelada') continue; for(const it of v.items){ if(it.k===k && it.precio>0 && !vistos.includes(it.precio)) vistos.push(it.precio); if(vistos.length>=5) return vistos; } }
+  return vistos;
+}
+function openPrecio(k){
+  ppK = k; ppCant = 1;
+  const p = cfg.productos[k];
+  $('ppIco').innerHTML = ICONS[k];
+  $('ppNom').textContent = k==='otros' ? 'Otro producto' : p.nombre;
+  $('ppDescBox').hidden = k!=='otros';
+  $('ppDesc').value = '';
+  $('ppPrecio').value = p.precio>0 ? p.precio : '';
+  $('ppCant').textContent = '1';
+  const rec = preciosRecientes(k);
+  $('ppRecientes').innerHTML = rec.map(x=>`<button type="button" data-v="${x}">${money(x)}</button>`).join('');
+  $('ppRecientes').hidden = !rec.length;
+  $('ppRecientes').querySelectorAll('button').forEach(b=>b.onclick=()=>{ $('ppPrecio').value=b.dataset.v; });
+  openSheet('sh-precio');
+  setTimeout(()=>(k==='otros'?$('ppDesc'):$('ppPrecio')).focus(),60);
+}
+$('ppMenos').onclick = ()=>{ ppCant=Math.max(1,ppCant-1); $('ppCant').textContent=ppCant; };
+$('ppMas').onclick = ()=>{ ppCant++; $('ppCant').textContent=ppCant; };
+$('formPrecio').addEventListener('submit', e=>{
+  e.preventDefault();
+  const precio = parseFloat($('ppPrecio').value);
+  if(!(precio>0)){ $('ppPrecio').focus(); toast('Escribe el precio.'); return; }
+  const nombre = ppK==='otros' ? ($('ppDesc').value.trim() || 'Otros') : cfg.productos[ppK].nombre;
+  addItem(ppK, nombre, precio, ppCant); closeSheet('sh-precio');
+  const t = $('grid').querySelector(`[data-k="${ppK}"]`); if(t){ t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); }
+});
+function addItem(k, nombre, precio, cant){
+  precio = r2(precio);
+  const id = k==='otros' ? 'o'+(++otroN) : k+'@'+precio;
+  const ex = cart.find(c=>c.id===id);
+  if(ex) ex.cant += cant; else cart.push({id,k,nombre,precio:r2(precio),cant});
+  renderCart();
+}
+function cartTotal(){ return r2(cart.reduce((s,c)=>s+c.cant*c.precio,0)); }
+function updateBadges(){
+  $('grid').querySelectorAll('.tile').forEach(t=>{
+    const q = cart.filter(c=>c.k===t.dataset.k).reduce((s,c)=>s+c.cant,0);
+    const b=t.querySelector('.qty'); b.hidden=!q; b.textContent=q; t.classList.toggle('in',!!q);
+  });
+}
+function renderCart(){
+  const n = cart.reduce((s,c)=>s+c.cant,0), tot = cartTotal();
+  $('cbN').textContent = n ? `${n} artículo${n>1?'s':''} · ver venta` : 'Toca un producto';
+  $('cbTotal').textContent = money(tot);
+  $('btnCobrar').disabled = !n || tot<=0;
+  $('cartCobrar').disabled = !n || tot<=0;
+  $('cartTotal').textContent = money(tot);
+  $('cartLines').innerHTML = cart.length ? cart.map((c,i)=>`
+    <div class="line">
+      <div class="n">${esc(c.nombre)}</div><div class="t num">${money(c.cant*c.precio)}</div>
+      <div class="ctl">
+        <div class="step"><button data-i="${i}" data-d="-1" aria-label="Quitar uno">−</button><span class="num">${c.cant}</span><button data-i="${i}" data-d="1" aria-label="Agregar uno">+</button></div>
+        <label class="pricein">$<input type="number" inputmode="decimal" min="0" step="0.5" value="${c.precio}" data-p="${i}" id="cp-${esc(c.id)}" aria-label="Precio de ${esc(c.nombre)}"> c/u</label>
+        <button class="rm" data-rm="${i}">Quitar</button>
+      </div>
+    </div>`).join('') : '<div class="empty">No hay productos en la venta.</div>';
+  $('cartLines').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ const c=cart[+b.dataset.i]; c.cant+=+b.dataset.d; if(c.cant<1) cart.splice(+b.dataset.i,1); renderCart(); });
+  $('cartLines').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ cart.splice(+b.dataset.rm,1); renderCart(); });
+  $('cartLines').querySelectorAll('[data-p]').forEach(inp=>inp.onchange=()=>{ const v=parseFloat(inp.value); cart[+inp.dataset.p].precio = r2(isFinite(v)&&v>=0?v:0); renderCart(); });
+  if(view==='venta') updateBadges();
+}
+$('btnCarrito').onclick = ()=>openSheet('sh-carrito');
+$('cartVaciar').onclick = ()=>{ if(!cart.length) return; cart=[]; renderCart(); closeSheet('sh-carrito'); };
+
+/* ---------- Cobro ---------- */
+let metodo = 'efectivo';
+function openCobro(){
+  if(!cart.length) return;
+  closeSheet('sh-carrito');
+  const t = cartTotal();
+  $('pTotal').textContent = money(t);
+  $('pRecibido').value = '';
+  const opts = [...new Set([50,100,200,500,1000].filter(x=>x>=t))].slice(0,4);
+  $('pQuick').innerHTML = `<button type="button" data-v="${t}">Exacto</button>` + opts.map(x=>`<button type="button" data-v="${x}">${money(x).replace('.00','')}</button>`).join('');
+  $('pQuick').querySelectorAll('button').forEach(b=>b.onclick=()=>{ $('pRecibido').value=b.dataset.v; calcCambio(); });
+  setMetodo('efectivo'); openSheet('sh-cobro');
+}
+function setMetodo(m){ metodo=m; $('pMetodo').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.m===m))); $('pEfectivo').hidden = m!=='efectivo'; calcCambio(); }
+$('pMetodo').querySelectorAll('button').forEach(b=>b.onclick=()=>setMetodo(b.dataset.m));
+function calcCambio(){
+  const t=cartTotal(); const raw=$('pRecibido').value; const rec = raw===''?t:parseFloat(raw)||0;
+  const ch = r2(rec-t); const box=$('pCambio');
+  if(metodo!=='efectivo'){ $('pRegistrar').disabled=false; return; }
+  box.classList.toggle('short', ch<0);
+  box.innerHTML = ch<0 ? `<span>Falta</span><span>${money(-ch)}</span>` : `<span>Cambio</span><span>${money(ch)}</span>`;
+  $('pRegistrar').disabled = ch<0;
+}
+$('pRecibido').addEventListener('input', calcCambio);
+$('btnCobrar').onclick = openCobro;
+$('cartCobrar').onclick = openCobro;
+$('pRegistrar').onclick = async ()=>{
+  const t = cartTotal(); if(!cart.length || t<=0) return;
+  const raw=$('pRecibido').value; const rec = metodo==='efectivo' ? (raw===''?t:r2(parseFloat(raw)||0)) : t;
+  if(metodo==='efectivo' && rec<t) return;
+  const now = Date.now();
+  const cid = 'v'+now.toString(36)+Math.random().toString(36).slice(2,10);
+  const v = {
+    id: cid, client_id: cid, folio: null, ts: now, dia: localDay(new Date(now)), hora: hhmm(now),
+    items: cart.map(c=>({k:c.k, nombre:c.nombre, cant:c.cant, precio:c.precio})),
+    total: t, metodo, recibido: rec, cambio: r2(rec-t), estado:'ok',
+    vendedor: yo ? yo.nombre : '', por: yo ? yo.usuario : ''
+  };
+  const btn = $('pRegistrar');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  let sv;
+  try{ sv = await registrarVenta(v); }
+  catch(e){ toast(e.message); btn.disabled=false; btn.textContent='Registrar venta'; return; }
+  btn.textContent = 'Registrar venta';
+  cart=[]; otroN=0;
+  showRecibo(sv);
+  toast(sv.folio ? 'Venta #'+pad(sv.folio,4)+' registrada' : 'Sin internet: la venta quedó en el teléfono y se enviará sola');
+  if(BT.ch && BT.dev && BT.dev.gatt.connected){ try{ await btWrite(toEscPos(ticketVenta(sv))); }catch(e){} }
+};
+
+/* ---------- Recibo ---------- */
+let recSale = null;
+function showRecibo(v){
+  recSale = v; go('recibo');
+  $('ttl').textContent = v.folio ? 'Recibo #'+pad(v.folio,4) : 'Recibo sin enviar';
+  $('recTicket').innerHTML = toHTML(ticketVenta(v));
+  mountPrint($('recPrint'), ()=>ticketVenta(recSale));
+  $('recCancelar').hidden = v.estado==='cancelada';
+}
+$('recNueva').onclick = ()=>go('venta');
+$('recInicio').onclick = ()=>go('inicio');
+$('recCancelar').onclick = ()=>{
+  const v0 = recSale;
+  confirmar(v0.folio ? '¿Cancelar la venta #'+pad(v0.folio,4)+'?' : '¿Eliminar esta venta sin enviar?',
+    v0.folio ? 'Quedará marcada como cancelada y no contará en el corte.' : 'Todavía no llegaba al servidor, así que se borra del teléfono.',
+    'Cancelar venta', async ()=>{
+      try{ const v = await cancelarVenta(v0); if(v){ showRecibo(v); toast('Venta cancelada'); } else { go('inicio'); toast('Venta eliminada'); } }
+      catch(e){ toast(e.message); }
+    });
+};
+
+/* ---------- Corte ---------- */
+$('corteDia').value = localDay();
+$('corteDia').addEventListener('change', renderCorte);
+function renderCorte(){
+  const dia = $('corteDia').value || localDay();
+  pintarCorte(dia);
+  cargarDia(dia).then(ok=>{ if(ok && view==='corte' && ($('corteDia').value||localDay())===dia) pintarCorte(dia); });
+}
+function pintarCorte(dia){
+  const c = corteData(dia);
+  $('cTotal').textContent = money(c.total); $('cN').textContent = c.ok.length; $('cCan').textContent = c.canceladas;
+  $('cTab').innerHTML = c.lista.length ? `<thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Importe</th></tr></thead><tbody>${c.lista.map(p=>`<tr><td>${esc(p.nombre)}</td><td class="r">${p.cant}</td><td class="r">${money(p.imp)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${c.lista.reduce((s,p)=>s+p.cant,0)}</td><td class="r">${money(c.total)}</td></tr></tfoot>` : '<tbody><tr><td class="empty">No hay ventas en este día.</td></tr></tbody>';
+  $('cMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('')
+    + Object.keys(c.vend).map(n=>`<span class="pill num">Atendió ${esc(n)}: ${money(c.vend[n])}</span>`).join('');
+  const lst = c.del.slice().sort((a,b)=>b.ts-a.ts);
+  $('cLista').innerHTML = lst.length ? lst.map(saleRow).join('') : '<div class="empty">Sin ventas registradas.</div>';
+  bindRows($('cLista'));
+  $('cTicket').innerHTML = toHTML(ticketCorte(dia));
+  if(!$('cPrint')._refresh) mountPrint($('cPrint'), ()=>ticketCorte($('corteDia').value||localDay())); else $('cPrint')._refresh();
+}
+function descargarArchivo(nombre, texto, tipo){
+  const url = URL.createObjectURL(new Blob([texto], {type:tipo}));
+  const a=document.createElement('a'); a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
+function celdaCsv(x){ x=String(x??''); return /[",\n]/.test(x) ? '"'+x.replace(/"/g,'""')+'"' : x; }
+async function exportarCsv(desde, hasta){
+  try{
+    const filas = (await todas(()=>sb.from('ventas').select(SEL).gte('dia',desde).lte('dia',hasta).order('folio'))).map(deFila);
+    const rows = [['folio','fecha','hora','usuario','producto','cantidad','precio','importe','forma de pago','estado']];
+    filas.forEach(v=>v.items.forEach(it=>rows.push([v.folio,v.dia,v.hora,v.vendedor,it.nombre,it.cant,it.precio.toFixed(2),(it.cant*it.precio).toFixed(2),METODOS[v.metodo]||v.metodo,v.estado])));
+    descargarArchivo('ventas-'+desde+(hasta!==desde?'_a_'+hasta:'')+'.csv', '\ufeff'+rows.map(r=>r.map(celdaCsv).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+    toast(filas.length ? 'CSV listo: '+filas.length+' venta(s)' : 'No hay ventas en esas fechas');
+  }catch(e){ toast(errDe(e).message); }
+}
+$('cCsv').onclick = ()=>{
+  const dia = $('corteDia').value || localDay();
+  if(!navigator.onLine){ toast('Necesitas internet para exportar.'); return; }
+  exportarCsv(dia, dia);
+};
+
+/* ---------- Ajustes ---------- */
+function renderAjustes(){
+  $('aL1').value = cfg.linea1; $('aL2').value = cfg.linea2; $('aPie').value = cfg.pie;
+  $('aProds').innerHTML = BASE.map(([k])=>{ const p=cfg.productos[k]; return `
+    <div class="prodedit"><span class="mini">${ICONS[k]}</span>
+      <input type="text" id="an-${k}" value="${esc(p.nombre)}" aria-label="Nombre" maxlength="28">
+      ${k==='otros' ? '<span></span><span class="help" style="text-align:center">al vender</span>' : `
+      <label class="chk"><input type="checkbox" id="af-${k}" ${p.fijo?'checked':''}>Fijo</label>
+      <input type="number" id="ap-${k}" inputmode="decimal" min="0" step="0.5" value="${p.precio||''}" placeholder="—" ${p.fijo?'':'disabled'} aria-label="Precio fijo de ${esc(p.nombre)}">`}
+    </div>`; }).join('');
+  $('aProds').querySelectorAll('[id^=af-]').forEach(cb=>cb.onchange=()=>{ const inp=$('ap-'+cb.id.slice(3)); inp.disabled=!cb.checked; if(cb.checked) inp.focus(); });
+  if(!$('aPrint')._refresh) mountPrint($('aPrint'), ticketPrueba);
+  if(!$('rDesde').value){ const h=localDay(); $('rDesde').value=h.slice(0,8)+'01'; $('rHasta').value=h; }
+  cargarUsuarios();
+}
+$('aGuardar').onclick = async ()=>{
+  cfg.linea1 = $('aL1').value.trim() || 'Punto de venta';
+  cfg.linea2 = $('aL2').value.trim();
+  cfg.pie = $('aPie').value.trim();
+  BASE.forEach(([k])=>{ const pr=cfg.productos[k]; const n=$('an-'+k).value.trim(); if(n) pr.nombre=n; const p=$('ap-'+k), f=$('af-'+k);
+    if(p){ const v=parseFloat(p.value); pr.precio = isFinite(v)&&v>0 ? r2(v) : 0; pr.fijo = f.checked && pr.precio>0; } });
+  cfg.ver = CFG_VER;
+  const btn=$('aGuardar'); btn.disabled=true;
+  try{ await saveCfg(); toast('Ajustes guardados'); }
+  catch(e){ toast(e.message); }
+  finally{ btn.disabled=false; }
+};
+
+/* Usuarios */
+async function cargarUsuarios(){
+  const box = $('uLista');
+  try{
+    const r = await api('usuarios');
+    box.innerHTML = r.usuarios.map(u=>`
+      <div class="urow ${u.activo?'':'off'}">
+        <div class="uinfo"><b>${esc(u.nombre)}</b><small>${esc(u.usuario)}${u.activo?'':' · desactivado'}${u.bloqueado?' · bloqueado por intentos':''}</small></div>
+        <button class="btn ghost sm" data-reset="${esc(u.usuario)}">Restablecer</button>
+        ${yo && u.usuario===yo.usuario ? '<span class="tag">Tú</span>' : `<button class="btn ${u.activo?'danger':'gold'} sm" data-act="${esc(u.usuario)}" data-v="${u.activo?0:1}">${u.activo?'Desactivar':'Activar'}</button>`}
+      </div>`).join('');
+    box.querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>confirmar('¿Restablecer la contraseña de '+b.dataset.reset+'?', 'Volverá a ser la contraseña inicial del sistema.', 'Restablecer', async ()=>{
+      try{ await api('usuario_reset', {usuario:b.dataset.reset}); toast('Contraseña restablecida'); cargarUsuarios(); }catch(e){ toast(e.message); }
+    }));
+    box.querySelectorAll('[data-act]').forEach(b=>b.onclick=async ()=>{
+      try{ await api('usuario_activo', {usuario:b.dataset.act, activo:b.dataset.v==='1'}); cargarUsuarios(); }catch(e){ toast(e.message); }
+    });
+  }catch(e){ box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+}
+$('formUsuario').addEventListener('submit', async e=>{
+  e.preventDefault();
+  try{
+    await api('usuario_nuevo', {usuario:$('uUsuario').value.trim(), nombre:$('uNombre').value.trim()});
+    toast('Usuario creado con la contraseña inicial'); $('uUsuario').value=''; $('uNombre').value=''; cargarUsuarios();
+  }catch(ex){ toast(ex.message); }
+});
+$('formPass').addEventListener('submit', async e=>{
+  e.preventDefault();
+  if($('pwNueva').value !== $('pwNueva2').value){ toast('La contraseña nueva no coincide.'); return; }
+  try{
+    await api('password', {actual:$('pwActual').value, nueva:$('pwNueva').value});
+    toast('Contraseña cambiada'); ['pwActual','pwNueva','pwNueva2'].forEach(id=>$(id).value='');
+  }catch(ex){ toast(ex.message); }
+});
+$('rCsv').onclick = ()=>{
+  const d=$('rDesde').value, h=$('rHasta').value||d;
+  if(!d){ toast('Elige la fecha inicial.'); return; }
+  exportarCsv(d, h);
+};
+$('rRespaldo').onclick = async ()=>{
+  try{
+    const todo = {
+      sistema:'Punto de venta - Rectoria del Templo de la Cruz', generado:new Date().toISOString(),
+      ajustes: await leerAjustes(),
+      usuarios: await q(sb.from('perfiles').select('usuario,nombre,activo,creado').order('creado')),
+      ventas: (await todas(()=>sb.from('ventas').select(SEL).order('folio'))).map(deFila)
+    };
+    descargarArchivo('respaldo-punto-de-venta-'+localDay()+'.json', JSON.stringify(todo,null,2), 'application/json');
+  }catch(e){ toast(errDe(e).message); }
+};
+
+/* ---------- Arranque ---------- */
+async function arrancar(){
+  setSync();
+  try{
+    const r = await api('estado');
+    enLinea = true; setSync();
+    usuariosLogin = r.usuarios || [];
+    if(r.usuario){ entrar(r.usuario, r.ajustes); return; }
+    lsDel('pos_yo'); go('login');
+  }catch(e){
+    if(e.status===0){ enLinea=false; setSync(); }
+    // Sin internet: si alguien había entrado en este teléfono, se puede seguir vendiendo
+    const c = lsGet('pos_yo', null);
+    if(e.status===0 && c && c.exp>Date.now()){ yo=c.u; go('inicio'); toast('Sin internet: las ventas se guardan en el teléfono'); return; }
+    go('login'); $('lgErr').textContent = e.message;
+  }
+}
+go('login');
+arrancar();
+})();
+</script>
+</body>
+</html>
