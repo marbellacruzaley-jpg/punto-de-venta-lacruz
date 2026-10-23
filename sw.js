@@ -1,7 +1,7 @@
 /* Punto de venta: guarda las pantallas en el teléfono para abrir al instante.
    Las ventas y la base de datos (supabase.co) nunca se guardan aquí: siempre van directo al servidor. */
-const CACHE = 'pos-lacruz-v1';
-const SHELL = ['./', './index.html', './config.js', './manifest.webmanifest', './icon-192.png', './icon-512.png',
+const CACHE = 'pos-lacruz-v2';
+const SHELL = ['./', './index.html', './informes.html', './config.js', './manifest.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js'];
 
 self.addEventListener('install', e => {
@@ -26,7 +26,7 @@ self.addEventListener('fetch', e => {
   if (!propio && !cdn) return;
 
   const esPagina = req.mode === 'navigate';
-  const clave = esPagina ? './index.html' : req;
+  const clave = esPagina ? (url.pathname.endsWith('/informes.html') ? './informes.html' : './index.html') : req;
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const guardada = await cache.match(clave, {ignoreSearch: esPagina || propio});

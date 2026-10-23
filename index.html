@@ -94,6 +94,45 @@ section{display:flex;flex-direction:column;gap:16px}
 .pill{font-size:.8rem;padding:4px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
 .navrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .navbtn{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px;display:flex;gap:10px;align-items:center;text-align:left}
+.navbtn.span2{grid-column:1/-1}
+a.navbtn{color:inherit;text-decoration:none}
+.neg{color:var(--danger)}
+.balance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.balance:empty{display:none}
+.balance div{min-width:0}
+.balance small{display:block;color:var(--muted);font-size:.78rem}
+.balance b{font-size:1.05rem}
+.hero-btn.gasto{background:var(--surface);color:var(--ink);border:2px solid var(--danger-soft);box-shadow:none}
+.hero-btn.gasto svg{color:var(--danger)}
+.catgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.catgrid button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 4px;font-weight:700;font-size:.85rem;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis}
+.catgrid button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#egPad button{min-height:46px;font-size:1.35rem}
+#egGuardar{position:sticky;bottom:0;box-shadow:0 -10px 14px -4px var(--surface)}
+.phead2{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.phead2 h2{margin:0}
+.salerow .amt.neg{color:var(--danger)}
+.salerow .what small{display:block;color:var(--muted);font-size:.8rem;overflow:hidden;text-overflow:ellipsis}
+.aviso{border:0;border-radius:var(--r);background:var(--gold-soft);color:var(--ink);padding:14px 16px;text-align:left;font-size:.95rem;display:flex;gap:10px;align-items:center}
+.aviso b{color:var(--gold)}
+.aviso::before{content:"!";flex:none;width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--surface);display:grid;place-items:center;font-weight:800}
+.cestado{border-radius:12px;padding:12px 14px;font-size:.95rem;background:var(--surface-2)}
+.cestado.hecho{background:var(--accent-soft)}
+.cestado.cambio{background:var(--gold-soft)}
+.cestado b{display:block;font-size:1.02rem;margin-bottom:2px}
+.cestado small{color:var(--muted)}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.pend{background:var(--gold-soft);color:var(--gold)}
+.mesnav{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.mesnav input{width:100%}
+.mestotal .big{font-size:2.2rem;font-weight:700;line-height:1.1;margin:4px 0}
+.mestotal .sub{color:var(--muted);font-size:.92rem}
+.mestotal .msg{color:var(--muted);font-size:.85rem;margin-top:6px}
+.mestotal .msg:empty{display:none}
+.diatab tbody tr{cursor:pointer}
+.diatab tbody tr:active{background:var(--surface-2)}
+.diatab td.r .pill{white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .navbtn svg{width:26px;height:26px;color:var(--accent);flex:none}
 .navbtn b{display:block}
 .navbtn small{color:var(--muted)}
@@ -323,6 +362,7 @@ body.conaviso main{padding-bottom:230px}
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M24 15v18M15 24h18"/></svg>
       <div><b>Vender</b><span>Regresar a la caja</span></div>
     </button>
+    <button class="aviso" id="avisoCorte" hidden></button>
     <div class="panel">
       <div class="eyebrow" id="hoyLbl">Hoy</div>
       <div class="today">
@@ -330,13 +370,18 @@ body.conaviso main{padding-bottom:230px}
         <div><div class="big num" id="hoyN">0</div><div class="sub">ventas</div></div>
       </div>
       <div class="methods" id="hoyMet"></div>
+      <div class="balance" id="hoyBal"></div>
+      <button class="btn primary wide" id="btnHacerHoy" style="margin-top:14px">Hacer corte de hoy</button>
     </div>
     <div class="navrow">
-      <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte</b><small>Ventas por día</small></div></button>
+      <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte del día</b><small>Hoy o días anteriores</small></div></button>
+      <button class="navbtn" id="btnMes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg><div><b>Corte mensual</b><small>Total del mes</small></div></button>
+      <button class="navbtn" id="btnEgresos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M12 13.5v3M10.5 15l1.5 1.5 1.5-1.5"/></svg><div><b>Egresos</b><small>Registrar gastos</small></div></button>
       <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios, impresora y usuarios</small></div></button>
+      <a class="navbtn span2" id="btnInformes" href="informes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><b>Informes y reportes</b><small>Ingresos, egresos, productos más vendidos</small></div></a>
     </div>
     <div class="panel">
-      <h2>Últimas ventas</h2>
+      <h2 id="ultTit">Ventas de hoy</h2>
       <div class="salelist" id="ultimas"></div>
     </div>
   </section>
@@ -360,10 +405,17 @@ body.conaviso main{padding-bottom:230px}
   <!-- CORTE -->
   <section id="v-corte" hidden>
     <label class="f">Día del corte<input type="date" id="corteDia"></label>
+    <div class="cestado" id="cEstado"></div>
+    <button class="btn primary lg" id="cHacer">Hacer corte del día</button>
     <div class="stats">
       <div class="stat"><small>Total</small><b class="num" id="cTotal">$0</b></div>
       <div class="stat"><small>Ventas</small><b class="num" id="cN">0</b></div>
       <div class="stat"><small>Canceladas</small><b class="num" id="cCan">0</b></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><small>Gastos</small><b class="num neg" id="cEg">$0</b></div>
+      <div class="stat"><small>Neto</small><b class="num" id="cNeto">$0</b></div>
+      <div class="stat"><small>Efectivo en caja</small><b class="num" id="cCaja">$0</b></div>
     </div>
     <div class="panel">
       <h2>Por producto</h2>
@@ -375,11 +427,78 @@ body.conaviso main{padding-bottom:230px}
       <div class="salelist" id="cLista"></div>
     </div>
     <div class="panel">
+      <div class="phead2"><h2>Gastos del día</h2><button class="btn ghost sm" id="cIrEg">Registrar gasto</button></div>
+      <div class="salelist" id="cEgLista"></div>
+    </div>
+    <div class="panel">
       <h2>Ticket de corte</h2>
       <div class="ticketwrap"><div class="ticket" id="cTicket"></div></div>
       <div class="printbox" id="cPrint"></div>
     </div>
     <button class="btn gold" id="cCsv">Exportar ventas del día (CSV)</button>
+  </section>
+
+  <!-- CORTE MENSUAL -->
+  <section id="v-mes" hidden>
+    <div class="mesnav">
+      <button class="iconbtn" id="mesAnt" aria-label="Mes anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <label class="f"><span class="sr">Mes</span><input type="month" id="mesSel"></label>
+      <button class="iconbtn" id="mesSig" aria-label="Mes siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="panel mestotal">
+      <div class="eyebrow" id="mLbl">Total del mes</div>
+      <div class="big num" id="mTotal">$0.00</div>
+      <div class="sub" id="mSub"></div>
+      <div class="msg" id="mMsg" role="status"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><small>Gastos</small><b class="num neg" id="mEg">$0</b></div>
+      <div class="stat"><small>Neto</small><b class="num" id="mNeto">$0</b></div>
+      <div class="stat"><small>Efectivo neto</small><b class="num" id="mCaja">$0</b></div>
+    </div>
+    <div class="panel">
+      <h2>Cortes por día</h2>
+      <p class="help">Toca un día para ver su corte.</p>
+      <div style="overflow-x:auto"><table class="ctab num diatab" id="mDias"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Por producto</h2>
+      <div style="overflow-x:auto"><table class="ctab num" id="mTab"></table></div>
+      <div class="methods" id="mMet"></div>
+    </div>
+    <div class="panel">
+      <h2>Gastos por categoría</h2>
+      <div style="overflow-x:auto"><table class="ctab num" id="mEgTab"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Ticket del corte mensual</h2>
+      <div class="ticketwrap"><div class="ticket" id="mTicket"></div></div>
+      <div class="printbox" id="mPrint"></div>
+    </div>
+    <div class="actions">
+      <button class="btn gold" id="mCsv">Ventas del mes (CSV)</button>
+      <button class="btn gold" id="mEgCsv">Gastos del mes (CSV)</button>
+    </div>
+  </section>
+
+  <!-- EGRESOS -->
+  <section id="v-egresos" hidden>
+    <button class="hero-btn gasto" id="egNuevo">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M15 24h18"/></svg>
+      <div><b>Registrar gasto</b><span>Compras, servicios, limpieza…</span></div>
+    </button>
+    <label class="f">Día<input type="date" id="egDia"></label>
+    <div class="stats">
+      <div class="stat"><small>Gastos</small><b class="num neg" id="egTotal">$0</b></div>
+      <div class="stat"><small>De la caja</small><b class="num" id="egEfe">$0</b></div>
+      <div class="stat"><small>Registros</small><b class="num" id="egN">0</b></div>
+    </div>
+    <div class="panel">
+      <h2>Gastos del día</h2>
+      <p class="help">Toca un gasto para cancelarlo.</p>
+      <div class="salelist" id="egLista"></div>
+    </div>
+    <button class="btn gold" id="egCsv">Exportar gastos del mes (CSV)</button>
   </section>
 
   <!-- AJUSTES -->
@@ -502,6 +621,27 @@ body.conaviso main{padding-bottom:230px}
   </div>
 </div>
 
+<!-- Hoja: registrar gasto -->
+<div class="sheet" id="sh-egreso" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Registrar gasto">
+    <div class="grab"></div>
+    <h3>Registrar gasto</h3>
+    <div class="eyebrow">Categoría</div>
+    <div class="catgrid" id="egCats"></div>
+    <div class="display"><small>Monto</small><b class="num" id="egVer">$0</b></div>
+    <div class="pad" id="egPad"></div>
+    <label class="f">Detalle (opcional)<input type="text" id="egConcepto" maxlength="80" placeholder="Ej. 2 paquetes de velas, recibo de luz" autocomplete="off"></label>
+    <div class="eyebrow">¿Cómo se pagó?</div>
+    <div class="seg" id="egMet">
+      <button type="button" data-m="efectivo" aria-pressed="true">Efectivo</button>
+      <button type="button" data-m="transferencia" aria-pressed="false">Transferencia</button>
+      <button type="button" data-m="tarjeta" aria-pressed="false">Tarjeta</button>
+    </div>
+    <button class="btn primary lg" type="button" id="egGuardar" disabled>Registrar gasto</button>
+  </div>
+</div>
+
 <!-- Hoja: confirmar -->
 <div class="sheet" id="sh-confirm" hidden>
   <div class="scrim" data-close></div>
@@ -616,6 +756,16 @@ function deFila(f){
     total:+f.total, metodo:f.metodo, recibido:+f.recibido, cambio:+f.cambio, estado:f.estado, cancelada_por:f.cancelada_por,
     items:(f.partidas||[]).slice().sort((a,b)=>a.id-b.id).map(p=>({k:p.clave, nombre:p.nombre, cant:p.cantidad, precio:+p.precio}))};
 }
+function deCorte(c){
+  return c && {dia:c.dia, ventas:+c.ventas, canceladas:+c.canceladas, total:+c.total, efectivo:+c.efectivo,
+    transferencia:+c.transferencia, tarjeta:+c.tarjeta, egresos:+c.egresos||0, egresos_efectivo:+c.egresos_efectivo||0,
+    n_egresos:+c.n_egresos||0, hecho_por:c.hecho_por, hecho_en:Date.parse(c.hecho_en), veces:+c.veces||1};
+}
+const SELEG = 'id,client_id,ts,dia,hora,categoria,concepto,monto,metodo,registro,estado,cancelado_por';
+function deEgreso(f){
+  return {id:f.client_id, client_id:f.client_id, folio:+f.id, ts:Date.parse(f.ts), dia:f.dia, hora:f.hora, categoria:f.categoria,
+    concepto:f.concepto||'', monto:+f.monto, metodo:f.metodo, registro:f.registro, estado:f.estado, cancelado_por:f.cancelado_por};
+}
 async function ventaPorFolio(folio){ return deFila(await q(sb.from('ventas').select(SEL).eq('folio', folio).single())); }
 async function miPerfil(){
   const {data:{session}} = await sb.auth.getSession();
@@ -673,6 +823,23 @@ async function api(accion, datos){
           : await q(sb.from('ventas').select(SEL).eq('dia', prm.dia).order('ts',{ascending:false}).limit(1000));
         return {ventas: filas.map(deFila)};
       }
+      case 'egreso':
+        return {id: +(await q(sb.rpc('registrar_egreso', {p:datos})))};
+      case 'cancelar_egreso':
+        await q(sb.rpc('cancelar_egreso', {p_id:datos.id}));
+        return {egreso: deEgreso(await q(sb.from('egresos').select(SELEG).eq('id', datos.id).single()))};
+      case 'egresos':
+        return {egresos: (await todas(()=>sb.from('egresos').select(SELEG).gte('dia',prm.desde).lte('dia',prm.hasta).order('ts'))).map(deEgreso)};
+      case 'rango':
+        return {ventas: (await todas(()=>sb.from('ventas').select(SEL).gte('dia',prm.desde).lte('dia',prm.hasta).order('folio'))).map(deFila)};
+      case 'corte':
+        return {corte: deCorte(await q(sb.rpc('hacer_corte', {p_dia:datos.dia})))};
+      case 'cortes':
+        return {cortes: (await q(sb.from('cortes').select('*').gte('dia',prm.desde).lte('dia',prm.hasta))).map(deCorte)};
+      case 'ultimo_dia': {
+        const r = await q(sb.from('ventas').select('dia').lt('dia',prm.hoy).eq('estado','ok').order('dia',{ascending:false}).limit(1));
+        return {dia: r.length ? r[0].dia : null};
+      }
       case 'usuarios': {
         const l = await q(sb.from('perfiles').select('usuario,nombre,activo').order('creado'));
         return {usuarios: l.map(u=>Object.assign(u,{bloqueado:false}))};
@@ -694,11 +861,23 @@ let usuariosLogin = [];
 let cfg = normCfg(lsGet('pos_cfg', null));
 let pendientes = lsGet('pos_pendientes', []);    // ventas hechas sin internet, aún no guardadas en el servidor
 let sales = pendientes.slice();                  // ventas conocidas en este teléfono
+let pendEg = lsGet('pos_pend_eg', []);         // gastos registrados sin internet
+let gastos = pendEg.slice();                     // gastos conocidos en este teléfono
 let enLinea = true;
 function usuarioActual(){ return yo; }
+function mergeEg(list){
+  list.forEach(g=>{ const i=gastos.findIndex(x=>x.id===g.id); if(i>=0) gastos[i]=g; else gastos.push(g); });
+  gastos.sort((a,b)=>b.ts-a.ts);
+}
+function guardarPendEg(){ lsSet('pos_pend_eg', pendEg); }
+function reemplazarEg(desde, hasta, lista){
+  const ids = new Set(lista.map(g=>g.id));
+  gastos = gastos.filter(g=>!(g.dia>=desde && g.dia<=hasta && g.folio && !ids.has(g.id)));
+  mergeEg(lista);
+}
 
 function setSync(){
-  const c=$('sync'), n=pendientes.length;
+  const c=$('sync'), n=pendientes.length+pendEg.length;
   c.className = 'chip '+(!enLinea ? 'off' : n ? 'local' : 'cloud');
   c.lastElementChild.textContent = !enLinea ? (n ? n+' sin enviar' : 'Sin conexión') : n ? n+' por enviar' : 'En línea';
 }
@@ -712,16 +891,49 @@ function guardarPendientes(){ lsSet('pos_pendientes', pendientes); }
 function quitarPendiente(id){ pendientes = pendientes.filter(x=>x.id!==id); guardarPendientes(); }
 function ventaParaEnviar(v){ return {client_id:v.id, ts:v.ts, items:v.items, metodo:v.metodo, recibido:v.recibido, por:v.por}; }
 
+/* Cortes: uno por día. diasCargados = días cuyas ventas ya se trajeron completas del servidor */
+let cortes = {};
+const diasCargados = new Set();
+let diaPendiente = null;          // último día con ventas que se quedó sin corte
+/* Egresos y cortes no deben impedir que se vean las ventas si algo falla con esas tablas */
+function opcional(p){ return p.catch(e=>{ if(e && e.status===0) throw e; return null; }); }
+function guardarCortes(lista){ (lista||[]).forEach(c=>{ if(c) cortes[c.dia]=c; }); }
 async function cargarHoy(){
+  const hoy = localDay();
   try{
-    const [a,b] = await Promise.all([api('ventas&dia='+localDay()), api('ventas&ultimas=10')]);
-    enLinea = true; merge(a.ventas); merge(b.ventas);
+    const [a, u, g] = await Promise.all([api('ventas&dia='+hoy), api('ultimo_dia&hoy='+hoy), opcional(api('egresos&desde='+hoy+'&hasta='+hoy))]);
+    const c = (await opcional(api('cortes&desde='+(u.dia||hoy)+'&hasta='+hoy))) || {cortes:[]};
+    enLinea = true; merge(a.ventas); if(g) reemplazarEg(hoy, hoy, g.egresos); diasCargados.add(hoy);
+    if(u.dia) delete cortes[u.dia];
+    guardarCortes(c.cortes);
+    diaPendiente = u.dia && !cortes[u.dia] ? u.dia : null;
   }catch(e){ if(e.status===0) enLinea=false; }
   setSync(); refresh();
 }
 async function cargarDia(dia){
-  try{ const r = await api('ventas&dia='+dia); enLinea=true; merge(r.ventas); return true; }
+  try{
+    const [r, c, g] = await Promise.all([api('ventas&dia='+dia), opcional(api('cortes&desde='+dia+'&hasta='+dia)), opcional(api('egresos&desde='+dia+'&hasta='+dia))]);
+    enLinea=true; merge(r.ventas); if(g) reemplazarEg(dia, dia, g.egresos); diasCargados.add(dia); if(c){ delete cortes[dia]; guardarCortes(c.cortes); } return true;
+  }
   catch(e){ if(e.status===0) enLinea=false; return false; }
+  finally{ setSync(); }
+}
+function mesRango(mes){ const [y,m]=mes.split('-').map(Number); return [mes+'-01', mes+'-'+pad(new Date(y,m,0).getDate(),2)]; }
+async function cargarMes(mes){
+  const [d,h] = mesRango(mes);
+  try{
+    const [r, c0, g] = await Promise.all([api('rango&desde='+d+'&hasta='+h), opcional(api('cortes&desde='+d+'&hasta='+h)), opcional(api('egresos&desde='+d+'&hasta='+h))]);
+    const c = c0 || {cortes:[]};
+    enLinea = true; if(g) reemplazarEg(d, h, g.egresos);
+    // Lo que el servidor ya no tiene en ese mes (por ejemplo, ventas sin enviar canceladas) se toma del servidor
+    const ids = new Set(r.ventas.map(v=>v.client_id));
+    sales = sales.filter(v=>!(v.dia && v.dia.slice(0,7)===mes && v.folio && !ids.has(v.id)));
+    merge(r.ventas);
+    Object.keys(cortes).forEach(k=>{ if(k.slice(0,7)===mes) delete cortes[k]; });
+    guardarCortes(c.cortes);
+    for(let x=new Date(d+'T12:00'); localDay(x)<=h; x.setDate(x.getDate()+1)) diasCargados.add(localDay(x));
+    return true;
+  }catch(e){ if(e.status===0) enLinea=false; return false; }
   finally{ setSync(); }
 }
 
@@ -746,6 +958,20 @@ async function enviarPendientes(){
         if(e.status===401 || e.status>=500) break;
         fallidas.add(p.id);
         toast('Una venta sin enviar fue rechazada: '+e.message);
+      }
+    }
+    while(enLinea){
+      const g = pendEg.find(x=>!fallidas.has(x.id));
+      if(!g) break;
+      try{
+        const r = await api('egreso', {client_id:g.id, ts:g.ts, categoria:g.categoria, concepto:g.concepto, monto:g.monto, metodo:g.metodo, por:g.por});
+        pendEg = pendEg.filter(x=>x.id!==g.id); guardarPendEg();
+        mergeEg([Object.assign({}, g, {folio:r.id})]);
+      }catch(e){
+        if(e.status===0){ enLinea=false; break; }
+        if(e.status===401 || e.status>=500) break;
+        fallidas.add(g.id);
+        toast('Un gasto sin enviar fue rechazado: '+e.message);
       }
     }
   } finally { enviando=false; setSync(); refresh(); }
@@ -799,20 +1025,47 @@ function ticketVenta(v){
   L.push({t:''});
   return L;
 }
-function corteData(dia){
-  const del = sales.filter(v=>v.dia===dia);
+function resumirEg(lista){
+  const ok = lista.filter(g=>g.estado!=='cancelado'), cats = {};
+  ok.forEach(g=>{ const c = cats[g.categoria] = cats[g.categoria] || {nombre:g.categoria, n:0, imp:0}; c.n++; c.imp = r2(c.imp+g.monto); });
+  return {lista, ok, cats: Object.values(cats).sort((a,b)=>b.imp-a.imp),
+    total: r2(ok.reduce((s,g)=>s+g.monto,0)), efectivo: r2(ok.filter(g=>g.metodo==='efectivo').reduce((s,g)=>s+g.monto,0))};
+}
+function resumir(del, egs){
   const ok = del.filter(v=>v.estado!=='cancelada');
-  const prods = {}; const met = {efectivo:0,transferencia:0,tarjeta:0}; const vend = {};
-  ok.forEach(v=>{ met[v.metodo]=(met[v.metodo]||0)+v.total; const vn=v.vendedor||'Sin usuario'; vend[vn]=r2((vend[vn]||0)+v.total); v.items.forEach(it=>{ const k=it.nombre; prods[k]=prods[k]||{nombre:k,cant:0,imp:0}; prods[k].cant+=it.cant; prods[k].imp+=it.cant*it.precio; }); });
+  const prods = {}; const met = {efectivo:0,transferencia:0,tarjeta:0}; const vend = {}; const dias = {};
+  ok.forEach(v=>{
+    met[v.metodo]=r2((met[v.metodo]||0)+v.total);
+    const vn=v.vendedor||'Sin usuario'; vend[vn]=r2((vend[vn]||0)+v.total);
+    const d = dias[v.dia] = dias[v.dia] || {dia:v.dia, n:0, total:0}; d.n++; d.total=r2(d.total+v.total);
+    v.items.forEach(it=>{ const k=it.nombre; prods[k]=prods[k]||{nombre:k,cant:0,imp:0}; prods[k].cant+=it.cant; prods[k].imp=r2(prods[k].imp+it.cant*it.precio); });
+  });
   const lista = Object.values(prods).sort((a,b)=>b.imp-a.imp);
-  return {del, ok, lista, met, vend, total: r2(ok.reduce((s,v)=>s+v.total,0)), canceladas: del.length-ok.length};
+  const eg = resumirEg(egs||[]);
+  eg.ok.forEach(g=>{ const d = dias[g.dia] = dias[g.dia] || {dia:g.dia, n:0, total:0}; d.eg = r2((d.eg||0)+g.monto); });
+  const total = r2(ok.reduce((s,v)=>s+v.total,0));
+  return {del, ok, lista, met, vend, dias, total, canceladas: del.length-ok.length,
+    eg, neto: r2(total-eg.total), caja: r2((met.efectivo||0)-eg.efectivo)};
+}
+function corteData(dia){ return resumir(sales.filter(v=>v.dia===dia), gastos.filter(g=>g.dia===dia)); }
+function mesData(mes){ return resumir(sales.filter(v=>v.dia && v.dia.slice(0,7)===mes), gastos.filter(g=>g.dia && g.dia.slice(0,7)===mes)); }
+const fechaCorta = ts=>{ const d=localDay(new Date(ts)); return dmy(d).slice(0,6)+d.slice(2,4)+' '+hhmm(ts); };
+const NOMMES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const nombreMes = mes=>NOMMES[+mes.slice(5,7)-1]+' '+mes.slice(0,4);
+/* Estado del corte de un día: pendiente, hecho, o con cambios después de hacerlo */
+function estadoCorte(dia){
+  const c = corteData(dia), k = cortes[dia];
+  if(!k) return {c, k, est:'pend'};
+  const cambio = diasCargados.has(dia) && (k.ventas!==c.ok.length || k.canceladas!==c.canceladas || Math.abs(k.total-c.total)>0.004 || Math.abs((k.egresos||0)-c.eg.total)>0.004);
+  return {c, k, est: cambio ? 'cambio' : 'hecho'};
 }
 function ticketCorte(dia){
-  const c = corteData(dia), L=[];
+  const c = corteData(dia), L=[], k = cortes[dia];
   wrap(cfg.linea1).forEach(t=>L.push({t,a:'c',b:1}));
   L.push({t:'CORTE DEL DIA',a:'c',b:1,h:1});
   L.push({t:dmy(dia),a:'c'});
-  L.push({t:'Impreso '+dmy(localDay()).slice(0,6)+localDay().slice(2,4)+' '+hhmm(Date.now()),a:'c'});
+  if(k) L.push({t:'Corte: '+k.hecho_por+' '+fechaCorta(k.hecho_en),a:'c'});
+  L.push({t:'Impreso '+fechaCorta(Date.now()),a:'c'});
   L.push({t:HR});
   L.push({t:lr('Ventas: '+c.ok.length, 'Canceladas: '+c.canceladas)});
   L.push({t:HR});
@@ -821,8 +1074,45 @@ function ticketCorte(dia){
   L.push({t:HR});
   Object.keys(METODOS).forEach(k=>{ if(c.met[k]) L.push({t:lr(METODOS[k], m2(c.met[k]))}); });
   if(Object.keys(c.vend).length){ L.push({t:HR}); L.push({t:'Por usuario:'}); Object.keys(c.vend).forEach(n=>L.push({t:lr('  '+n, m2(c.vend[n]))})); }
+  pieBalance(L, c, 'DEL DIA', true);
+  return L;
+}
+/* Cierre del ticket: ventas, gastos, neto y efectivo en caja */
+function pieBalance(L, c, sufijo, detalleGastos, lblCaja){
   L.push({t:HR});
-  L.push({t:lr('TOTAL', m2(c.total)), b:1, h:1});
+  if(!c.eg.ok.length){
+    L.push({t:lr('TOTAL '+sufijo, m2(c.total)), b:1, h:1});
+  } else {
+    L.push({t:lr('Ventas', m2(c.total)), b:1});
+    L.push({t:lr('Gastos ('+c.eg.ok.length+')', '-'+m2(c.eg.total))});
+    if(detalleGastos) c.eg.ok.slice().sort((a,b)=>a.ts-b.ts).forEach(g=>L.push({t:lr('  '+(g.concepto||g.categoria), '-'+m2(g.monto))}));
+    else c.eg.cats.forEach(k=>L.push({t:lr('  '+k.nombre, '-'+m2(k.imp))}));
+    L.push({t:HR});
+    L.push({t:lr('NETO '+sufijo, m2(c.neto)), b:1, h:1});
+  }
+  L.push({t:lr(lblCaja||'Efectivo en caja', m2(c.caja))});
+  L.push({t:''});
+}
+function ticketMes(mes){
+  const c = mesData(mes), L=[];
+  wrap(cfg.linea1).forEach(t=>L.push({t,a:'c',b:1}));
+  L.push({t:'CORTE MENSUAL',a:'c',b:1,h:1});
+  L.push({t:nombreMes(mes).toUpperCase(),a:'c'});
+  L.push({t:'Impreso '+fechaCorta(Date.now()),a:'c'});
+  L.push({t:HR});
+  L.push({t:lr('Ventas: '+c.ok.length, 'Canceladas: '+c.canceladas)});
+  L.push({t:HR});
+  const dias = Object.values(c.dias).sort((a,b)=>a.dia<b.dia?-1:1);
+  let sinCorte = 0;
+  if(!dias.length) L.push({t:'Sin ventas',a:'c'});
+  else { L.push({t:'Por dia:'}); dias.forEach(d=>{ const sc = !cortes[d.dia]; if(sc) sinCorte++; L.push({t:lr(dmy(d.dia).slice(0,5)+(sc?'*':' ')+' '+d.n+' vta', m2(d.total))}); }); }
+  if(c.lista.length){ L.push({t:HR}); c.lista.forEach(p=>L.push({t:lr(p.cant+' '+p.nombre, m2(p.imp))})); }
+  L.push({t:HR});
+  Object.keys(METODOS).forEach(k=>{ if(c.met[k]) L.push({t:lr(METODOS[k], m2(c.met[k]))}); });
+  if(Object.keys(c.vend).length){ L.push({t:HR}); L.push({t:'Por usuario:'}); Object.keys(c.vend).forEach(n=>L.push({t:lr('  '+n, m2(c.vend[n]))})); }
+  pieBalance(L, c, 'DEL MES', false, 'Efectivo neto');
+  L.pop();
+  if(sinCorte) L.push({t:'* dia sin corte'});
   L.push({t:''});
   return L;
 }
@@ -915,12 +1205,12 @@ function mountPrint(el, getLines){
 
 /* ---------- Navegación ---------- */
 let view = 'login';
-const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', ajustes:'Ajustes'};
+const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', mes:'Corte mensual', egresos:'Egresos', ajustes:'Ajustes'};
 function go(v){
   if(!yo) v = 'login';
   view = v;
-  ['login','inicio','venta','recibo','corte','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
-  $('btnBack').hidden = !['inicio','recibo','corte','ajustes'].includes(v);
+  ['login','inicio','venta','recibo','corte','mes','egresos','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
+  $('btnBack').hidden = !['inicio','recibo','corte','mes','egresos','ajustes'].includes(v);
   $('btnMenu').hidden = v!=='venta';
   $('btnImp').hidden = !(v==='venta' || v==='recibo');
   $('ttlSub').hidden = v!=='venta';
@@ -933,7 +1223,9 @@ function go(v){
   window.scrollTo(0,0);
   if(v==='inicio') renderInicio();
   if(v==='venta') { renderGrid(); renderCart(); actualizarSub(); actualizarImp(); }
-  if(v==='corte') renderCorte();
+  if(v==='corte') cargaCorte = renderCorte();
+  if(v==='mes') renderMes();
+  if(v==='egresos') renderEgresos();
   if(v==='ajustes') renderAjustes();
 }
 function actualizarSub(){
@@ -984,12 +1276,26 @@ $('btnSalir').onclick = ()=>{
 function refresh(){
   if(view==='venta') actualizarSub();
   if(view==='inicio') renderInicio();
-  if(view==='corte') renderCorte();
+  if(view==='corte') pintarCorte($('corteDia').value||localDay());
+  if(view==='mes') pintarMes(mesActual());
+  if(view==='egresos') pintarEgresos($('egDia').value||localDay());
 }
-$('btnBack').onclick = ()=>go(view==='corte'||view==='ajustes' ? 'inicio' : 'venta');
+$('btnBack').onclick = ()=>go(view==='recibo'&&volverA ? volverA : view==='egresos'&&egDesdeCorte ? 'corte' : ['corte','mes','egresos','ajustes'].includes(view) ? (view==='corte'&&deMes ? 'mes' : 'inicio') : 'venta');
 $('btnMenu').onclick = ()=>go('inicio');
 $('btnNueva').onclick = ()=>go('venta');
-$('btnCorte').onclick = ()=>go('corte');
+let deMes = false, volverA = null, cargaCorte = Promise.resolve();
+function abrirCorte(dia, hacer, desdeMes){
+  deMes = !!desdeMes; $('corteDia').value = dia; go('corte');
+  if(!hacer) return;
+  const pedir = ()=>{ if(view==='corte' && ($('corteDia').value)===dia && estadoCorte(dia).est!=='hecho') pedirCorte(dia); };
+  if(diasCargados.has(dia)) pedir(); else cargaCorte.then(pedir);
+}
+$('btnCorte').onclick = ()=>abrirCorte(localDay());
+$('btnMes').onclick = ()=>{ $('mesSel').value = localDay().slice(0,7); go('mes'); };
+$('btnHacerHoy').onclick = ()=>abrirCorte(localDay(), true);
+let egDesdeCorte = false;
+$('btnEgresos').onclick = ()=>{ egDesdeCorte = false; $('egDia').value = localDay(); go('egresos'); };
+$('avisoCorte').onclick = ()=>{ if(diaPendiente) abrirCorte(diaPendiente, true); };
 $('btnAjustes').onclick = ()=>go('ajustes');
 
 function openSheet(id){ $(id).hidden=false; }
@@ -1011,9 +1317,21 @@ function renderInicio(){
   $('sesNombre').textContent = usuarioActual() ? usuarioActual().nombre : '';
   $('hoyTotal').textContent = money(c.total);
   $('hoyN').textContent = c.ok.length;
-  $('hoyMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('') || '<span class="pill">Aún sin ventas hoy</span>';
-  const ult = sales.slice(0,8);
-  $('ultimas').innerHTML = ult.length ? ult.map(saleRow).join('') : '<div class="empty">Las ventas que registres aparecerán aquí.</div>';
+  const e = estadoCorte(hoy);
+  const pillCorte = e.est==='hecho' ? `<span class="pill ok">✓ Corte hecho ${hhmm(e.k.hecho_en)}</span>`
+    : e.est==='cambio' ? '<span class="pill pend">Ventas después del corte</span>' : '';
+  $('hoyMet').innerHTML = (Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('') || '<span class="pill">Aún sin ventas hoy</span>') + pillCorte;
+  $('hoyBal').innerHTML = (c.ok.length || c.eg.ok.length)
+    ? `<div><small>Gastos</small><b class="num ${c.eg.total?'neg':''}">${c.eg.total?'-':''}${money(c.eg.total)}</b></div><div><small>Neto</small><b class="num">${money(c.neto)}</b></div><div><small>Efectivo en caja</small><b class="num">${money(c.caja)}</b></div>` : '';
+  const b = $('btnHacerHoy');
+  b.textContent = e.est==='hecho' ? 'Ver corte de hoy' : e.est==='cambio' ? 'Actualizar corte de hoy' : 'Hacer corte de hoy';
+  b.className = 'btn wide '+(e.est==='hecho' ? 'ghost' : 'primary');
+  const av = $('avisoCorte');
+  av.hidden = !(diaPendiente && !cortes[diaPendiente]);
+  if(!av.hidden) av.innerHTML = `<span><b>Falta el corte del ${dmy(diaPendiente)}</b><br>Toca aquí para hacerlo.</span>`;
+  const del = c.del.slice().sort((a,b)=>b.ts-a.ts);
+  $('ultTit').textContent = 'Ventas de hoy'+(del.length ? ' ('+del.length+')' : '');
+  $('ultimas').innerHTML = del.length ? del.map(saleRow).join('') : '<div class="empty">Aún no hay ventas hoy.<br>Cada día empieza un listado nuevo; las ventas anteriores quedan guardadas en el corte.</div>';
   bindRows($('ultimas'));
 }
 
@@ -1265,6 +1583,7 @@ async function imprimirAuto(v){
 /* ---------- Recibo ---------- */
 let recSale = null;
 function showRecibo(v){
+  if(view!=='recibo') volverA = ['inicio','corte','mes'].includes(view) ? view : null;
   recSale = v; go('recibo');
   $('ttl').textContent = v.folio ? 'Recibo #'+pad(v.folio,4) : 'Recibo sin enviar';
   $('recTicket').innerHTML = toHTML(ticketVenta(v));
@@ -1289,11 +1608,32 @@ $('corteDia').addEventListener('change', renderCorte);
 function renderCorte(){
   const dia = $('corteDia').value || localDay();
   pintarCorte(dia);
-  cargarDia(dia).then(ok=>{ if(ok && view==='corte' && ($('corteDia').value||localDay())===dia) pintarCorte(dia); });
+  return cargarDia(dia).then(ok=>{ if(ok && view==='corte' && ($('corteDia').value||localDay())===dia) pintarCorte(dia); return ok; });
 }
 function pintarCorte(dia){
-  const c = corteData(dia);
+  const e = estadoCorte(dia), c = e.c, k = e.k;
+  const box = $('cEstado'), btn = $('cHacer'), hoy = localDay();
+  if(e.est==='pend'){
+    box.className = 'cestado';
+    box.innerHTML = dia===hoy ? '<b>Corte de hoy pendiente</b><small>Hazlo al cerrar la caja. Mañana la caja empieza un listado nuevo.</small>'
+      : dia>hoy ? '<b>Ese día todavía no llega</b>' : '<b>Este día no tiene corte</b><small>'+(c.ok.length ? 'Puedes hacerlo ahora.' : 'No hubo ventas.')+'</small>';
+    btn.textContent = 'Hacer corte del día'; btn.className = 'btn primary lg';
+  } else if(e.est==='hecho'){
+    box.className = 'cestado hecho';
+    box.innerHTML = `<b>✓ Corte hecho</b><small>${esc(k.hecho_por)} · ${fechaCorta(k.hecho_en)} · ${money(k.total)} en ${k.ventas} venta${k.ventas===1?'':'s'}${k.egresos ? ' · gastos '+money(k.egresos) : ''}</small>`;
+    btn.textContent = 'Volver a hacer el corte'; btn.className = 'btn ghost';
+  } else {
+    box.className = 'cestado cambio';
+    const gk = k.egresos ? ' y '+money(k.egresos)+' de gastos' : '', gc = c.eg.total ? ' y '+money(c.eg.total)+' de gastos' : '';
+    box.innerHTML = `<b>Hubo cambios después del corte</b><small>El corte de ${esc(k.hecho_por)} (${fechaCorta(k.hecho_en)}) marcó ${money(k.total)} en ${k.ventas} venta${k.ventas===1?'':'s'}${gk}; ahora son ${money(c.total)} en ${c.ok.length}${gc}. Actualízalo.</small>`;
+    btn.textContent = 'Actualizar corte'; btn.className = 'btn primary lg';
+  }
+  btn.hidden = dia>hoy || (e.est==='pend' && !c.del.length && dia!==hoy);
   $('cTotal').textContent = money(c.total); $('cN').textContent = c.ok.length; $('cCan').textContent = c.canceladas;
+  $('cEg').textContent = (c.eg.total?'-':'')+money(c.eg.total); $('cEg').classList.toggle('neg', !!c.eg.total);
+  $('cNeto').textContent = money(c.neto); $('cCaja').textContent = money(c.caja);
+  $('cEgLista').innerHTML = c.eg.lista.length ? c.eg.lista.slice().sort((a,b)=>b.ts-a.ts).map(egRow).join('') : '<div class="empty">Sin gastos registrados.</div>';
+  bindEg($('cEgLista'));
   $('cTab').innerHTML = c.lista.length ? `<thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Importe</th></tr></thead><tbody>${c.lista.map(p=>`<tr><td>${esc(p.nombre)}</td><td class="r">${p.cant}</td><td class="r">${money(p.imp)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${c.lista.reduce((s,p)=>s+p.cant,0)}</td><td class="r">${money(c.total)}</td></tr></tfoot>` : '<tbody><tr><td class="empty">No hay ventas en este día.</td></tr></tbody>';
   $('cMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('')
     + Object.keys(c.vend).map(n=>`<span class="pill num">Atendió ${esc(n)}: ${money(c.vend[n])}</span>`).join('');
@@ -1318,10 +1658,184 @@ async function exportarCsv(desde, hasta){
     toast(filas.length ? 'CSV listo: '+filas.length+' venta(s)' : 'No hay ventas en esas fechas');
   }catch(e){ toast(errDe(e).message); }
 }
+$('cHacer').onclick = ()=>pedirCorte($('corteDia').value || localDay());
+let haciendoCorte = false;
+function pedirCorte(dia){
+  if(haciendoCorte) return;
+  const pend = pendientes.filter(v=>v.dia===dia).length;
+  if(pend){ toast('Hay '+pend+' venta(s) de ese día sin enviar. Se enviarán en cuanto haya internet; luego haz el corte.'); enviarPendientes(); return; }
+  const c = corteData(dia), ya = cortes[dia];
+  confirmar((ya ? '¿Actualizar el corte del ' : '¿Hacer el corte del ')+dmy(dia)+'?',
+    'Ventas '+money(c.total)+' en '+c.ok.length+(c.eg.ok.length ? ' · gastos '+money(c.eg.total)+' · neto '+money(c.neto) : ' venta'+(c.ok.length===1?'':'s'))+'. Se guarda'+(btListo()?' y se imprime el ticket.':'. Luego puedes imprimir el ticket.'),
+    ya ? 'Actualizar corte' : 'Hacer corte', async ()=>{
+      haciendoCorte = true; $('cHacer').disabled = true;
+      try{
+        const r = await api('corte', {dia});
+        cortes[dia] = r.corte; if(diaPendiente===dia) diaPendiente = null;
+        await cargarDia(dia);
+        toast('Corte del '+dmy(dia)+' guardado: '+money(r.corte.total));
+        vibrar(40);
+        if(btListo()){ btCola = btCola.then(async ()=>{ try{ await btWrite(toEscPos(ticketCorte(dia))); }catch(e){ toast(btError(e)); } }); }
+      }catch(e){ toast(e.status===0 ? 'Necesitas internet para hacer el corte.' : e.message); }
+      finally{ haciendoCorte = false; $('cHacer').disabled = false; refresh(); }
+    });
+}
+
+/* ---------- Corte mensual ---------- */
+const mesActual = ()=>$('mesSel').value || localDay().slice(0,7);
+$('mesSel').value = localDay().slice(0,7);
+$('mesSel').addEventListener('change', renderMes);
+function moverMes(n){ const [y,m] = mesActual().split('-').map(Number); const d = new Date(y, m-1+n, 1); $('mesSel').value = d.getFullYear()+'-'+pad(d.getMonth()+1,2); renderMes(); }
+$('mesAnt').onclick = ()=>moverMes(-1);
+$('mesSig').onclick = ()=>moverMes(1);
+function renderMes(){
+  const mes = mesActual();
+  $('mesSig').disabled = mes >= localDay().slice(0,7);
+  pintarMes(mes); $('mMsg').textContent = 'Actualizando…';
+  cargarMes(mes).then(ok=>{
+    if(view!=='mes' || mesActual()!==mes) return;
+    pintarMes(mes);
+    $('mMsg').textContent = ok ? '' : 'Sin conexión: se muestran solo las ventas que ya estaban en este teléfono.';
+  });
+}
+function pintarMes(mes){
+  const c = mesData(mes), hoy = localDay();
+  $('mLbl').textContent = 'Total de '+nombreMes(mes);
+  $('mTotal').textContent = money(c.total);
+  $('mEg').textContent = (c.eg.total?'-':'')+money(c.eg.total); $('mEg').classList.toggle('neg', !!c.eg.total);
+  $('mNeto').textContent = money(c.neto); $('mCaja').textContent = money(c.caja);
+  $('mEgTab').innerHTML = c.eg.cats.length ? `<thead><tr><th>Categoría</th><th class="r">Gastos</th><th class="r">Importe</th></tr></thead><tbody>${c.eg.cats.map(k=>`<tr><td>${esc(k.nombre)}</td><td class="r">${k.n}</td><td class="r">${money(k.imp)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${c.eg.ok.length}</td><td class="r">${money(c.eg.total)}</td></tr></tfoot>` : '<tbody><tr><td class="empty">Sin gastos en este mes.</td></tr></tbody>';
+  const dias = Object.values(c.dias);
+  Object.values(cortes).forEach(k=>{ if(k.dia.slice(0,7)===mes && !c.dias[k.dia]) dias.push({dia:k.dia, n:0, total:0}); });
+  dias.sort((a,b)=>a.dia<b.dia?-1:1);
+  const hechos = dias.filter(d=>cortes[d.dia]).length;
+  $('mSub').textContent = c.ok.length+' venta'+(c.ok.length===1?'':'s')+' · '+dias.length+' día'+(dias.length===1?'':'s')+' con movimiento · '+hechos+' de '+dias.length+' cortes hechos'+(c.canceladas ? ' · '+c.canceladas+' cancelada'+(c.canceladas===1?'':'s') : '');
+  $('mDias').innerHTML = dias.length ? `<thead><tr><th>Día</th><th class="r">Vendido</th><th class="r">Gastos</th><th class="r">Corte</th></tr></thead><tbody>${dias.map(d=>{
+      const e = estadoCorte(d.dia);
+      const p = e.est==='hecho' ? '<span class="pill ok">✓ Hecho</span>' : e.est==='cambio' ? '<span class="pill pend">Actualizar</span>' : d.dia===hoy ? '<span class="pill">Abierto</span>' : '<span class="pill pend">Pendiente</span>';
+      return `<tr data-dia="${d.dia}"><td>${dmy(d.dia).slice(0,5)}</td><td class="r">${money(d.total)}</td><td class="r ${d.eg?'neg':''}">${d.eg?'-'+money(d.eg):'—'}</td><td class="r">${p}</td></tr>`;
+    }).join('')}</tbody><tfoot><tr><td>Mes</td><td class="r">${money(c.total)}</td><td class="r ${c.eg.total?'neg':''}">${c.eg.total?'-'+money(c.eg.total):'—'}</td><td></td></tr></tfoot>`
+    : '<tbody><tr><td class="empty">No hay ventas en este mes.</td></tr></tbody>';
+  $('mDias').querySelectorAll('tr[data-dia]').forEach(tr=>tr.onclick=()=>abrirCorte(tr.dataset.dia, false, true));
+  $('mTab').innerHTML = c.lista.length ? `<thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Importe</th></tr></thead><tbody>${c.lista.map(p=>`<tr><td>${esc(p.nombre)}</td><td class="r">${p.cant}</td><td class="r">${money(p.imp)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${c.lista.reduce((s,p)=>s+p.cant,0)}</td><td class="r">${money(c.total)}</td></tr></tfoot>` : '<tbody><tr><td class="empty">Sin productos vendidos.</td></tr></tbody>';
+  $('mMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('')
+    + Object.keys(c.vend).map(n=>`<span class="pill num">Atendió ${esc(n)}: ${money(c.vend[n])}</span>`).join('');
+  $('mTicket').innerHTML = toHTML(ticketMes(mes));
+  if(!$('mPrint')._refresh) mountPrint($('mPrint'), ()=>ticketMes(mesActual())); else $('mPrint')._refresh();
+}
+$('mEgCsv').onclick = ()=>{
+  if(!navigator.onLine){ toast('Necesitas internet para exportar.'); return; }
+  const [d,h] = mesRango(mesActual()); exportarEgCsv(d, h);
+};
+$('mCsv').onclick = ()=>{
+  if(!navigator.onLine){ toast('Necesitas internet para exportar.'); return; }
+  const [d,h] = mesRango(mesActual()); exportarCsv(d, h);
+};
+
+/* Al cambiar el día (caja abierta de un día para otro) empieza el listado nuevo */
+let diaVisto = localDay();
+function revisarDia(){
+  const h = localDay();
+  if(h===diaVisto) return;
+  diaVisto = h; $('corteDia').value = h;
+  if(yo){ cargarHoy(); toast('Nuevo día: la caja empieza un listado nuevo.'); }
+  refresh();
+}
+setInterval(revisarDia, 60000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) revisarDia(); });
+
 $('cCsv').onclick = ()=>{
   const dia = $('corteDia').value || localDay();
   if(!navigator.onLine){ toast('Necesitas internet para exportar.'); return; }
   exportarCsv(dia, dia);
+};
+
+/* ---------- Egresos (gastos) ---------- */
+const CATS = ['Mercancía','Servicios','Limpieza','Papelería','Mantenimiento','Transporte','Comida','Donativo','Otros'];
+function egRow(g){
+  const cancel = g.estado==='cancelado';
+  const det = g.concepto ? `${esc(g.categoria)} · ${METODOS[g.metodo]||g.metodo} · ${esc(g.registro||'')}` : `${METODOS[g.metodo]||g.metodo} · ${esc(g.registro||'')}`;
+  return `<button class="salerow ${cancel?'cancel':''}" data-eg="${esc(g.id)}"><span class="fol num">${g.folio?'G'+pad(g.folio,3):'Sin enviar'}<br>${esc(g.hora)}</span><span class="what">${esc(g.concepto||g.categoria)}<small>${cancel?'Cancelado'+(g.cancelado_por?' por '+esc(g.cancelado_por):''):det}</small></span><span class="amt num neg">-${money(g.monto)}</span></button>`;
+}
+function bindEg(el){
+  el.querySelectorAll('[data-eg]').forEach(b=>b.onclick=()=>{
+    const g = gastos.find(x=>x.id===b.dataset.eg); if(!g || g.estado==='cancelado') return;
+    confirmar('¿Cancelar el gasto «'+(g.concepto||g.categoria)+'»?',
+      money(g.monto)+' · '+(METODOS[g.metodo]||g.metodo)+' · '+dmy(g.dia)+' '+g.hora+'. '+(g.folio ? 'Quedará marcado como cancelado y no contará en el corte.' : 'Todavía no llegaba al servidor, así que se borra del teléfono.'),
+      'Cancelar gasto', async ()=>{
+        if(!g.folio){ pendEg = pendEg.filter(x=>x.id!==g.id); guardarPendEg(); gastos = gastos.filter(x=>x.id!==g.id); setSync(); refresh(); toast('Gasto eliminado'); return; }
+        try{ const r = await api('cancelar_egreso', {id:g.folio}); mergeEg([r.egreso]); refresh(); toast('Gasto cancelado'); }
+        catch(e){ toast(e.status===0 ? 'Necesitas internet para cancelar un gasto.' : e.message); }
+      });
+  });
+}
+$('egDia').value = localDay();
+$('egDia').addEventListener('change', renderEgresos);
+function renderEgresos(){
+  const dia = $('egDia').value || localDay();
+  pintarEgresos(dia);
+  cargarDia(dia).then(ok=>{ if(ok && view==='egresos' && ($('egDia').value||localDay())===dia) pintarEgresos(dia); });
+}
+function pintarEgresos(dia){
+  const e = resumirEg(gastos.filter(g=>g.dia===dia)), hoy = localDay();
+  $('egTotal').textContent = (e.total?'-':'')+money(e.total); $('egTotal').classList.toggle('neg', !!e.total);
+  $('egEfe').textContent = money(e.efectivo); $('egN').textContent = e.ok.length;
+  $('egLista').innerHTML = e.lista.length ? e.lista.map(egRow).join('') : `<div class="empty">${dia===hoy ? 'Aún no hay gastos hoy.' : 'Sin gastos en este día.'}</div>`;
+  bindEg($('egLista'));
+  $('egNuevo').querySelector('span').textContent = dia===hoy ? 'Compras, servicios, limpieza…' : 'Del '+dmy(dia);
+}
+/* Hoja para capturar un gasto */
+let egCat = null, egMetodo = 'efectivo';
+const egPad = montarPad($('egPad'), v=>{ $('egVer').textContent = v ? '$'+v : '$0'; validarEg(); });
+$('egCats').innerHTML = CATS.map(c=>`<button type="button" data-c="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('');
+$('egCats').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; egCat=b.dataset.c; $('egCats').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); validarEg(); });
+$('egMet').querySelectorAll('button').forEach(b=>b.onclick=()=>{ egMetodo=b.dataset.m; $('egMet').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); });
+function validarEg(){
+  const m = r2(egPad.get());
+  $('egGuardar').disabled = !(m>0 && egCat);
+  $('egGuardar').textContent = m>0 ? 'Registrar gasto de '+money(m) : 'Registrar gasto';
+}
+function diaParaGasto(){
+  const dia = $('egDia').value || localDay(), hoy = localDay();
+  if(view!=='egresos' || dia>=hoy) return hoy;
+  const lim = new Date(); lim.setDate(lim.getDate()-6);
+  return dia >= localDay(lim) ? dia : hoy;
+}
+$('egNuevo').onclick = ()=>{
+  egCat = null; egMetodo = 'efectivo'; egPad.set(''); $('egConcepto').value = '';
+  $('egCats').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));
+  $('egMet').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x.dataset.m==='efectivo')));
+  const d = diaParaGasto();
+  $('sh-egreso').querySelector('h3').textContent = d===localDay() ? 'Registrar gasto' : 'Gasto del '+dmy(d);
+  if($('egDia').value && $('egDia').value<localDay() && d===localDay()) toast('Solo se registran gastos de la última semana; este quedará con fecha de hoy.');
+  validarEg(); openSheet('sh-egreso');
+};
+$('egGuardar').onclick = ()=>{
+  const monto = r2(egPad.get());
+  if(!(monto>0) || !egCat) return;
+  const dia = diaParaGasto(), now = Date.now();
+  const ts = dia===localDay() ? now : new Date(dia+'T12:00').getTime();
+  const cid = 'g'+now.toString(36)+Math.random().toString(36).slice(2,10);
+  const g = {id:cid, client_id:cid, folio:null, ts, dia, hora:hhmm(ts), categoria:egCat, concepto:$('egConcepto').value.trim().slice(0,80),
+    monto, metodo:egMetodo, registro: yo ? yo.nombre : '', por: yo ? yo.usuario : '', estado:'ok'};
+  pendEg.push(g); guardarPendEg(); mergeEg([g]); setSync();
+  closeSheet('sh-egreso'); vibrar(30);
+  toast('Gasto registrado: -'+money(monto));
+  refresh(); enviarPendientes();
+};
+$('cIrEg').onclick = ()=>{ egDesdeCorte = true; $('egDia').value = $('corteDia').value || localDay(); go('egresos'); };
+async function exportarEgCsv(desde, hasta){
+  try{
+    const filas = (await todas(()=>sb.from('egresos').select(SELEG).gte('dia',desde).lte('dia',hasta).order('ts'))).map(deEgreso);
+    const rows = [['folio','fecha','hora','categoria','detalle','monto','forma de pago','registro','estado']];
+    filas.forEach(g=>rows.push(['G'+g.folio,g.dia,g.hora,g.categoria,g.concepto,g.monto.toFixed(2),METODOS[g.metodo]||g.metodo,g.registro,g.estado]));
+    descargarArchivo('gastos-'+desde+(hasta!==desde?'_a_'+hasta:'')+'.csv', '﻿'+rows.map(r=>r.map(celdaCsv).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+    toast(filas.length ? 'CSV listo: '+filas.length+' gasto(s)' : 'No hay gastos en esas fechas');
+  }catch(e){ toast(errDe(e).message); }
+}
+$('egCsv').onclick = ()=>{
+  if(!navigator.onLine){ toast('Necesitas internet para exportar.'); return; }
+  const [d,h] = mesRango(($('egDia').value||localDay()).slice(0,7)); exportarEgCsv(d, h);
 };
 
 /* ---------- Ajustes ---------- */
@@ -1402,7 +1916,9 @@ $('rRespaldo').onclick = async ()=>{
       sistema:'Punto de venta - Rectoria del Templo de la Cruz', generado:new Date().toISOString(),
       ajustes: await leerAjustes(),
       usuarios: await q(sb.from('perfiles').select('usuario,nombre,activo,creado').order('creado')),
-      ventas: (await todas(()=>sb.from('ventas').select(SEL).order('folio'))).map(deFila)
+      ventas: (await todas(()=>sb.from('ventas').select(SEL).order('folio'))).map(deFila),
+      egresos: (await todas(()=>sb.from('egresos').select(SELEG).order('id'))).map(deEgreso),
+      cortes: (await q(sb.from('cortes').select('*').order('dia'))).map(deCorte)
     };
     descargarArchivo('respaldo-punto-de-venta-'+localDay()+'.json', JSON.stringify(todo,null,2), 'application/json');
   }catch(e){ toast(errDe(e).message); }
