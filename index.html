@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1E5A47">
+<meta name="theme-color" content="#4E678E">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Punto de Venta La Cruz</title>
@@ -23,12 +23,12 @@ html,body{margin:0}
 img{max-width:100%}
 /* Layout: app móvil de una columna; cuadrícula de productos 3×; barra de cobro fija abajo; hojas deslizantes para carrito y cobro */
 :root{
-  --bg:#EDF1EE; --surface:#FFFFFF; --surface-2:#E2E9E4; --ink:#17231F; --muted:#56665F; --line:#CCD7D0;
-  --accent:#1E5A47; --accent-ink:#FFFFFF; --accent-soft:#D8EAE1;
-  --gold:#9A6F17; --gold-soft:#F3E6C6;
+  --bg:#EEF1F5; --surface:#FFFFFF; --surface-2:#E2E8F0; --ink:#18202C; --muted:#566275; --line:#CDD6E2;
+  --accent:#4E678E; --accent-ink:#FFFFFF; --accent-soft:#DEE6F1;
+  --gold:#A87E32; --gold-soft:#F4EAD5;
   --danger:#A8342A; --danger-soft:#F7DFDB; --ok:#2B7A4B;
   --paper:#FFFFFF; --paper-ink:#1B1B1B; --paper-edge:#D9D9D2;
-  --scrim:rgba(14,22,19,.45);
+  --scrim:rgba(14,19,28,.45);
   --f-display:"Alegreya", Georgia, "Times New Roman", serif;
   --f-ui:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -36,9 +36,9 @@ img{max-width:100%}
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0F1513; --surface:#18201D; --surface-2:#222C28; --ink:#E5ECE8; --muted:#9BAAA3; --line:#2F3A35;
-    --accent:#6CC3A1; --accent-ink:#06241A; --accent-soft:#1C3A2F;
-    --gold:#E2B456; --gold-soft:#3A301E;
+    --bg:#0F131A; --surface:#171D26; --surface-2:#212935; --ink:#E6EAF0; --muted:#9AA6B6; --line:#2D3645;
+    --accent:#9BB0D0; --accent-ink:#0D1626; --accent-soft:#1E2A3B;
+    --gold:#D9AF60; --gold-soft:#3A3021;
     --danger:#F0897D; --danger-soft:#3E2320; --ok:#71C792;
     --paper:#F6F6F0; --paper-ink:#1B1B1B; --paper-edge:#3A433F;
     --scrim:rgba(0,0,0,.6);
@@ -46,9 +46,9 @@ img{max-width:100%}
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0F1513; --surface:#18201D; --surface-2:#222C28; --ink:#E5ECE8; --muted:#9BAAA3; --line:#2F3A35;
-  --accent:#6CC3A1; --accent-ink:#06241A; --accent-soft:#1C3A2F;
-  --gold:#E2B456; --gold-soft:#3A301E;
+  --bg:#0F131A; --surface:#171D26; --surface-2:#212935; --ink:#E6EAF0; --muted:#9AA6B6; --line:#2D3645;
+  --accent:#9BB0D0; --accent-ink:#0D1626; --accent-soft:#1E2A3B;
+  --gold:#D9AF60; --gold-soft:#3A3021;
   --danger:#F0897D; --danger-soft:#3E2320; --ok:#71C792;
   --paper:#F6F6F0; --paper-ink:#1B1B1B; --paper-edge:#3A433F;
   --scrim:rgba(0,0,0,.6);
@@ -80,7 +80,7 @@ main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px
 section{display:flex;flex-direction:column;gap:16px}
 
 /* Inicio */
-.hero-btn{border:0;border-radius:20px;background:var(--accent);color:var(--accent-ink);padding:22px 20px;display:flex;align-items:center;gap:16px;text-align:left;box-shadow:0 6px 18px -8px rgba(20,60,45,.55)}
+.hero-btn{border:0;border-radius:20px;background:var(--accent);color:var(--accent-ink);padding:22px 20px;display:flex;align-items:center;gap:16px;text-align:left;box-shadow:0 6px 18px -8px rgba(30,45,75,.5)}
 .hero-btn svg{width:44px;height:44px;flex:none}
 .hero-btn b{display:block;font-family:var(--f-display);font-size:1.7rem;line-height:1.1}
 .hero-btn span{font-size:.95rem;opacity:.85}
@@ -376,7 +376,7 @@ body.conaviso main{padding-bottom:230px}
     <div class="navrow">
       <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte del día</b><small>Hoy o días anteriores</small></div></button>
       <button class="navbtn" id="btnMes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg><div><b>Corte mensual</b><small>Total del mes</small></div></button>
-      <button class="navbtn" id="btnEgresos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M12 13.5v3M10.5 15l1.5 1.5 1.5-1.5"/></svg><div><b>Egresos</b><small>Registrar gastos</small></div></button>
+      <button class="navbtn" id="btnEgresos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M12 13.5v3M10.5 15l1.5 1.5 1.5-1.5"/></svg><div><b>Gastos</b><small>Registrar gastos</small></div></button>
       <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios, impresora y usuarios</small></div></button>
       <a class="navbtn span2" id="btnInformes" href="informes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><b>Informes y reportes</b><small>Ingresos, egresos, productos más vendidos</small></div></a>
     </div>
@@ -689,6 +689,9 @@ const ICONS = {
   llavero:`<svg ${S}><circle cx="15" cy="13" r="7.5"/><path d="M20.5 18.5l6.5 3.5"/><path d="M27.5 22h5v6h5.5v4.5h-5.5V43h-5V32.5H22V28h5.5z"/></svg>`,
   medalla:`<svg ${S}><path d="M17 4l7 14 7-14"/><circle cx="24" cy="29.5" r="11.5"/><circle cx="24" cy="29.5" r="7.5"/><path d="M24 25.5v8M20.5 28.5h7"/></svg>`,
   microdosis:`<svg ${S}><path d="M21 17V9a3 3 0 0 1 6 0v8"/><path d="M19 21v-4h10v4"/><rect x="15" y="21" width="18" height="21" rx="3"/><path d="M24 27c-1.8 2.2-2.5 3.4-2.5 4.5a2.5 2.5 0 0 0 5 0c0-1.1-.7-2.3-2.5-4.5z"/></svg>`,
+  recorte:`<svg ${S}><path d="M11 9h26v30H11z" stroke-dasharray="3.2 2.6"/><path d="M24 15v18M18 21h12"/><path d="M5 37l7-5M5 31l7 3" stroke-width="2"/><circle cx="4.5" cy="38" r="2"/><circle cx="4.5" cy="30.5" r="2"/></svg>`,
+  misal:`<svg ${S}><path d="M13 7h21a3 3 0 0 1 3 3v31H16a3 3 0 0 1-3-3z"/><path d="M13 38a3 3 0 0 1 3-3h21"/><path d="M24.5 13v13M19.5 18h10"/><path d="M31 35v9l-2.5-2-2.5 2v-9" stroke-width="2"/></svg>`,
+  cuadro:`<svg ${S}><rect x="7" y="9" width="34" height="30" rx="2"/><rect x="12" y="14" width="24" height="20" rx="1"/><path d="M24 17.5v13M19.5 22h9"/><path d="M18 9l6-5 6 5"/></svg>`,
   otros:`<svg ${S}><rect x="9" y="9" width="30" height="30" rx="7" stroke-dasharray="4 3.2"/><path d="M24 17v14M17 24h14"/></svg>`
 };
 
@@ -698,7 +701,8 @@ const BASE = [
   ['sal','Sal',20],['agua','Agua',0],['aceite','Aceite',20],['microdosis','Microdosis',30],
   ['rosario','Rosario',0],['pulsera','Pulsera',0],['escapulario','Escapulario',0],['estampa','Estampa',0],
   ['libro','Libro',0],['cirio','Cirio',0],['vela','Vela',0],['imagen','Imagen religiosa',0],
-  ['llavero','Llavero',0],['medalla','Medalla',0],['otros','Otros',0]
+  ['llavero','Llavero',0],['medalla','Medalla',0],['recorte','Recorte',20],['misal','Misal',0],
+  ['cuadro','Cuadro',0],['otros','Otros',0]
 ];
 const CFG_VER = 2;
 function defaultCfg(){
@@ -1205,7 +1209,7 @@ function mountPrint(el, getLines){
 
 /* ---------- Navegación ---------- */
 let view = 'login';
-const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', mes:'Corte mensual', egresos:'Egresos', ajustes:'Ajustes'};
+const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', mes:'Corte mensual', egresos:'Gastos', ajustes:'Ajustes'};
 function go(v){
   if(!yo) v = 'login';
   view = v;

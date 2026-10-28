@@ -1,6 +1,6 @@
 /* Punto de venta: guarda las pantallas en el teléfono para abrir al instante.
    Las ventas y la base de datos (supabase.co) nunca se guardan aquí: siempre van directo al servidor. */
-const CACHE = 'pos-lacruz-v2';
+const CACHE = 'pos-lacruz-v3';
 const SHELL = ['./', './index.html', './informes.html', './config.js', './manifest.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js'];
 

@@ -32,8 +32,8 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 
 ## Vender rápido
 
-- **Productos con precio fijo** (Sal $20, Aceite $20, Microdosis $30): un toque los agrega. El botón **−** del mosaico quita uno.
-- **Productos sin precio fijo**: se abre un teclado numérico grande (no el del celular). Los últimos precios usados aparecen como botones **+ $50**: un toque y queda agregado.
+- **Productos con precio fijo** (Sal $20, Aceite $20, Microdosis $30, Recorte $20): un toque los agrega. El botón **−** del mosaico quita uno.
+- **Productos sin precio fijo** (Misal, Cuadro y los demás): se abre un teclado numérico grande (no el del celular). Los últimos precios usados aparecen como botones **+ $50**: un toque y queda agregado.
 - **Cobrar**: en efectivo, un solo toque registra la venta: **Pago exacto** o el billete con que pagan (el botón ya muestra el cambio). **Otra cantidad** abre el teclado. Para transferencia o tarjeta, elige la pestaña y toca **Registrar**.
 - **Después de cobrar** la caja queda lista para la siguiente venta. Un aviso verde muestra el folio y el cambio, con botones para ver el recibo o reimprimir.
 - La venta se guarda al instante en el teléfono y se envía al servidor por detrás, así nunca esperas a la red. Arriba se ve el estado: ● verde **En línea** · ● amarillo **N por enviar** · ● rojo **Sin conexión**. Sin internet se sigue vendiendo y todo se envía solo al volver la señal.
@@ -41,9 +41,9 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 - **Cancelar venta**: desde el recibo. Queda marcada como cancelada y no cuenta en el corte.
 - **Listado del día**: el Resumen muestra solo las ventas de hoy. Cada día empieza un listado nuevo; las ventas anteriores quedan guardadas.
 
-## Egresos (gastos)
+## Gastos
 
-En el Resumen toca **Egresos ▸ Registrar gasto**: elige la categoría (Mercancía, Servicios, Limpieza, Papelería, Mantenimiento, Transporte, Comida, Donativo, Otros), escribe el monto en el teclado, un detalle opcional y cómo se pagó. Si salió **en efectivo de la caja**, se descuenta del efectivo en caja. Para cancelar un gasto, tócalo en la lista. También se pueden registrar gastos de días anteriores (hasta una semana) eligiendo el día.
+En el Resumen toca **Gastos ▸ Registrar gasto**: elige la categoría (Mercancía, Servicios, Limpieza, Papelería, Mantenimiento, Transporte, Comida, Donativo, Otros), escribe el monto en el teclado, un detalle opcional y cómo se pagó. Si salió **en efectivo de la caja**, se descuenta del efectivo en caja. Para cancelar un gasto, tócalo en la lista. También se pueden registrar gastos de días anteriores (hasta una semana) eligiendo el día.
 
 ## Corte del día y corte mensual
 
