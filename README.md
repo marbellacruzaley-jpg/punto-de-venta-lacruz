@@ -13,6 +13,7 @@ Punto de venta para celular. Registra las ventas de artículos religiosos, impri
 | `config.js` | Dirección y llave pública del proyecto de Supabase |
 | `supabase-esquema.sql` | Tablas, reglas de seguridad, funciones y usuarios iniciales (proyecto nuevo) |
 | `supabase-actualizacion-egresos-cortes.sql` | Agrega egresos y cortes a una base que ya funciona (no borra nada) |
+| `supabase-actualizacion-apartados.sql` | Agrega los apartados a una base que ya funciona (no borra nada) |
 | `sw.js`, `manifest.webmanifest`, `icon-*.png` | App instalable y carga instantánea en el celular |
 
 ## Entrar e instalar en el celular
@@ -44,6 +45,16 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 ## Gastos
 
 En el Resumen toca **Gastos ▸ Registrar gasto**: elige la categoría (Mercancía, Servicios, Limpieza, Papelería, Mantenimiento, Transporte, Comida, Donativo, Otros), escribe el monto en el teclado, un detalle opcional y cómo se pagó. Si salió **en efectivo de la caja**, se descuenta del efectivo en caja. Para cancelar un gasto, tócalo en la lista. También se pueden registrar gastos de días anteriores (hasta una semana) eligiendo el día.
+
+## Apartados
+
+En el Resumen toca **Apartados ▸ Nuevo apartado**: nombre, teléfono de contacto, artículo, precio total, anticipo y cómo pagó. Se imprime un comprobante para el cliente con lo pagado y lo que falta.
+
+- **Abono**: abre el apartado (se puede buscar por nombre, teléfono o artículo) y toca **Abono**. El comprobante se vuelve a imprimir con todos los pagos.
+- **Liquidar (finiquito)**: toca **Liquidar** con lo que falta. En ese momento el apartado **entra al corte del día como una venta por el precio completo** («Apartado: …»).
+- **El anticipo y los abonos no entran al corte**: se guardan aparte, fuera de la caja. El día que se liquida, ese dinero se junta con el último pago. El corte del día muestra, solo como referencia, cuánto se recibió en anticipos y abonos y cuánto hay guardado aparte en total.
+- Un abono capturado por error se cancela tocándolo en el apartado. Un apartado que no se va a liquidar se cancela con **Cancelar apartado** (lo recibido no entra a ningún corte).
+- Botón de llamada y de WhatsApp al teléfono del cliente. CSV de todos los apartados.
 
 ## Corte del día y corte mensual
 

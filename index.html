@@ -327,6 +327,27 @@ input{max-width:100%;min-width:0}
 .exito .exbtns button{flex:1;border:1px solid color-mix(in srgb, currentColor 35%, transparent);background:transparent;color:inherit;border-radius:10px;min-height:36px;font-weight:700;font-size:.92rem}
 body.conaviso main{padding-bottom:230px}
 .exito .exbtns button.x{flex:none;width:44px}
+/* Apartados */
+input[type=search],input[type=tel]{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 12px;min-height:46px;width:100%}
+.hero-btn.apartar{background:var(--gold-soft);color:var(--ink);box-shadow:none}
+.hero-btn.apartar svg{color:var(--gold)}
+.salerow .amt small{display:block;font-weight:400;font-size:.75rem;color:var(--muted);text-align:right}
+.salerow .amt.saldo{color:var(--gold)}
+.apbar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin:14px 0 2px}
+.apbar i{display:block;height:100%;width:0;background:var(--gold);border-radius:5px;transition:width .3s}
+.apbar.full i{background:var(--ok)}
+.apinfo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin-top:6px}
+.apinfo div{min-width:0}
+.apinfo small{display:block;color:var(--muted);font-size:.78rem}
+.apinfo b,.apinfo span{overflow-wrap:anywhere}
+.apinfo .wide{grid-column:1/-1}
+.apinfo a{color:var(--accent);font-weight:700}
+.apcont{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.pill.est-abierto{background:var(--gold-soft);color:var(--gold)}
+.pill.est-liquidado{background:var(--accent-soft);color:var(--accent)}
+.pill.est-cancelado{background:var(--danger-soft);color:var(--danger)}
+.nota{font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:0}
+#abPad button{min-height:46px;font-size:1.35rem}
 </style>
 </head>
 <body>
@@ -377,8 +398,9 @@ body.conaviso main{padding-bottom:230px}
       <button class="navbtn" id="btnCorte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><div><b>Corte del día</b><small>Hoy o días anteriores</small></div></button>
       <button class="navbtn" id="btnMes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg><div><b>Corte mensual</b><small>Total del mes</small></div></button>
       <button class="navbtn" id="btnEgresos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M12 13.5v3M10.5 15l1.5 1.5 1.5-1.5"/></svg><div><b>Gastos</b><small>Registrar gastos</small></div></button>
+      <button class="navbtn" id="btnApartados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><circle cx="12" cy="14.5" r="3"/><path d="M12 13.2v1.4l.9.7"/></svg><div><b>Apartados</b><small id="apNavSub">Anticipos y abonos</small></div></button>
+      <a class="navbtn" id="btnInformes" href="informes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><b>Informes</b><small>Ventas y gastos</small></div></a>
       <button class="navbtn" id="btnAjustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><div><b>Ajustes</b><small>Precios, impresora y usuarios</small></div></button>
-      <a class="navbtn span2" id="btnInformes" href="informes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><div><b>Informes y reportes</b><small>Ingresos, egresos, productos más vendidos</small></div></a>
     </div>
     <div class="panel">
       <h2 id="ultTit">Ventas de hoy</h2>
@@ -429,6 +451,11 @@ body.conaviso main{padding-bottom:230px}
     <div class="panel">
       <div class="phead2"><h2>Gastos del día</h2><button class="btn ghost sm" id="cIrEg">Registrar gasto</button></div>
       <div class="salelist" id="cEgLista"></div>
+    </div>
+    <div class="panel" id="cApPanel" hidden>
+      <div class="phead2"><h2>Apartados del día</h2><button class="btn ghost sm" id="cIrAp">Ver apartados</button></div>
+      <p class="nota" id="cApNota"></p>
+      <div class="salelist" id="cApLista"></div>
     </div>
     <div class="panel">
       <h2>Ticket de corte</h2>
@@ -499,6 +526,65 @@ body.conaviso main{padding-bottom:230px}
       <div class="salelist" id="egLista"></div>
     </div>
     <button class="btn gold" id="egCsv">Exportar gastos del mes (CSV)</button>
+  </section>
+
+  <!-- APARTADOS -->
+  <section id="v-apartados" hidden>
+    <button class="hero-btn apartar" id="apNuevo">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16h28l-2.4 24a2 2 0 0 1-2 1.8H14.4a2 2 0 0 1-2-1.8z"/><path d="M18 16v-3a6 6 0 0 1 12 0v3"/><path d="M24 23v12M18 29h12"/></svg>
+      <div><b>Nuevo apartado</b><span>Nombre, artículo y anticipo</span></div>
+    </button>
+    <div class="stats">
+      <div class="stat"><small>Abiertos</small><b class="num" id="apN">0</b></div>
+      <div class="stat"><small>Guardado aparte</small><b class="num" id="apPag">$0</b></div>
+      <div class="stat"><small>Por cobrar</small><b class="num" id="apSal">$0</b></div>
+    </div>
+    <p class="nota">El anticipo y los abonos se guardan aparte y no entran al corte. El día del pago final, el apartado entra completo al corte de caja como una venta.</p>
+    <label class="f"><span class="sr">Buscar</span><input type="search" id="apBuscar" placeholder="Buscar por nombre, teléfono o artículo" autocomplete="off"></label>
+    <div class="seg" id="apFiltro">
+      <button type="button" data-f="abierto" aria-pressed="true">Abiertos</button>
+      <button type="button" data-f="liquidado" aria-pressed="false">Liquidados</button>
+      <button type="button" data-f="cancelado" aria-pressed="false">Cancelados</button>
+    </div>
+    <div class="panel">
+      <div class="salelist" id="apLista"></div>
+    </div>
+    <button class="btn gold" id="apCsv">Exportar apartados (CSV)</button>
+  </section>
+
+  <!-- DETALLE DE APARTADO -->
+  <section id="v-apartado" hidden>
+    <div class="panel">
+      <div class="phead2"><h2 id="adCliente">Apartado</h2><span class="pill" id="adEstado"></span></div>
+      <div class="apinfo">
+        <div class="wide"><small>Artículo</small><b id="adArt"></b></div>
+        <div><small>Teléfono</small><span id="adTel"></span></div>
+        <div><small>Apartado el</small><span id="adFecha"></span></div>
+      </div>
+      <div class="apbar" id="adBarBox"><i id="adBar"></i></div>
+      <div class="balance">
+        <div><small>Precio</small><b class="num" id="adPrecio">$0</b></div>
+        <div><small>Pagado</small><b class="num" id="adPagado">$0</b></div>
+        <div><small>Falta</small><b class="num" id="adSaldo">$0</b></div>
+      </div>
+    </div>
+    <div class="actions" id="adAcciones">
+      <button class="btn ghost lg" id="adAbono">Abono</button>
+      <button class="btn primary lg" id="adLiquidar">Liquidar</button>
+    </div>
+    <p class="nota" id="adNota" hidden></p>
+    <div class="panel">
+      <h2>Pagos</h2>
+      <p class="help" id="adPagosHelp">Toca un abono para cancelarlo si se capturó mal.</p>
+      <div class="salelist" id="adPagos"></div>
+    </div>
+    <div class="panel">
+      <h2>Comprobante</h2>
+      <div class="ticketwrap"><div class="ticket" id="adTicket"></div></div>
+      <div class="printbox" id="adPrint"></div>
+    </div>
+    <button class="btn ghost" id="adVenta" hidden>Ver la venta en el corte</button>
+    <button class="btn danger" id="adCancelar">Cancelar apartado</button>
   </section>
 
   <!-- AJUSTES -->
@@ -642,6 +728,52 @@ body.conaviso main{padding-bottom:230px}
   </div>
 </div>
 
+<!-- Hoja: nuevo apartado -->
+<div class="sheet" id="sh-apartado" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Nuevo apartado">
+    <div class="grab"></div>
+    <h3>Nuevo apartado</h3>
+    <label class="f">Nombre<input type="text" id="naCliente" maxlength="60" autocomplete="off" placeholder="¿Quién aparta?"></label>
+    <label class="f">Teléfono de contacto<input type="tel" id="naTel" maxlength="20" inputmode="tel" autocomplete="off" placeholder="10 dígitos"></label>
+    <label class="f">Artículo<input type="text" id="naArt" maxlength="60" autocomplete="off" placeholder="Ej. Cuadro de San Miguel 60 cm"></label>
+    <div class="quick" id="naArtQuick"></div>
+    <div class="row2">
+      <label class="f">Precio total<input type="number" id="naPrecio" inputmode="decimal" min="0" step="0.5" placeholder="$"></label>
+      <label class="f">Anticipo<input type="number" id="naAnt" inputmode="decimal" min="0" step="0.5" placeholder="$"></label>
+    </div>
+    <div class="change num" id="naSaldo"><span>Queda por pagar</span><span>$0.00</span></div>
+    <div class="eyebrow">¿Cómo pagó el anticipo?</div>
+    <div class="seg" id="naMet">
+      <button type="button" data-m="efectivo" aria-pressed="true">Efectivo</button>
+      <button type="button" data-m="transferencia" aria-pressed="false">Transferencia</button>
+      <button type="button" data-m="tarjeta" aria-pressed="false">Tarjeta</button>
+    </div>
+    <p class="lerr" id="naErr" role="alert"></p>
+    <button class="btn primary lg" type="button" id="naGuardar" disabled>Registrar apartado</button>
+  </div>
+</div>
+
+<!-- Hoja: abono / finiquito -->
+<div class="sheet" id="sh-abono" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Abono al apartado">
+    <div class="grab"></div>
+    <h3 id="abTit">Abono</h3>
+    <p class="help" id="abSub"></p>
+    <div class="quick" id="abQuick"></div>
+    <div class="display"><small>Monto</small><b class="num" id="abVer">$0</b></div>
+    <div class="pad" id="abPad"></div>
+    <div class="eyebrow">¿Cómo pagó?</div>
+    <div class="seg" id="abMet">
+      <button type="button" data-m="efectivo" aria-pressed="true">Efectivo</button>
+      <button type="button" data-m="transferencia" aria-pressed="false">Transferencia</button>
+      <button type="button" data-m="tarjeta" aria-pressed="false">Tarjeta</button>
+    </div>
+    <button class="btn primary lg" type="button" id="abGuardar" disabled>Registrar abono</button>
+  </div>
+</div>
+
 <!-- Hoja: confirmar -->
 <div class="sheet" id="sh-confirm" hidden>
   <div class="scrim" data-close></div>
@@ -770,6 +902,18 @@ function deEgreso(f){
   return {id:f.client_id, client_id:f.client_id, folio:+f.id, ts:Date.parse(f.ts), dia:f.dia, hora:f.hora, categoria:f.categoria,
     concepto:f.concepto||'', monto:+f.monto, metodo:f.metodo, registro:f.registro, estado:f.estado, cancelado_por:f.cancelado_por};
 }
+const SELPAGO = 'id,apartado_id,tipo,monto,metodo,ts,dia,hora,registro,estado,cancelado_por';
+const SELAP = 'id,client_id,ts,dia,hora,cliente,telefono,articulo,precio,pagado,estado,registro,folio_venta,liquidado_ts,cancelado_por,cancelado_ts,apartado_pagos('+SELPAGO+')';
+function dePagoAp(p){
+  return {id:+p.id, apartado_id:+p.apartado_id, tipo:p.tipo, monto:+p.monto, metodo:p.metodo, ts:Date.parse(p.ts), dia:p.dia, hora:p.hora,
+    registro:p.registro||'', estado:p.estado, cancelado_por:p.cancelado_por, ap: p.apartados ? {cliente:p.apartados.cliente, articulo:p.apartados.articulo} : null};
+}
+function deApartado(f){
+  return {id:+f.id, client_id:f.client_id, ts:Date.parse(f.ts), dia:f.dia, hora:f.hora, cliente:f.cliente, telefono:f.telefono||'', articulo:f.articulo,
+    precio:+f.precio, pagado:+f.pagado, estado:f.estado, registro:f.registro||'', folio_venta:f.folio_venta ? +f.folio_venta : null,
+    liquidado_ts:f.liquidado_ts ? Date.parse(f.liquidado_ts) : null, cancelado_por:f.cancelado_por, cancelado_ts:f.cancelado_ts ? Date.parse(f.cancelado_ts) : null,
+    pagos:(f.apartado_pagos||[]).map(dePagoAp).sort((a,b)=>a.ts-b.ts || a.id-b.id)};
+}
 async function ventaPorFolio(folio){ return deFila(await q(sb.from('ventas').select(SEL).eq('folio', folio).single())); }
 async function miPerfil(){
   const {data:{session}} = await sb.auth.getSession();
@@ -844,6 +988,20 @@ async function api(accion, datos){
         const r = await q(sb.from('ventas').select('dia').lt('dia',prm.hoy).eq('estado','ok').order('dia',{ascending:false}).limit(1));
         return {dia: r.length ? r[0].dia : null};
       }
+      case 'apartados':
+        return {apartados: (await q(sb.from('apartados').select(SELAP).or('estado.eq.abierto,dia.gte.'+prm.desde).order('id',{ascending:false}).limit(1000))).map(deApartado)};
+      case 'apartado':
+        return {apartado: deApartado(await q(sb.from('apartados').select(SELAP).eq('id', +prm.id).single()))};
+      case 'apartado_nuevo':
+        return {id: +(await q(sb.rpc('registrar_apartado', {p:datos})))};
+      case 'abono': {
+        const r = await q(sb.rpc('abonar_apartado', {p:datos}));
+        return {pago:+r.pago, tipo:r.tipo, folio: r.folio ? +r.folio : null};
+      }
+      case 'cancelar_apartado': await q(sb.rpc('cancelar_apartado', {p_id:datos.id})); return {};
+      case 'cancelar_pago_ap':  await q(sb.rpc('cancelar_pago_apartado', {p_id:datos.id})); return {};
+      case 'pagos_ap':
+        return {pagos: (await todas(()=>sb.from('apartado_pagos').select(SELPAGO+',apartados(cliente,articulo)').gte('dia',prm.desde).lte('dia',prm.hasta).order('ts'))).map(dePagoAp)};
       case 'usuarios': {
         const l = await q(sb.from('perfiles').select('usuario,nombre,activo').order('creado'));
         return {usuarios: l.map(u=>Object.assign(u,{bloqueado:false}))};
@@ -868,6 +1026,8 @@ let sales = pendientes.slice();                  // ventas conocidas en este tel
 let pendEg = lsGet('pos_pend_eg', []);         // gastos registrados sin internet
 let gastos = pendEg.slice();                     // gastos conocidos en este teléfono
 let enLinea = true;
+let apartados = [], apCargados = false, apError = '';   // apartados abiertos y los de los últimos meses
+const pagosDia = {};                                     // día → anticipos, abonos y finiquitos de apartados
 function usuarioActual(){ return yo; }
 function mergeEg(list){
   list.forEach(g=>{ const i=gastos.findIndex(x=>x.id===g.id); if(i>=0) gastos[i]=g; else gastos.push(g); });
@@ -905,9 +1065,12 @@ function guardarCortes(lista){ (lista||[]).forEach(c=>{ if(c) cortes[c.dia]=c; }
 async function cargarHoy(){
   const hoy = localDay();
   try{
-    const [a, u, g] = await Promise.all([api('ventas&dia='+hoy), api('ultimo_dia&hoy='+hoy), opcional(api('egresos&desde='+hoy+'&hasta='+hoy))]);
+    const [a, u, g, pa, ap] = await Promise.all([api('ventas&dia='+hoy), api('ultimo_dia&hoy='+hoy), opcional(api('egresos&desde='+hoy+'&hasta='+hoy)),
+      opcional(api('pagos_ap&desde='+hoy+'&hasta='+hoy)), opcional(api('apartados&desde='+apDesde()))]);
     const c = (await opcional(api('cortes&desde='+(u.dia||hoy)+'&hasta='+hoy))) || {cortes:[]};
     enLinea = true; merge(a.ventas); if(g) reemplazarEg(hoy, hoy, g.egresos); diasCargados.add(hoy);
+    if(pa) ponerPagos(hoy, hoy, pa.pagos);
+    if(ap){ apartados = ap.apartados; apCargados = true; apError = ''; }
     if(u.dia) delete cortes[u.dia];
     guardarCortes(c.cortes);
     diaPendiente = u.dia && !cortes[u.dia] ? u.dia : null;
@@ -916,18 +1079,29 @@ async function cargarHoy(){
 }
 async function cargarDia(dia){
   try{
-    const [r, c, g] = await Promise.all([api('ventas&dia='+dia), opcional(api('cortes&desde='+dia+'&hasta='+dia)), opcional(api('egresos&desde='+dia+'&hasta='+dia))]);
+    const [r, c, g, pa] = await Promise.all([api('ventas&dia='+dia), opcional(api('cortes&desde='+dia+'&hasta='+dia)), opcional(api('egresos&desde='+dia+'&hasta='+dia)),
+      opcional(api('pagos_ap&desde='+dia+'&hasta='+dia))]);
+    if(pa) ponerPagos(dia, dia, pa.pagos);
     enLinea=true; merge(r.ventas); if(g) reemplazarEg(dia, dia, g.egresos); diasCargados.add(dia); if(c){ delete cortes[dia]; guardarCortes(c.cortes); } return true;
   }
   catch(e){ if(e.status===0) enLinea=false; return false; }
   finally{ setSync(); }
 }
+/* Pagos de apartados por día (para el corte; no suman a las ventas) */
+function ponerPagos(desde, hasta, lista){
+  Object.keys(pagosDia).forEach(k=>{ if(k>=desde && k<=hasta) delete pagosDia[k]; });
+  for(let x=new Date(desde+'T12:00'); localDay(x)<=hasta; x.setDate(x.getDate()+1)) pagosDia[localDay(x)] = [];
+  lista.forEach(p=>{ (pagosDia[p.dia] = pagosDia[p.dia] || []).push(p); });
+}
+function apDesde(){ const d = new Date(); d.setDate(d.getDate()-120); return localDay(d); }
 function mesRango(mes){ const [y,m]=mes.split('-').map(Number); return [mes+'-01', mes+'-'+pad(new Date(y,m,0).getDate(),2)]; }
 async function cargarMes(mes){
   const [d,h] = mesRango(mes);
   try{
-    const [r, c0, g] = await Promise.all([api('rango&desde='+d+'&hasta='+h), opcional(api('cortes&desde='+d+'&hasta='+h)), opcional(api('egresos&desde='+d+'&hasta='+h))]);
+    const [r, c0, g, pa] = await Promise.all([api('rango&desde='+d+'&hasta='+h), opcional(api('cortes&desde='+d+'&hasta='+h)), opcional(api('egresos&desde='+d+'&hasta='+h)),
+      opcional(api('pagos_ap&desde='+d+'&hasta='+h))]);
     const c = c0 || {cortes:[]};
+    if(pa) ponerPagos(d, h, pa.pagos);
     enLinea = true; if(g) reemplazarEg(d, h, g.egresos);
     // Lo que el servidor ya no tiene en ese mes (por ejemplo, ventas sin enviar canceladas) se toma del servidor
     const ids = new Set(r.ventas.map(v=>v.client_id));
@@ -1079,7 +1253,29 @@ function ticketCorte(dia){
   Object.keys(METODOS).forEach(k=>{ if(c.met[k]) L.push({t:lr(METODOS[k], m2(c.met[k]))}); });
   if(Object.keys(c.vend).length){ L.push({t:HR}); L.push({t:'Por usuario:'}); Object.keys(c.vend).forEach(n=>L.push({t:lr('  '+n, m2(c.vend[n]))})); }
   pieBalance(L, c, 'DEL DIA', true);
+  pieApartados(L, dia);
   return L;
+}
+/* Anticipos y abonos: informativos, se guardan aparte y no suman al corte */
+function resumenPagos(lista){
+  const ok = (lista||[]).filter(p=>p.estado==='ok'), aparte = ok.filter(p=>p.tipo!=='finiquito');
+  return {lista:lista||[], aparte, fin: ok.filter(p=>p.tipo==='finiquito'),
+    total: r2(aparte.reduce((s,p)=>s+p.monto,0)), efectivo: r2(aparte.filter(p=>p.metodo==='efectivo').reduce((s,p)=>s+p.monto,0))};
+}
+function resguardo(){
+  const ab = apartados.filter(a=>a.estado==='abierto');
+  return {n:ab.length, pagado: r2(ab.reduce((s,a)=>s+a.pagado,0)), saldo: r2(ab.reduce((s,a)=>s+a.precio-a.pagado,0))};
+}
+function pieApartados(L, dia){
+  const ap = resumenPagos(pagosDia[dia]), hoy = dia===localDay(), rg = resguardo();
+  if(!ap.aparte.length && !ap.fin.length && !(hoy && apCargados && rg.n)) return;
+  L.pop();
+  L.push({t:HR});
+  L.push({t:'APARTADOS (no suman al corte)'});
+  if(ap.aparte.length) L.push({t:lr('Anticipos/abonos ('+ap.aparte.length+')', m2(ap.total))});
+  if(ap.fin.length) L.push({t:lr('Liquidados (en ventas)', String(ap.fin.length))});
+  if(hoy && apCargados && rg.n) L.push({t:lr('Guardado aparte ('+rg.n+')', m2(rg.pagado))});
+  L.push({t:''});
 }
 /* Cierre del ticket: ventas, gastos, neto y efectivo en caja */
 function pieBalance(L, c, sufijo, detalleGastos, lblCaja){
@@ -1116,6 +1312,13 @@ function ticketMes(mes){
   if(Object.keys(c.vend).length){ L.push({t:HR}); L.push({t:'Por usuario:'}); Object.keys(c.vend).forEach(n=>L.push({t:lr('  '+n, m2(c.vend[n]))})); }
   pieBalance(L, c, 'DEL MES', false, 'Efectivo neto');
   L.pop();
+  const [md, mh] = mesRango(mes);
+  const pm = resumenPagos(Object.keys(pagosDia).filter(k=>k>=md && k<=mh).flatMap(k=>pagosDia[k]));
+  if(pm.aparte.length || pm.fin.length){
+    L.push({t:HR}); L.push({t:'APARTADOS (no suman al corte)'});
+    if(pm.aparte.length) L.push({t:lr('Anticipos/abonos ('+pm.aparte.length+')', m2(pm.total))});
+    if(pm.fin.length) L.push({t:lr('Liquidados (en ventas)', String(pm.fin.length))});
+  }
   if(sinCorte) L.push({t:'* dia sin corte'});
   L.push({t:''});
   return L;
@@ -1209,12 +1412,12 @@ function mountPrint(el, getLines){
 
 /* ---------- Navegación ---------- */
 let view = 'login';
-const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', mes:'Corte mensual', egresos:'Gastos', ajustes:'Ajustes'};
+const TITLES = {venta:'Venta', inicio:'Resumen', recibo:'Recibo', corte:'Corte del día', mes:'Corte mensual', egresos:'Gastos', apartados:'Apartados', apartado:'Apartado', ajustes:'Ajustes'};
 function go(v){
   if(!yo) v = 'login';
   view = v;
-  ['login','inicio','venta','recibo','corte','mes','egresos','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
-  $('btnBack').hidden = !['inicio','recibo','corte','mes','egresos','ajustes'].includes(v);
+  ['login','inicio','venta','recibo','corte','mes','egresos','apartados','apartado','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
+  $('btnBack').hidden = !['inicio','recibo','corte','mes','egresos','apartados','apartado','ajustes'].includes(v);
   $('btnMenu').hidden = v!=='venta';
   $('btnImp').hidden = !(v==='venta' || v==='recibo');
   $('ttlSub').hidden = v!=='venta';
@@ -1230,6 +1433,8 @@ function go(v){
   if(v==='corte') cargaCorte = renderCorte();
   if(v==='mes') renderMes();
   if(v==='egresos') renderEgresos();
+  if(v==='apartados') renderApartados();
+  if(v==='apartado') renderApartado();
   if(v==='ajustes') renderAjustes();
 }
 function actualizarSub(){
@@ -1283,8 +1488,14 @@ function refresh(){
   if(view==='corte') pintarCorte($('corteDia').value||localDay());
   if(view==='mes') pintarMes(mesActual());
   if(view==='egresos') pintarEgresos($('egDia').value||localDay());
+  if(view==='apartados') pintarApartados();
+  if(view==='apartado') pintarApartado();
 }
-$('btnBack').onclick = ()=>go(view==='recibo'&&volverA ? volverA : view==='egresos'&&egDesdeCorte ? 'corte' : ['corte','mes','egresos','ajustes'].includes(view) ? (view==='corte'&&deMes ? 'mes' : 'inicio') : 'venta');
+$('btnBack').onclick = ()=>{
+  if(view==='apartado'){ go('apartados'); return; }
+  if(view==='apartados'){ go(apDesdeCorte ? 'corte' : 'inicio'); return; }
+  go(view==='recibo'&&volverA ? volverA : view==='egresos'&&egDesdeCorte ? 'corte' : ['corte','mes','egresos','ajustes'].includes(view) ? (view==='corte'&&deMes ? 'mes' : 'inicio') : 'venta');
+};
 $('btnMenu').onclick = ()=>go('inicio');
 $('btnNueva').onclick = ()=>go('venta');
 let deMes = false, volverA = null, cargaCorte = Promise.resolve();
@@ -1301,12 +1512,14 @@ let egDesdeCorte = false;
 $('btnEgresos').onclick = ()=>{ egDesdeCorte = false; $('egDia').value = localDay(); go('egresos'); };
 $('avisoCorte').onclick = ()=>{ if(diaPendiente) abrirCorte(diaPendiente, true); };
 $('btnAjustes').onclick = ()=>go('ajustes');
+let apDesdeCorte = false;
+$('btnApartados').onclick = ()=>{ apDesdeCorte = false; go('apartados'); };
 
 function openSheet(id){ $(id).hidden=false; }
 function closeSheet(id){ $(id).hidden=true; }
 document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{ if(e.target.closest('[data-close]')) sh.hidden=true; }));
 let cfAction=null;
-function confirmar(txt, sub, okLabel, fn){ $('cfTxt').textContent=txt; $('cfSub').textContent=sub||''; $('cfOk').textContent=okLabel; cfAction=fn; openSheet('sh-confirm'); }
+function confirmar(txt, sub, okLabel, fn, clase){ $('cfTxt').textContent=txt; $('cfSub').textContent=sub||''; $('cfOk').textContent=okLabel; $('cfOk').className='btn '+(clase||'danger'); cfAction=fn; openSheet('sh-confirm'); }
 $('cfOk').onclick = ()=>{ closeSheet('sh-confirm'); if(cfAction) cfAction(); cfAction=null; };
 
 /* ---------- Inicio ---------- */
@@ -1333,6 +1546,8 @@ function renderInicio(){
   const av = $('avisoCorte');
   av.hidden = !(diaPendiente && !cortes[diaPendiente]);
   if(!av.hidden) av.innerHTML = `<span><b>Falta el corte del ${dmy(diaPendiente)}</b><br>Toca aquí para hacerlo.</span>`;
+  const rg = resguardo();
+  $('apNavSub').textContent = apCargados && rg.n ? rg.n+' abierto'+(rg.n===1?'':'s')+' · falta '+money(rg.saldo) : 'Anticipos y abonos';
   const del = c.del.slice().sort((a,b)=>b.ts-a.ts);
   $('ultTit').textContent = 'Ventas de hoy'+(del.length ? ' ('+del.length+')' : '');
   $('ultimas').innerHTML = del.length ? del.map(saleRow).join('') : '<div class="empty">Aún no hay ventas hoy.<br>Cada día empieza un listado nuevo; las ventas anteriores quedan guardadas en el corte.</div>';
@@ -1587,12 +1802,13 @@ async function imprimirAuto(v){
 /* ---------- Recibo ---------- */
 let recSale = null;
 function showRecibo(v){
-  if(view!=='recibo') volverA = ['inicio','corte','mes'].includes(view) ? view : null;
+  if(view!=='recibo') volverA = ['inicio','corte','mes','apartado'].includes(view) ? view : null;
   recSale = v; go('recibo');
   $('ttl').textContent = v.folio ? 'Recibo #'+pad(v.folio,4) : 'Recibo sin enviar';
   $('recTicket').innerHTML = toHTML(ticketVenta(v));
   mountPrint($('recPrint'), ()=>ticketVenta(recSale));
-  $('recCancelar').hidden = v.estado==='cancelada';
+  // La venta de un apartado se maneja desde Apartados
+  $('recCancelar').hidden = v.estado==='cancelada' || v.items.some(it=>it.k==='apartado');
 }
 $('recNueva').onclick = ()=>go('venta');
 $('recInicio').onclick = ()=>go('inicio');
@@ -1638,6 +1854,7 @@ function pintarCorte(dia){
   $('cNeto').textContent = money(c.neto); $('cCaja').textContent = money(c.caja);
   $('cEgLista').innerHTML = c.eg.lista.length ? c.eg.lista.slice().sort((a,b)=>b.ts-a.ts).map(egRow).join('') : '<div class="empty">Sin gastos registrados.</div>';
   bindEg($('cEgLista'));
+  pintarApCorte(dia);
   $('cTab').innerHTML = c.lista.length ? `<thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Importe</th></tr></thead><tbody>${c.lista.map(p=>`<tr><td>${esc(p.nombre)}</td><td class="r">${p.cant}</td><td class="r">${money(p.imp)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="r">${c.lista.reduce((s,p)=>s+p.cant,0)}</td><td class="r">${money(c.total)}</td></tr></tfoot>` : '<tbody><tr><td class="empty">No hay ventas en este día.</td></tr></tbody>';
   $('cMet').innerHTML = Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('')
     + Object.keys(c.vend).map(n=>`<span class="pill num">Atendió ${esc(n)}: ${money(c.vend[n])}</span>`).join('');
@@ -1842,6 +2059,277 @@ $('egCsv').onclick = ()=>{
   const [d,h] = mesRango(($('egDia').value||localDay()).slice(0,7)); exportarEgCsv(d, h);
 };
 
+/* ---------- Apartados ----------
+   El anticipo y los abonos se guardan aparte (no suman al corte).
+   Con el pago final (finiquito) el servidor crea la venta por el precio completo y esa sí entra al corte del día. */
+const TIPOS = {anticipo:'Anticipo', abono:'Abono', finiquito:'Finiquito'};
+const EST_AP = {abierto:'Abierto', liquidado:'Liquidado', cancelado:'Cancelado'};
+const folAp = id=>'A'+pad(id,4);
+const saldoDe = a=>r2(a.precio-a.pagado);
+const soloDig = s=>String(s||'').replace(/\D/g,'');
+const sinAcentos = s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+let apSel = null, apFiltro = 'abierto';
+function mergeAp(a){ const i=apartados.findIndex(x=>x.id===a.id); if(i>=0) apartados[i]=a; else apartados.push(a); apartados.sort((x,y)=>y.id-x.id); }
+async function cargarApartados(){
+  try{ const r = await api('apartados&desde='+apDesde()); apartados = r.apartados; apCargados = true; apError = ''; enLinea = true; return true; }
+  catch(e){ if(e.status===0) enLinea = false; apError = e.status===0 ? 'Sin conexión: no se pudieron cargar los apartados.' : 'No se pudieron cargar los apartados: '+e.message; return false; }
+  finally{ setSync(); }
+}
+async function refrescarApartado(id){
+  try{ const r = await api('apartado&id='+id); mergeAp(r.apartado); enLinea = true; return r.apartado; }
+  catch(e){ if(e.status===0) enLinea = false; return null; }
+  finally{ setSync(); }
+}
+async function refrescarPagosHoy(){
+  const hoy = localDay();
+  try{ const r = await api('pagos_ap&desde='+hoy+'&hasta='+hoy); ponerPagos(hoy, hoy, r.pagos); }catch(e){}
+}
+function setSeg(el, m){ el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.m===m))); }
+
+/* Comprobante para el cliente */
+function ticketApartado(a){
+  const L=[], s = saldoDe(a);
+  wrap(cfg.linea1).forEach(t=>L.push({t,a:'c',b:1}));
+  if(cfg.linea2) wrap(cfg.linea2).forEach(t=>L.push({t,a:'c'}));
+  L.push({t:HR});
+  L.push({t:'APARTADO '+folAp(a.id),a:'c',b:1,h:1});
+  L.push({t:lr('Fecha', dmy(a.dia)+' '+a.hora)});
+  if(a.registro) L.push({t:'Atendio: '+a.registro});
+  if(a.estado==='liquidado') L.push({t:'*** LIQUIDADO ***',a:'c',b:1});
+  if(a.estado==='cancelado') L.push({t:'*** APARTADO CANCELADO ***',a:'c',b:1});
+  L.push({t:HR});
+  wrap('Cliente: '+a.cliente).forEach(t=>L.push({t}));
+  if(a.telefono) L.push({t:'Tel: '+a.telefono});
+  wrap('Articulo: '+a.articulo).forEach(t=>L.push({t}));
+  L.push({t:lr('Precio', m2(a.precio)), b:1});
+  L.push({t:HR});
+  L.push({t:'Pagos:'});
+  a.pagos.forEach(p=>L.push({t:lr(dmy(p.dia).slice(0,5)+' '+TIPOS[p.tipo]+(p.estado==='cancelado'?' (cancelado)':''), p.estado==='cancelado' ? '-' : m2(p.monto))}));
+  L.push({t:HR});
+  L.push({t:lr('Pagado', m2(a.pagado))});
+  L.push({t:lr(a.estado==='abierto' ? 'FALTA' : 'SALDO', m2(a.estado==='abierto' ? s : 0)), b:1, h:1});
+  if(a.folio_venta) L.push({t:'Venta folio '+pad(a.folio_venta,6)});
+  L.push({t:HR});
+  if(a.estado==='abierto') wrap('Conserve este comprobante para recoger su articulo.').forEach(t=>L.push({t,a:'c'}));
+  if(cfg.pie) wrap(cfg.pie).forEach(t=>L.push({t,a:'c'}));
+  L.push({t:''});
+  return L;
+}
+function imprimirAp(a, manual){
+  if(!manual && (!autoImp || !btListo())) return;
+  btCola = btCola.then(async ()=>{ try{ await btWrite(toEscPos(ticketApartado(a))); }catch(e){ toast(btError(e)); } actualizarImp(); });
+}
+
+/* Lista */
+function apRow(a){
+  const amt = a.estado==='abierto' ? `<span class="amt num saldo">${money(saldoDe(a))}<small>falta</small></span>`
+    : a.estado==='liquidado' ? `<span class="amt num">${money(a.precio)}<small>liquidado</small></span>`
+    : `<span class="amt num">${money(a.pagado)}<small>cancelado</small></span>`;
+  const det = [a.articulo, a.telefono].filter(Boolean).map(esc).join(' · ');
+  return `<button class="salerow" data-ap="${a.id}"><span class="fol num">${folAp(a.id)}<br>${dmy(a.dia).slice(0,5)}</span><span class="what">${esc(a.cliente)}<small>${det}</small></span>${amt}</button>`;
+}
+function pintarApartados(){
+  const rg = resguardo();
+  $('apN').textContent = rg.n; $('apPag').textContent = money(rg.pagado); $('apSal').textContent = money(rg.saldo);
+  $('apFiltro').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.f===apFiltro)));
+  const qy = sinAcentos($('apBuscar').value.trim()), qd = soloDig(qy);
+  let l = apartados.filter(a=>a.estado===apFiltro);
+  if(qy) l = l.filter(a=>sinAcentos(a.cliente+' '+a.articulo+' '+folAp(a.id)).includes(qy) || (qd.length>=3 && soloDig(a.telefono).includes(qd)));
+  const box = $('apLista');
+  if(!apCargados) box.innerHTML = `<div class="empty">${esc(apError || 'Cargando apartados…')}</div>`;
+  else if(!l.length) box.innerHTML = `<div class="empty">${qy ? 'Nada coincide con la búsqueda.' : apFiltro==='abierto' ? 'No hay apartados abiertos.' : 'No hay apartados '+(apFiltro==='liquidado'?'liquidados':'cancelados')+' en los últimos 4 meses.'}</div>`;
+  else box.innerHTML = l.map(apRow).join('') + (apError ? `<div class="empty">${esc(apError)}</div>` : '');
+}
+function renderApartados(){ pintarApartados(); cargarApartados().then(()=>{ if(view==='apartados') pintarApartados(); }); }
+$('apLista').addEventListener('click', e=>{ const b=e.target.closest('[data-ap]'); if(b) abrirApartado(+b.dataset.ap); });
+$('apFiltro').addEventListener('click', e=>{ const b=e.target.closest('[data-f]'); if(!b) return; apFiltro = b.dataset.f; pintarApartados(); });
+$('apBuscar').addEventListener('input', pintarApartados);
+
+/* Detalle */
+function apActual(){ return apartados.find(a=>a.id===apSel) || null; }
+function abrirApartado(id){ apSel = id; go('apartado'); }
+function renderApartado(){ pintarApartado(); const id = apSel; refrescarApartado(id).then(a=>{ if(view==='apartado' && a && apSel===id) pintarApartado(); }); }
+function telLinks(t){
+  const d = soloDig(t); if(!d) return '—';
+  return `<a href="tel:${d}">${esc(t)}</a><span class="apcont"><a href="https://wa.me/${d.length===10 ? '52'+d : d}" target="_blank" rel="noopener">WhatsApp</a></span>`;
+}
+function pagoRow(p, conCliente){
+  const c = p.estado==='cancelado';
+  const det = c ? 'Cancelado'+(p.cancelado_por ? ' por '+esc(p.cancelado_por) : '') : (METODOS[p.metodo]||p.metodo)+' · '+esc(p.registro);
+  const what = conCliente && p.ap ? `${esc(p.ap.cliente)}<small>${TIPOS[p.tipo]} · ${c ? 'cancelado' : (METODOS[p.metodo]||p.metodo)} · ${esc(p.ap.articulo)}</small>` : `${TIPOS[p.tipo]}<small>${det}</small>`;
+  return `<button class="salerow ${c?'cancel':''}" data-pago="${p.id}" data-apid="${p.apartado_id}"><span class="fol num">${conCliente ? folAp(p.apartado_id) : dmy(p.dia).slice(0,5)}<br>${esc(p.hora)}</span><span class="what">${what}</span><span class="amt num">${money(p.monto)}</span></button>`;
+}
+function pintarApartado(){
+  const a = apActual();
+  $('adAcciones').hidden = $('adCancelar').hidden = $('adVenta').hidden = !a || a.estado!=='abierto';
+  if(!a){ $('adCliente').textContent = apCargados && !enLinea ? 'Sin conexión' : 'Cargando…'; return; }
+  const abierto = a.estado==='abierto', s = saldoDe(a);
+  $('ttl').textContent = 'Apartado '+folAp(a.id);
+  $('adCliente').textContent = a.cliente;
+  const est = $('adEstado'); est.textContent = EST_AP[a.estado]; est.className = 'pill est-'+a.estado;
+  $('adArt').textContent = a.articulo;
+  $('adTel').innerHTML = telLinks(a.telefono);
+  $('adFecha').textContent = dmy(a.dia)+' '+a.hora+(a.registro ? ' · '+a.registro : '');
+  $('adBar').style.width = Math.max(0, Math.min(100, a.pagado/a.precio*100))+'%';
+  $('adBarBox').classList.toggle('full', a.estado==='liquidado');
+  $('adPrecio').textContent = money(a.precio); $('adPagado').textContent = money(a.pagado); $('adSaldo').textContent = money(abierto ? s : 0);
+  $('adLiquidar').textContent = 'Liquidar '+money(s);
+  $('adVenta').hidden = !a.folio_venta;
+  const nota = $('adNota'); nota.hidden = false;
+  nota.textContent = abierto ? 'Lo pagado ('+money(a.pagado)+') se guarda aparte, fuera de la caja. Al liquidar, júntalo con el último pago: entra al corte de ese día una venta de '+money(a.precio)+'.'
+    : a.estado==='liquidado' ? 'Liquidado'+(a.liquidado_ts ? ' el '+fechaCorta(a.liquidado_ts) : '')+'. Entró al corte de ese día como la venta #'+pad(a.folio_venta||0,4)+' por '+money(a.precio)+'.'
+    : 'Cancelado'+(a.cancelado_por ? ' por '+a.cancelado_por : '')+(a.cancelado_ts ? ' el '+fechaCorta(a.cancelado_ts) : '')+'. Lo recibido ('+money(a.pagado)+') no entró a ningún corte.';
+  $('adPagosHelp').hidden = !abierto || !a.pagos.some(p=>p.estado==='ok' && p.tipo!=='finiquito');
+  $('adPagos').innerHTML = a.pagos.length ? a.pagos.map(p=>pagoRow(p,false)).join('') : '<div class="empty">Sin pagos.</div>';
+  $('adTicket').innerHTML = toHTML(ticketApartado(a));
+  if(!$('adPrint')._refresh) mountPrint($('adPrint'), ()=>{ const x = apActual(); return x ? ticketApartado(x) : ticketPrueba(); }); else $('adPrint')._refresh();
+}
+$('adPagos').addEventListener('click', e=>{
+  const b = e.target.closest('[data-pago]'), a = apActual();
+  if(!b || !a || a.estado!=='abierto') return;
+  const p = a.pagos.find(x=>x.id===+b.dataset.pago);
+  if(!p || p.estado!=='ok' || p.tipo==='finiquito') return;
+  const nom = TIPOS[p.tipo].toLowerCase();
+  confirmar('¿Cancelar el '+nom+' de '+money(p.monto)+'?', 'Del '+dmy(p.dia)+' '+p.hora+'. Se resta de lo pagado y el apartado sigue abierto.', 'Cancelar '+nom, async ()=>{
+    try{ await api('cancelar_pago_ap', {id:p.id}); await refrescarApartado(a.id); await refrescarPagosHoy(); refresh(); toast(TIPOS[p.tipo]+' cancelado'); }
+    catch(e){ toast(e.status===0 ? 'Necesitas internet para cancelar.' : e.message); }
+  });
+});
+$('adCancelar').onclick = ()=>{
+  const a = apActual(); if(!a || a.estado!=='abierto') return;
+  confirmar('¿Cancelar el apartado '+folAp(a.id)+'?', a.cliente+' · '+a.articulo+'. Ya pagó '+money(a.pagado)+'; ese dinero no entra al corte. El artículo queda libre para venderse.', 'Cancelar apartado', async ()=>{
+    try{ await api('cancelar_apartado', {id:a.id}); await refrescarApartado(a.id); refresh(); toast('Apartado cancelado'); }
+    catch(e){ toast(e.status===0 ? 'Necesitas internet para cancelar.' : e.message); }
+  });
+};
+$('adVenta').onclick = async ()=>{
+  const a = apActual(); if(!a || !a.folio_venta) return;
+  let v = sales.find(x=>x.folio===a.folio_venta);
+  if(!v){ try{ v = normVenta(await ventaPorFolio(a.folio_venta)); merge([v]); }catch(e){ toast(errDe(e).message); return; } }
+  showRecibo(v);
+};
+$('adAbono').onclick = ()=>abrirAbono(false);
+$('adLiquidar').onclick = ()=>abrirAbono(true);
+
+/* Hoja: abono o finiquito */
+let abMetodo = 'efectivo', abCid = null, abGuardando = false;
+const abPad = montarPad($('abPad'), v=>{ $('abVer').textContent = v ? '$'+v : '$0'; validarAb(); });
+$('abMet').addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; abMetodo = b.dataset.m; setSeg($('abMet'), abMetodo); });
+$('abQuick').addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) abPad.set(b.dataset.v); });
+function abrirAbono(liquidar){
+  const a = apActual(); if(!a || a.estado!=='abierto') return;
+  const s = saldoDe(a);
+  abCid = 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);   // el mismo al reintentar: no se duplica
+  abMetodo = 'efectivo'; setSeg($('abMet'), abMetodo);
+  $('abTit').textContent = liquidar ? 'Liquidar apartado' : 'Abono al apartado';
+  $('abSub').textContent = folAp(a.id)+' · '+a.cliente+' · '+a.articulo+'. Falta '+money(s)+'.';
+  $('abQuick').innerHTML = `<button type="button" class="add" data-v="${s}">Todo lo que falta · ${money(s)}</button>`;
+  abPad.set(liquidar ? s : '');
+  openSheet('sh-abono');
+}
+function validarAb(){
+  const a = apActual(), btn = $('abGuardar'); if(!a) return;
+  const m = r2(abPad.get()), s = saldoDe(a), fin = m>0 && Math.abs(m-s)<0.005;
+  btn.disabled = abGuardando || !(m>0) || m>s+0.004;
+  btn.textContent = abGuardando ? 'Guardando…' : !(m>0) ? 'Escribe el monto' : m>s+0.004 ? 'Pasa de lo que falta ('+money(s)+')'
+    : fin ? 'Liquidar · entra al corte '+money(a.precio) : 'Registrar abono · faltarán '+money(r2(s-m));
+}
+$('abGuardar').onclick = ()=>{
+  const a = apActual(); if(!a) return;
+  const m = r2(abPad.get()), s = saldoDe(a);
+  if(!(m>0) || m>s+0.004) return;
+  if(Math.abs(m-s)<0.005) confirmar('¿Liquidar el apartado '+folAp(a.id)+'?',
+    'Con este pago de '+money(m)+' queda pagado. Junta lo que se guardó aparte ('+money(a.pagado)+') con este pago: entra al corte de hoy una venta de '+money(a.precio)+'. Entrega el artículo: '+a.articulo+'.',
+    'Liquidar', ()=>enviarAbono(a, m), 'primary');
+  else enviarAbono(a, m);
+};
+async function enviarAbono(a, m){
+  if(abGuardando) return;
+  abGuardando = true; validarAb();
+  try{
+    const r = await api('abono', {client_id:abCid, apartado:a.id, monto:m, metodo:abMetodo});
+    closeSheet('sh-abono'); vibrar(30);
+    const a2 = await refrescarApartado(a.id);
+    if(r.folio){ try{ merge([normVenta(await ventaPorFolio(r.folio))]); }catch(e){} }
+    await refrescarPagosHoy();
+    toast(r.tipo==='finiquito' ? 'Liquidado: venta #'+pad(r.folio,4)+' por '+money(a.precio)+' en el corte de hoy' : 'Abono de '+money(m)+' registrado');
+    refresh();
+    if(a2) imprimirAp(a2, false);
+  }catch(e){ toast(e.status===0 ? 'Sin internet: el abono no se guardó. Intenta de nuevo.' : e.message); }
+  finally{ abGuardando = false; validarAb(); }
+}
+
+/* Hoja: nuevo apartado */
+let naMetodo = 'efectivo', naCid = null, naGuardando = false;
+const AP_SUG = ['cuadro','imagen','misal','libro','rosario','cirio'];
+$('apNuevo').onclick = ()=>{
+  ['naCliente','naTel','naArt','naPrecio','naAnt'].forEach(id=>$(id).value='');
+  naCid = 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+  naMetodo = 'efectivo'; setSeg($('naMet'), naMetodo); $('naErr').textContent = '';
+  $('naArtQuick').innerHTML = AP_SUG.filter(k=>cfg.productos[k]).map(k=>`<button type="button" data-n="${esc(cfg.productos[k].nombre)}">${esc(cfg.productos[k].nombre)}</button>`).join('');
+  validarNa(); openSheet('sh-apartado');
+};
+$('naArtQuick').addEventListener('click', e=>{ const b=e.target.closest('[data-n]'); if(!b) return; const i = $('naArt'); i.value = b.dataset.n+' '; i.focus(); validarNa(); });
+$('naMet').addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; naMetodo = b.dataset.m; setSeg($('naMet'), naMetodo); });
+['naCliente','naTel','naArt','naPrecio','naAnt'].forEach(id=>$(id).addEventListener('input', ()=>{ $('naErr').textContent=''; validarNa(); }));
+function datosNa(){
+  return {cliente:$('naCliente').value.trim(), telefono:$('naTel').value.trim(), articulo:$('naArt').value.trim(),
+    precio:r2(parseFloat($('naPrecio').value)), anticipo:r2(parseFloat($('naAnt').value))};
+}
+function validarNa(){
+  const d = datosNa(), box = $('naSaldo'), btn = $('naGuardar');
+  const cubre = d.precio>0 && d.anticipo>0 && d.anticipo>=d.precio;
+  box.classList.toggle('short', cubre);
+  box.innerHTML = cubre ? '<span>El anticipo cubre todo: haz una venta normal</span>' : `<span>Queda por pagar</span><span>${d.precio>0 ? money(Math.max(0, r2(d.precio-d.anticipo))) : '—'}</span>`;
+  const tel = soloDig(d.telefono).length>=8;
+  const ok = d.cliente && tel && d.articulo && d.precio>0 && d.anticipo>0 && !cubre;
+  btn.disabled = naGuardando || !ok;
+  btn.textContent = naGuardando ? 'Guardando…' : ok ? 'Apartar · anticipo '+money(d.anticipo) : !d.cliente ? 'Falta el nombre' : !tel ? 'Falta el teléfono'
+    : !d.articulo ? 'Falta el artículo' : !(d.precio>0) ? 'Falta el precio' : !(d.anticipo>0) ? 'Falta el anticipo' : 'Revisa el anticipo';
+}
+$('naGuardar').onclick = async ()=>{
+  if(naGuardando) return;
+  const d = datosNa();
+  naGuardando = true; validarNa();
+  try{
+    const r = await api('apartado_nuevo', Object.assign({client_id:naCid, metodo:naMetodo}, d));
+    closeSheet('sh-apartado'); vibrar(30);
+    const a = await refrescarApartado(r.id);
+    await refrescarPagosHoy();
+    toast('Apartado '+folAp(r.id)+' registrado · anticipo '+money(d.anticipo));
+    abrirApartado(r.id);
+    if(a) imprimirAp(a, false);
+  }catch(e){ $('naErr').textContent = e.status===0 ? 'Sin internet: el apartado no se guardó. Intenta de nuevo con conexión.' : e.message; }
+  finally{ naGuardando = false; validarNa(); }
+};
+
+/* En el corte del día */
+function pintarApCorte(dia){
+  const ap = resumenPagos(pagosDia[dia]), hoy = dia===localDay(), rg = resguardo(), panel = $('cApPanel');
+  panel.hidden = !ap.lista.length && !(hoy && apCargados && rg.n);
+  if(panel.hidden) return;
+  const t = [];
+  t.push(ap.aparte.length ? 'Anticipos y abonos de este día: '+money(ap.total)+(ap.efectivo && ap.efectivo!==ap.total ? ' ('+money(ap.efectivo)+' en efectivo)' : '')+'. Se guardan aparte y no suman al corte.' : 'No hubo anticipos ni abonos este día.');
+  if(ap.fin.length) t.push(ap.fin.length===1 ? 'Un apartado se liquidó y ya está en las ventas del día por el precio completo.' : ap.fin.length+' apartados se liquidaron y ya están en las ventas del día por el precio completo.');
+  if(hoy && apCargados && rg.n) t.push('Guardado aparte en total: '+money(rg.pagado)+' de '+rg.n+' apartado'+(rg.n===1?' abierto':'s abiertos')+'.');
+  $('cApNota').textContent = t.join(' ');
+  $('cApLista').innerHTML = ap.lista.slice().sort((a,b)=>b.ts-a.ts).map(p=>pagoRow(p,true)).join('');
+}
+$('cApLista').addEventListener('click', e=>{ const b=e.target.closest('[data-apid]'); if(b){ apDesdeCorte = true; abrirApartado(+b.dataset.apid); } });
+$('cIrAp').onclick = ()=>{ apDesdeCorte = true; go('apartados'); };
+
+$('apCsv').onclick = async ()=>{
+  try{
+    const l = (await todas(()=>sb.from('apartados').select(SELAP).order('id'))).map(deApartado);
+    const rows = [['folio','fecha','cliente','telefono','articulo','precio','pagado','falta','estado','registro','liquidado','folio venta','pagos']];
+    l.forEach(a=>rows.push([folAp(a.id), a.dia, a.cliente, a.telefono, a.articulo, a.precio.toFixed(2), a.pagado.toFixed(2), (a.estado==='abierto' ? saldoDe(a) : 0).toFixed(2),
+      EST_AP[a.estado], a.registro, a.liquidado_ts ? localDay(new Date(a.liquidado_ts)) : '', a.folio_venta || '',
+      a.pagos.filter(p=>p.estado==='ok').map(p=>p.dia+' '+TIPOS[p.tipo]+' '+p.monto.toFixed(2)).join(' | ')]));
+    descargarArchivo('apartados-'+localDay()+'.csv', '﻿'+rows.map(r=>r.map(celdaCsv).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+    toast(l.length ? 'CSV listo: '+l.length+' apartado(s)' : 'No hay apartados');
+  }catch(e){ toast(errDe(e).message); }
+};
+
 /* ---------- Ajustes ---------- */
 function renderAjustes(){
   $('aL1').value = cfg.linea1; $('aL2').value = cfg.linea2; $('aPie').value = cfg.pie;
@@ -1922,7 +2410,8 @@ $('rRespaldo').onclick = async ()=>{
       usuarios: await q(sb.from('perfiles').select('usuario,nombre,activo,creado').order('creado')),
       ventas: (await todas(()=>sb.from('ventas').select(SEL).order('folio'))).map(deFila),
       egresos: (await todas(()=>sb.from('egresos').select(SELEG).order('id'))).map(deEgreso),
-      cortes: (await q(sb.from('cortes').select('*').order('dia'))).map(deCorte)
+      cortes: (await q(sb.from('cortes').select('*').order('dia'))).map(deCorte),
+      apartados: await opcional(todas(()=>sb.from('apartados').select(SELAP).order('id')).then(l=>l.map(deApartado)))
     };
     descargarArchivo('respaldo-punto-de-venta-'+localDay()+'.json', JSON.stringify(todo,null,2), 'application/json');
   }catch(e){ toast(errDe(e).message); }
