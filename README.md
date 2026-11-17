@@ -14,6 +14,7 @@ Punto de venta para celular. Registra las ventas de artículos religiosos, impri
 | `supabase-esquema.sql` | Tablas, reglas de seguridad, funciones y usuarios iniciales (proyecto nuevo) |
 | `supabase-actualizacion-egresos-cortes.sql` | Agrega egresos y cortes a una base que ya funciona (no borra nada) |
 | `supabase-actualizacion-apartados.sql` | Agrega los apartados a una base que ya funciona (no borra nada) |
+| `supabase-actualizacion-fondo.sql` | Agrega el fondo de caja inicial a una base que ya funciona (no borra nada) |
 | `sw.js`, `manifest.webmanifest`, `icon-*.png` | App instalable y carga instantánea en el celular |
 
 ## Entrar e instalar en el celular
@@ -55,6 +56,14 @@ En el Resumen toca **Apartados ▸ Nuevo apartado**: nombre, teléfono de contac
 - **El anticipo y los abonos no entran al corte**: se guardan aparte, fuera de la caja. El día que se liquida, ese dinero se junta con el último pago. El corte del día muestra, solo como referencia, cuánto se recibió en anticipos y abonos y cuánto hay guardado aparte en total.
 - Un abono capturado por error se cancela tocándolo en el apartado. Un apartado que no se va a liquidar se cancela con **Cancelar apartado** (lo recibido no entra a ningún corte).
 - Botón de llamada y de WhatsApp al teléfono del cliente. CSV de todos los apartados.
+
+## Fondo de caja inicial
+
+Al abrir, en el Resumen toca **Registrar** en «Fondo de caja inicial» y escribe con cuánto efectivo empieza la caja (hay botón para usar el mismo fondo del día anterior). Se puede corregir con **Cambiar** y registrar el de días anteriores (hasta 7 días) desde **Corte del día**.
+
+- El fondo **no es venta ni ingreso**: no cambia el total vendido ni el neto.
+- **Efectivo en caja = fondo inicial + ventas en efectivo − gastos en efectivo.** Es lo que debe haber en la caja al cerrar.
+- El corte guarda el fondo del día y el ticket imprime «Fondo inicial» y «EFECTIVO EN CAJA». Si el fondo se corrige después del corte, aparece «Hubo cambios después del corte» para actualizarlo.
 
 ## Corte del día y corte mensual
 

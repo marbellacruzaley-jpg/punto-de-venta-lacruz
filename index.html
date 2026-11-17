@@ -348,6 +348,16 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
 .pill.est-cancelado{background:var(--danger-soft);color:var(--danger)}
 .nota{font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:0}
 #abPad button{min-height:46px;font-size:1.35rem}
+/* Fondo de caja inicial */
+.fondo{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+.fondo[hidden]{display:none}
+.fondo .fi{flex:1;min-width:0}
+.fondo small{display:block;color:var(--muted);font-size:.78rem}
+.fondo b{font-size:1.05rem}
+.fondo.falta{background:var(--gold-soft)}
+.fondo.falta b{color:var(--gold)}
+.fondo .btn{flex:none;width:auto}
+#foPad button{min-height:46px;font-size:1.35rem}
 </style>
 </head>
 <body>
@@ -391,6 +401,7 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
         <div><div class="big num" id="hoyN">0</div><div class="sub">ventas</div></div>
       </div>
       <div class="methods" id="hoyMet"></div>
+      <div class="fondo" id="hoyFondo" hidden></div>
       <div class="balance" id="hoyBal"></div>
       <button class="btn primary wide" id="btnHacerHoy" style="margin-top:14px">Hacer corte de hoy</button>
     </div>
@@ -428,6 +439,7 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
   <section id="v-corte" hidden>
     <label class="f">Día del corte<input type="date" id="corteDia"></label>
     <div class="cestado" id="cEstado"></div>
+    <div class="fondo" id="cFondo" hidden></div>
     <button class="btn primary lg" id="cHacer">Hacer corte del día</button>
     <div class="stats">
       <div class="stat"><small>Total</small><b class="num" id="cTotal">$0</b></div>
@@ -774,6 +786,21 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
   </div>
 </div>
 
+<!-- Hoja: fondo de caja inicial -->
+<div class="sheet" id="sh-fondo" hidden>
+  <div class="scrim" data-close></div>
+  <div class="card" role="dialog" aria-label="Fondo de caja inicial">
+    <div class="grab"></div>
+    <h3 id="foTit">Fondo de caja inicial</h3>
+    <p class="help">Cuenta el efectivo con el que abre la caja. No es venta: solo sirve para que el corte diga cuánto debe haber en caja.</p>
+    <div class="quick" id="foQuick"></div>
+    <div class="display"><small>Fondo inicial</small><b class="num" id="foVer">$0</b></div>
+    <div class="pad" id="foPad"></div>
+    <p class="lerr" id="foErr" role="alert"></p>
+    <button class="btn primary lg" type="button" id="foGuardar" disabled>Guardar fondo</button>
+  </div>
+</div>
+
 <!-- Hoja: confirmar -->
 <div class="sheet" id="sh-confirm" hidden>
   <div class="scrim" data-close></div>
@@ -895,7 +922,7 @@ function deFila(f){
 function deCorte(c){
   return c && {dia:c.dia, ventas:+c.ventas, canceladas:+c.canceladas, total:+c.total, efectivo:+c.efectivo,
     transferencia:+c.transferencia, tarjeta:+c.tarjeta, egresos:+c.egresos||0, egresos_efectivo:+c.egresos_efectivo||0,
-    n_egresos:+c.n_egresos||0, hecho_por:c.hecho_por, hecho_en:Date.parse(c.hecho_en), veces:+c.veces||1};
+    n_egresos:+c.n_egresos||0, fondo: c.fondo==null ? null : +c.fondo, hecho_por:c.hecho_por, hecho_en:Date.parse(c.hecho_en), veces:+c.veces||1};
 }
 const SELEG = 'id,client_id,ts,dia,hora,categoria,concepto,monto,metodo,registro,estado,cancelado_por';
 function deEgreso(f){
@@ -914,6 +941,7 @@ function deApartado(f){
     liquidado_ts:f.liquidado_ts ? Date.parse(f.liquidado_ts) : null, cancelado_por:f.cancelado_por, cancelado_ts:f.cancelado_ts ? Date.parse(f.cancelado_ts) : null,
     pagos:(f.apartado_pagos||[]).map(dePagoAp).sort((a,b)=>a.ts-b.ts || a.id-b.id)};
 }
+function deFondo(f){ return f && {dia:f.dia, monto:+f.monto, registro:f.registro||'', ts:Date.parse(f.ts), veces:+f.veces||1}; }
 async function ventaPorFolio(folio){ return deFila(await q(sb.from('ventas').select(SEL).eq('folio', folio).single())); }
 async function miPerfil(){
   const {data:{session}} = await sb.auth.getSession();
@@ -984,6 +1012,10 @@ async function api(accion, datos){
         return {corte: deCorte(await q(sb.rpc('hacer_corte', {p_dia:datos.dia})))};
       case 'cortes':
         return {cortes: (await q(sb.from('cortes').select('*').gte('dia',prm.desde).lte('dia',prm.hasta))).map(deCorte)};
+      case 'fondos':
+        return {fondos: (await q(sb.from('fondos').select('dia,monto,registro,ts,veces').gte('dia',prm.desde).lte('dia',prm.hasta))).map(deFondo)};
+      case 'fondo':
+        return {fondo: deFondo(await q(sb.rpc('registrar_fondo', {p_dia:datos.dia, p_monto:datos.monto})))};
       case 'ultimo_dia': {
         const r = await q(sb.from('ventas').select('dia').lt('dia',prm.hoy).eq('estado','ok').order('dia',{ascending:false}).limit(1));
         return {dia: r.length ? r[0].dia : null};
@@ -1028,6 +1060,14 @@ let gastos = pendEg.slice();                     // gastos conocidos en este tel
 let enLinea = true;
 let apartados = [], apCargados = false, apError = '';   // apartados abiertos y los de los últimos meses
 const pagosDia = {};                                     // día → anticipos, abonos y finiquitos de apartados
+const fondos = {};                                       // día → fondo de caja inicial {dia, monto, registro, ts, veces}
+let fondoActivo = false;                                 // la base ya tiene la tabla de fondos
+function ponerFondos(desde, hasta, lista){
+  Object.keys(fondos).forEach(k=>{ if(k>=desde && k<=hasta) delete fondos[k]; });
+  (lista||[]).forEach(f=>{ fondos[f.dia] = f; });
+  fondoActivo = true;
+}
+function haceDias(n){ const d = new Date(); d.setDate(d.getDate()-n); return localDay(d); }
 function usuarioActual(){ return yo; }
 function mergeEg(list){
   list.forEach(g=>{ const i=gastos.findIndex(x=>x.id===g.id); if(i>=0) gastos[i]=g; else gastos.push(g); });
@@ -1065,12 +1105,13 @@ function guardarCortes(lista){ (lista||[]).forEach(c=>{ if(c) cortes[c.dia]=c; }
 async function cargarHoy(){
   const hoy = localDay();
   try{
-    const [a, u, g, pa, ap] = await Promise.all([api('ventas&dia='+hoy), api('ultimo_dia&hoy='+hoy), opcional(api('egresos&desde='+hoy+'&hasta='+hoy)),
-      opcional(api('pagos_ap&desde='+hoy+'&hasta='+hoy)), opcional(api('apartados&desde='+apDesde()))]);
+    const [a, u, g, pa, ap, fo] = await Promise.all([api('ventas&dia='+hoy), api('ultimo_dia&hoy='+hoy), opcional(api('egresos&desde='+hoy+'&hasta='+hoy)),
+      opcional(api('pagos_ap&desde='+hoy+'&hasta='+hoy)), opcional(api('apartados&desde='+apDesde())), opcional(api('fondos&desde='+haceDias(10)+'&hasta='+hoy))]);
     const c = (await opcional(api('cortes&desde='+(u.dia||hoy)+'&hasta='+hoy))) || {cortes:[]};
     enLinea = true; merge(a.ventas); if(g) reemplazarEg(hoy, hoy, g.egresos); diasCargados.add(hoy);
     if(pa) ponerPagos(hoy, hoy, pa.pagos);
     if(ap){ apartados = ap.apartados; apCargados = true; apError = ''; }
+    if(fo) ponerFondos(haceDias(10), hoy, fo.fondos);
     if(u.dia) delete cortes[u.dia];
     guardarCortes(c.cortes);
     diaPendiente = u.dia && !cortes[u.dia] ? u.dia : null;
@@ -1079,9 +1120,10 @@ async function cargarHoy(){
 }
 async function cargarDia(dia){
   try{
-    const [r, c, g, pa] = await Promise.all([api('ventas&dia='+dia), opcional(api('cortes&desde='+dia+'&hasta='+dia)), opcional(api('egresos&desde='+dia+'&hasta='+dia)),
-      opcional(api('pagos_ap&desde='+dia+'&hasta='+dia))]);
+    const [r, c, g, pa, fo] = await Promise.all([api('ventas&dia='+dia), opcional(api('cortes&desde='+dia+'&hasta='+dia)), opcional(api('egresos&desde='+dia+'&hasta='+dia)),
+      opcional(api('pagos_ap&desde='+dia+'&hasta='+dia)), opcional(api('fondos&desde='+dia+'&hasta='+dia))]);
     if(pa) ponerPagos(dia, dia, pa.pagos);
+    if(fo) ponerFondos(dia, dia, fo.fondos);
     enLinea=true; merge(r.ventas); if(g) reemplazarEg(dia, dia, g.egresos); diasCargados.add(dia); if(c){ delete cortes[dia]; guardarCortes(c.cortes); } return true;
   }
   catch(e){ if(e.status===0) enLinea=false; return false; }
@@ -1098,10 +1140,11 @@ function mesRango(mes){ const [y,m]=mes.split('-').map(Number); return [mes+'-01
 async function cargarMes(mes){
   const [d,h] = mesRango(mes);
   try{
-    const [r, c0, g, pa] = await Promise.all([api('rango&desde='+d+'&hasta='+h), opcional(api('cortes&desde='+d+'&hasta='+h)), opcional(api('egresos&desde='+d+'&hasta='+h)),
-      opcional(api('pagos_ap&desde='+d+'&hasta='+h))]);
+    const [r, c0, g, pa, fo] = await Promise.all([api('rango&desde='+d+'&hasta='+h), opcional(api('cortes&desde='+d+'&hasta='+h)), opcional(api('egresos&desde='+d+'&hasta='+h)),
+      opcional(api('pagos_ap&desde='+d+'&hasta='+h)), opcional(api('fondos&desde='+d+'&hasta='+h))]);
     const c = c0 || {cortes:[]};
     if(pa) ponerPagos(d, h, pa.pagos);
+    if(fo) ponerFondos(d, h, fo.fondos);
     enLinea = true; if(g) reemplazarEg(d, h, g.egresos);
     // Lo que el servidor ya no tiene en ese mes (por ejemplo, ventas sin enviar canceladas) se toma del servidor
     const ids = new Set(r.ventas.map(v=>v.client_id));
@@ -1225,7 +1268,12 @@ function resumir(del, egs){
   return {del, ok, lista, met, vend, dias, total, canceladas: del.length-ok.length,
     eg, neto: r2(total-eg.total), caja: r2((met.efectivo||0)-eg.efectivo)};
 }
-function corteData(dia){ return resumir(sales.filter(v=>v.dia===dia), gastos.filter(g=>g.dia===dia)); }
+function corteData(dia){
+  const c = resumir(sales.filter(v=>v.dia===dia), gastos.filter(g=>g.dia===dia)), f = fondos[dia];
+  c.esDia = true; c.fondo = f ? f.monto : null;
+  c.enCaja = r2((c.fondo||0) + c.caja);      // fondo + ventas en efectivo − gastos en efectivo
+  return c;
+}
 function mesData(mes){ return resumir(sales.filter(v=>v.dia && v.dia.slice(0,7)===mes), gastos.filter(g=>g.dia && g.dia.slice(0,7)===mes)); }
 const fechaCorta = ts=>{ const d=localDay(new Date(ts)); return dmy(d).slice(0,6)+d.slice(2,4)+' '+hhmm(ts); };
 const NOMMES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -1234,7 +1282,9 @@ const nombreMes = mes=>NOMMES[+mes.slice(5,7)-1]+' '+mes.slice(0,4);
 function estadoCorte(dia){
   const c = corteData(dia), k = cortes[dia];
   if(!k) return {c, k, est:'pend'};
-  const cambio = diasCargados.has(dia) && (k.ventas!==c.ok.length || k.canceladas!==c.canceladas || Math.abs(k.total-c.total)>0.004 || Math.abs((k.egresos||0)-c.eg.total)>0.004);
+  const fk = k.fondo==null ? null : r2(k.fondo), fc = c.fondo==null ? null : r2(c.fondo);
+  const cambio = diasCargados.has(dia) && (k.ventas!==c.ok.length || k.canceladas!==c.canceladas || Math.abs(k.total-c.total)>0.004 || Math.abs((k.egresos||0)-c.eg.total)>0.004
+    || (fondoActivo && fk!==fc));
   return {c, k, est: cambio ? 'cambio' : 'hecho'};
 }
 function ticketCorte(dia){
@@ -1290,7 +1340,14 @@ function pieBalance(L, c, sufijo, detalleGastos, lblCaja){
     L.push({t:HR});
     L.push({t:lr('NETO '+sufijo, m2(c.neto)), b:1, h:1});
   }
-  L.push({t:lr(lblCaja||'Efectivo en caja', m2(c.caja))});
+  if(c.esDia && c.fondo!=null){
+    L.push({t:lr('Efectivo del dia', m2(c.caja))});
+    L.push({t:lr('Fondo inicial', m2(c.fondo))});
+    L.push({t:lr('EFECTIVO EN CAJA', m2(c.enCaja)), b:1});
+  } else {
+    L.push({t:lr(lblCaja||'Efectivo en caja', m2(c.caja))});
+    if(c.esDia && fondoActivo) L.push({t:'Fondo inicial: sin registrar'});
+  }
   L.push({t:''});
 }
 function ticketMes(mes){
@@ -1538,8 +1595,9 @@ function renderInicio(){
   const pillCorte = e.est==='hecho' ? `<span class="pill ok">✓ Corte hecho ${hhmm(e.k.hecho_en)}</span>`
     : e.est==='cambio' ? '<span class="pill pend">Ventas después del corte</span>' : '';
   $('hoyMet').innerHTML = (Object.keys(METODOS).filter(k=>c.met[k]).map(k=>`<span class="pill num">${METODOS[k]} ${money(c.met[k])}</span>`).join('') || '<span class="pill">Aún sin ventas hoy</span>') + pillCorte;
-  $('hoyBal').innerHTML = (c.ok.length || c.eg.ok.length)
-    ? `<div><small>Gastos</small><b class="num ${c.eg.total?'neg':''}">${c.eg.total?'-':''}${money(c.eg.total)}</b></div><div><small>Neto</small><b class="num">${money(c.neto)}</b></div><div><small>Efectivo en caja</small><b class="num">${money(c.caja)}</b></div>` : '';
+  $('hoyBal').innerHTML = (c.ok.length || c.eg.ok.length || c.fondo!=null)
+    ? `<div><small>Gastos</small><b class="num ${c.eg.total?'neg':''}">${c.eg.total?'-':''}${money(c.eg.total)}</b></div><div><small>Neto</small><b class="num">${money(c.neto)}</b></div><div><small>Efectivo en caja</small><b class="num">${money(c.enCaja)}</b></div>` : '';
+  pintarFondo($('hoyFondo'), hoy);
   const b = $('btnHacerHoy');
   b.textContent = e.est==='hecho' ? 'Ver corte de hoy' : e.est==='cambio' ? 'Actualizar corte de hoy' : 'Hacer corte de hoy';
   b.className = 'btn wide '+(e.est==='hecho' ? 'ghost' : 'primary');
@@ -1845,13 +1903,16 @@ function pintarCorte(dia){
   } else {
     box.className = 'cestado cambio';
     const gk = k.egresos ? ' y '+money(k.egresos)+' de gastos' : '', gc = c.eg.total ? ' y '+money(c.eg.total)+' de gastos' : '';
-    box.innerHTML = `<b>Hubo cambios después del corte</b><small>El corte de ${esc(k.hecho_por)} (${fechaCorta(k.hecho_en)}) marcó ${money(k.total)} en ${k.ventas} venta${k.ventas===1?'':'s'}${gk}; ahora son ${money(c.total)} en ${c.ok.length}${gc}. Actualízalo.</small>`;
+    const fk = k.fondo==null ? 'sin fondo' : 'fondo '+money(k.fondo), fc = c.fondo==null ? 'sin fondo' : 'fondo '+money(c.fondo);
+    const cf = fondoActivo && fk!==fc ? ` El fondo de caja cambió: ${fk} → ${fc}.` : '';
+    box.innerHTML = `<b>Hubo cambios después del corte</b><small>El corte de ${esc(k.hecho_por)} (${fechaCorta(k.hecho_en)}) marcó ${money(k.total)} en ${k.ventas} venta${k.ventas===1?'':'s'}${gk}; ahora son ${money(c.total)} en ${c.ok.length}${gc}.${cf} Actualízalo.</small>`;
     btn.textContent = 'Actualizar corte'; btn.className = 'btn primary lg';
   }
   btn.hidden = dia>hoy || (e.est==='pend' && !c.del.length && dia!==hoy);
   $('cTotal').textContent = money(c.total); $('cN').textContent = c.ok.length; $('cCan').textContent = c.canceladas;
   $('cEg').textContent = (c.eg.total?'-':'')+money(c.eg.total); $('cEg').classList.toggle('neg', !!c.eg.total);
-  $('cNeto').textContent = money(c.neto); $('cCaja').textContent = money(c.caja);
+  $('cNeto').textContent = money(c.neto); $('cCaja').textContent = money(c.enCaja);
+  pintarFondo($('cFondo'), dia);
   $('cEgLista').innerHTML = c.eg.lista.length ? c.eg.lista.slice().sort((a,b)=>b.ts-a.ts).map(egRow).join('') : '<div class="empty">Sin gastos registrados.</div>';
   bindEg($('cEgLista'));
   pintarApCorte(dia);
@@ -1887,7 +1948,9 @@ function pedirCorte(dia){
   if(pend){ toast('Hay '+pend+' venta(s) de ese día sin enviar. Se enviarán en cuanto haya internet; luego haz el corte.'); enviarPendientes(); return; }
   const c = corteData(dia), ya = cortes[dia];
   confirmar((ya ? '¿Actualizar el corte del ' : '¿Hacer el corte del ')+dmy(dia)+'?',
-    'Ventas '+money(c.total)+' en '+c.ok.length+(c.eg.ok.length ? ' · gastos '+money(c.eg.total)+' · neto '+money(c.neto) : ' venta'+(c.ok.length===1?'':'s'))+'. Se guarda'+(btListo()?' y se imprime el ticket.':'. Luego puedes imprimir el ticket.'),
+    'Ventas '+money(c.total)+' en '+c.ok.length+(c.eg.ok.length ? ' · gastos '+money(c.eg.total)+' · neto '+money(c.neto) : ' venta'+(c.ok.length===1?'':'s'))
+      +(c.fondo!=null ? ' · fondo '+money(c.fondo)+' · efectivo en caja '+money(c.enCaja) : fondoActivo ? ' · sin fondo de caja registrado' : '')
+      +'. Se guarda'+(btListo()?' y se imprime el ticket.':'. Luego puedes imprimir el ticket.'),
     ya ? 'Actualizar corte' : 'Hacer corte', async ()=>{
       haciendoCorte = true; $('cHacer').disabled = true;
       try{
@@ -1901,6 +1964,53 @@ function pedirCorte(dia){
       finally{ haciendoCorte = false; $('cHacer').disabled = false; refresh(); }
     });
 }
+
+/* ---------- Fondo de caja inicial ----------
+   Un fondo por día. No es venta ni ingreso: efectivo en caja = fondo + ventas en efectivo − gastos en efectivo. */
+function pintarFondo(el, dia){
+  el.hidden = !fondoActivo || dia > localDay();
+  if(el.hidden) return;
+  const f = fondos[dia], hoy = localDay(), editable = dia >= haceDias(7);
+  const cuando = f ? (localDay(new Date(f.ts))===dia ? hhmm(f.ts) : fechaCorta(f.ts)) : '';
+  el.className = 'fondo' + (f ? '' : ' falta');
+  el.innerHTML = f
+    ? `<div class="fi"><small>Fondo de caja inicial</small><b class="num">${money(f.monto)}</b><small>${esc(f.registro)} · ${cuando}${f.veces>1 ? ' · corregido' : ''}</small></div>${editable ? '<button type="button" class="btn ghost sm" data-fondo>Cambiar</button>' : ''}`
+    : `<div class="fi"><small>Fondo de caja inicial</small><b>Sin registrar</b><small>${dia===hoy ? 'Cuenta el efectivo con el que abre la caja.' : 'No se registró fondo ese día.'}</small></div>${editable ? '<button type="button" class="btn primary sm" data-fondo>Registrar</button>' : ''}`;
+}
+$('hoyFondo').addEventListener('click', e=>{ if(e.target.closest('[data-fondo]')) abrirFondo(localDay()); });
+$('cFondo').addEventListener('click', e=>{ if(e.target.closest('[data-fondo]')) abrirFondo($('corteDia').value || localDay()); });
+let foDia = null, foTxt = '', foGuardando = false;
+const foPad = montarPad($('foPad'), v=>{ foTxt = v; $('foVer').textContent = v ? '$'+v : '$0'; validarFo(); });
+function ultimoFondo(antesDe){ return Object.values(fondos).filter(f=>f.dia<antesDe).sort((a,b)=>a.dia<b.dia?1:-1)[0] || null; }
+function abrirFondo(dia){
+  foDia = dia;
+  const f = fondos[dia], u = ultimoFondo(dia), sug = [];
+  $('foTit').textContent = 'Fondo de caja · ' + (dia===localDay() ? 'hoy ' : '') + dmy(dia);
+  if(u) sug.push([u.monto, 'Igual que el '+dmy(u.dia).slice(0,5)+' · '+money(u.monto)]);
+  [500, 1000].forEach(x=>{ if(!sug.some(s=>s[0]===x)) sug.push([x, money(x)]); });
+  $('foQuick').innerHTML = sug.map(([v,t])=>`<button type="button" class="add" data-v="${v}">${t}</button>`).join('');
+  $('foErr').textContent = '';
+  foPad.set(f ? f.monto : '');
+  openSheet('sh-fondo');
+}
+$('foQuick').addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) foPad.set(b.dataset.v); });
+function validarFo(){
+  const b = $('foGuardar'), m = parseFloat(foTxt), f = foDia && fondos[foDia];
+  b.disabled = foGuardando || foTxt==='' || !(m>=0);
+  b.textContent = foGuardando ? 'Guardando…' : foTxt==='' ? 'Escribe el fondo' : (f ? 'Corregir fondo a ' : 'Guardar fondo de ') + money(m||0);
+}
+$('foGuardar').onclick = async ()=>{
+  if(foGuardando || foTxt==='') return;
+  const dia = foDia, monto = r2(parseFloat(foTxt)||0);
+  foGuardando = true; validarFo();
+  try{
+    const r = await api('fondo', {dia, monto});
+    fondos[dia] = r.fondo; closeSheet('sh-fondo'); vibrar(30);
+    toast('Fondo de caja '+(dia===localDay() ? 'de hoy' : 'del '+dmy(dia))+': '+money(monto));
+    refresh();
+  }catch(e){ $('foErr').textContent = e.status===0 ? 'Sin internet: el fondo no se guardó. Intenta de nuevo con conexión.' : e.message; }
+  finally{ foGuardando = false; validarFo(); }
+};
 
 /* ---------- Corte mensual ---------- */
 const mesActual = ()=>$('mesSel').value || localDay().slice(0,7);
@@ -2411,7 +2521,8 @@ $('rRespaldo').onclick = async ()=>{
       ventas: (await todas(()=>sb.from('ventas').select(SEL).order('folio'))).map(deFila),
       egresos: (await todas(()=>sb.from('egresos').select(SELEG).order('id'))).map(deEgreso),
       cortes: (await q(sb.from('cortes').select('*').order('dia'))).map(deCorte),
-      apartados: await opcional(todas(()=>sb.from('apartados').select(SELAP).order('id')).then(l=>l.map(deApartado)))
+      apartados: await opcional(todas(()=>sb.from('apartados').select(SELAP).order('id')).then(l=>l.map(deApartado))),
+      fondos: await opcional(todas(()=>sb.from('fondos').select('dia,monto,registro,ts,veces').order('dia')).then(l=>l.map(deFondo)))
     };
     descargarArchivo('respaldo-punto-de-venta-'+localDay()+'.json', JSON.stringify(todo,null,2), 'application/json');
   }catch(e){ toast(errDe(e).message); }
