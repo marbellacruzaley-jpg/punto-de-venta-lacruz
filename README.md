@@ -36,6 +36,7 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 
 - **Productos con precio fijo** (Sal $20, Aceite $20, Microdosis $30, Recorte $20): un toque los agrega. El botón **−** del mosaico quita uno.
 - **Productos sin precio fijo** (Misal, Cuadro y los demás): se abre un teclado numérico grande (no el del celular). Los últimos precios usados aparecen como botones **+ $50**: un toque y queda agregado.
+- **Corona de adviento**: tiene dos precios. Al tocarla aparecen **+ $200** y **+ $250**; un toque agrega la que se vendió (también se puede escribir otro precio).
 - **Cobrar**: en efectivo, un solo toque registra la venta: **Pago exacto** o el billete con que pagan (el botón ya muestra el cambio). **Otra cantidad** abre el teclado. Para transferencia o tarjeta, elige la pestaña y toca **Registrar**.
 - **Después de cobrar** la caja queda lista para la siguiente venta. Un aviso verde muestra el folio y el cambio, con botones para ver el recibo o reimprimir.
 - La venta se guarda al instante en el teléfono y se envía al servidor por detrás, así nunca esperas a la red. Arriba se ve el estado: ● verde **En línea** · ● amarillo **N por enviar** · ● rojo **Sin conexión**. Sin internet se sigue vendiendo y todo se envía solo al volver la señal.
@@ -56,6 +57,14 @@ En el Resumen toca **Apartados ▸ Nuevo apartado**: nombre, teléfono de contac
 - **El anticipo y los abonos no entran al corte**: se guardan aparte, fuera de la caja. El día que se liquida, ese dinero se junta con el último pago. El corte del día muestra, solo como referencia, cuánto se recibió en anticipos y abonos y cuánto hay guardado aparte en total.
 - Un abono capturado por error se cancela tocándolo en el apartado. Un apartado que no se va a liquidar se cancela con **Cancelar apartado** (lo recibido no entra a ningún corte).
 - Botón de llamada y de WhatsApp al teléfono del cliente. CSV de todos los apartados.
+
+## Cajón de dinero
+
+El cajón se conecta con su cable (tipo teléfono, RJ11) al puerto de la impresora marcado «Cash drawer», «DK» o «Cajón». No se abre solo: la impresora, conectada por Bluetooth, le manda la señal.
+
+- **Al cobrar en efectivo** el cajón se abre automáticamente (se puede desactivar en Ajustes ▸ Mini impresora).
+- **Abrir cajón de dinero**: botón en el Resumen y en Ajustes, para abrirlo sin venta.
+- Sin luz o sin impresora conectada se abre con su llave.
 
 ## Fondo de caja inicial
 
