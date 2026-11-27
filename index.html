@@ -67,6 +67,18 @@ button{cursor:pointer}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;
   display:flex;align-items:center;gap:10px;min-height:58px}
+.top{flex-wrap:wrap}
+.menubar{flex:1 0 100%;order:9;display:flex;gap:4px;overflow-x:auto;margin:2px -6px -4px;padding:2px;scrollbar-width:none}
+.menubar[hidden]{display:none}
+.menubar::-webkit-scrollbar{display:none}
+.mb{flex:1 0 62px;border:0;background:none;border-radius:12px;padding:6px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);text-decoration:none;font-size:.7rem;font-weight:700;line-height:1.1;min-height:52px}
+.mb svg{width:23px;height:23px;color:var(--accent)}
+.mb span{white-space:nowrap;max-width:76px;overflow:hidden;text-overflow:ellipsis}
+.mb:hover{background:var(--surface-2)}
+.mb[aria-current=page]{background:var(--accent-soft);color:var(--ink)}
+.mb.mbu{border-left:1px solid var(--line);border-radius:0 12px 12px 0}
+.mb.mbu svg{color:var(--gold)}
+@media (max-width:480px){.menubar{gap:0;margin:2px -10px -6px}.mb{flex:1 1 0;min-width:0;min-height:42px;padding:8px 0}.mb span{display:none}.mb svg{width:22px;height:22px}}
 .back{border:0;background:var(--surface-2);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
 .back svg{width:22px;height:22px}
 .top h1{font-family:var(--f-display);font-weight:700;font-size:1.25rem;margin:0;line-height:1.15;flex:1;min-width:0;text-wrap:balance}
@@ -359,6 +371,76 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
 .fondo.falta b{color:var(--gold)}
 .fondo .btn{flex:none;width:auto}
 #foPad button{min-height:46px;font-size:1.35rem}
+/* Pantalla de venta: menú de productos a la izquierda, tickets a la derecha */
+body.en-venta{overflow:hidden}
+body.en-venta main{padding:0;max-width:none}
+#v-venta{position:fixed;left:0;right:0;top:var(--hh,64px);bottom:0;z-index:1}
+#v-venta[hidden]{display:none}
+.pos{height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (min-width:700px){.pos{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr)}}
+@media (min-width:1100px){.pos{grid-template-columns:minmax(0,2fr) 400px}}
+.menu{overflow:auto;padding:10px max(10px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));overscroll-behavior:contain}
+.pos .grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px}
+.pos .tile{min-height:0;padding:8px 3px 7px;border-radius:12px;gap:2px}
+.pos .tile .ico{width:42px;height:42px}
+.pos .tile .ico svg{width:30px;height:30px}
+.pos .tile .nm{font-size:.76rem}
+.pos .tile .pr{font-size:.7rem}
+.pos .tile .qty{top:3px;right:3px;min-width:21px;height:21px;border-radius:11px;font-size:.72rem;padding:0 5px}
+.pos .tile .menos{display:none!important}
+.tk{display:flex;flex-direction:column;min-height:0;background:var(--surface);border-left:1px solid var(--line)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 8px 0;border-bottom:1px solid var(--line);flex:none;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;background:var(--surface-2);color:var(--muted);padding:6px 10px 5px;display:flex;flex-direction:column;align-items:flex-start;min-width:64px;line-height:1.15;font-size:.8rem}
+.tab b{font-size:.82rem;color:inherit;white-space:nowrap}
+.tab small{font-size:.72rem}
+.tab[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tab.nuevo{min-width:40px;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:var(--accent);background:var(--surface)}
+.tkhead{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);flex:none}
+.tkhead>div{flex:1;min-width:0}
+.tkhead b{display:block;font-size:1rem}
+.tkhead small{color:var(--muted);font-size:.78rem}
+.tkx{border:0;background:none;color:var(--danger);font-weight:700;padding:6px 4px;font-size:.85rem}
+.tkx[hidden]{display:none}
+.tklines{flex:1;min-height:0;overflow:auto;padding:0 10px;overscroll-behavior:contain}
+.tklines .empty{color:var(--muted);text-align:center;padding:28px 6px;font-size:.9rem}
+.tl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.tl .tln b{display:block;font-size:.9rem;line-height:1.2;overflow-wrap:anywhere}
+.tl .tln small{color:var(--muted);font-size:.78rem}
+.tl .tlt{font-weight:700;font-size:.95rem;text-align:right}
+.tl .tlb{grid-column:1/-1;display:flex;align-items:center;gap:6px}
+.tl .step button{width:32px;height:32px;font-size:1.1rem}
+.tl .step span{min-width:26px;font-size:.9rem}
+.ib{border:1px solid var(--line);background:var(--surface);width:36px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--ink);flex:none}
+.ib svg{width:18px;height:18px}
+.ib.ed{margin-left:auto;color:var(--accent)}
+.ib.del{color:var(--danger)}
+.tkfoot{flex:none;border-top:1px solid var(--line);padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.tktot{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.tktot b{font-size:1.45rem}
+.tkfoot .btn{width:100%}
+body.en-venta .exito{right:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-right:8px}
+body.en-venta .exito .card{grid-template-columns:minmax(0,1fr)}
+body.en-venta .exito .exr{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+body.en-venta .exito .exr:empty{display:none}
+body.en-venta .exito .exbtns button{padding-left:4px;padding-right:4px;font-size:.78rem}
+body.en-venta .exito .exbtns button{min-width:0;flex:1 1 0}
+body.en-venta .exito .exbtns button.x{flex:0 0 36px;width:36px}
+@media (min-width:700px){body.en-venta .exito{right:max(300px,40%)}}
+@media (min-width:1100px){body.en-venta .exito{right:400px}}
+@media (max-width:480px){
+  .pos .grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px}
+  .menu{padding:8px 6px 12px}
+  .pos .tile{padding:6px 2px 5px}
+  .pos .tile .ico{width:34px;height:34px}
+  .pos .tile .ico svg{width:25px;height:25px}
+  .pos .tile .nm{font-size:.72rem}
+  .pos .tile .pr.var{display:none}
+  .tab{min-width:56px;padding:5px 8px 4px}
+  .tl .tlb{gap:4px}
+  .ib{width:32px}
+  .tl .step button{width:28px}
+}
 </style>
 </head>
 <body>
@@ -369,6 +451,17 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
   <div class="ttlbox"><h1 id="ttl">Punto de venta</h1><small id="ttlSub" hidden></small></div>
   <button class="iconbtn" id="btnImp" aria-label="Conectar impresora" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg></button>
   <span class="chip" id="sync"><i></i><span>Cargando…</span></span>
+  <nav class="menubar" id="menubar" aria-label="Menú" hidden>
+    <button type="button" class="mb" data-go="venta" title="Vender" aria-label="Vender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 11h10.2L20 7H6.2"/></svg><span>Vender</span></button>
+    <button type="button" class="mb" data-go="inicio" title="Resumen del día" aria-label="Resumen del día"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Resumen</span></button>
+    <button type="button" class="mb" data-go="corte" title="Corte del día" aria-label="Corte del día"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>Corte</span></button>
+    <button type="button" class="mb" data-go="mes" title="Corte mensual" aria-label="Corte mensual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg><span>Mensual</span></button>
+    <button type="button" class="mb" data-go="egresos" title="Gastos" aria-label="Gastos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M12 13.5v3M10.5 15l1.5 1.5 1.5-1.5"/></svg><span>Gastos</span></button>
+    <button type="button" class="mb" data-go="apartados" title="Apartados" aria-label="Apartados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><circle cx="12" cy="14.5" r="3"/><path d="M12 13.2v1.4l.9.7"/></svg><span>Apartados</span></button>
+    <a class="mb" data-go="informes" href="informes.html" title="Informes" aria-label="Informes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span>Informes</span></a>
+    <button type="button" class="mb" data-go="ajustes" title="Ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Ajustes</span></button>
+    <button type="button" class="mb mbu" data-go="usuario" title="Cambiar de usuario" aria-label="Cambiar de usuario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4h5M19 1.5 21.5 4 19 6.5M21 11h-5M18 8.5 15.5 11 18 13.5"/></svg><span id="mbUsu">Usuario</span></button>
+  </nav>
 </header>
 
 <main>
@@ -389,7 +482,7 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
 
   <!-- INICIO -->
   <section id="v-inicio">
-    <div class="session"><span>Atiende: <b id="sesNombre"></b></span><button id="btnSalir">Cerrar sesión</button></div>
+    <div class="session"><span>Atiende: <b id="sesNombre"></b></span><button id="btnSalir">Cambiar de usuario</button></div>
     <button class="hero-btn" id="btnNueva">
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M24 15v18M15 24h18"/></svg>
       <div><b>Vender</b><span>Regresar a la caja</span></div>
@@ -423,7 +516,18 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
 
   <!-- NUEVA VENTA -->
   <section id="v-venta" hidden>
-    <div class="grid" id="grid"></div>
+    <div class="pos">
+      <div class="menu" aria-label="Productos"><div class="grid" id="grid"></div></div>
+      <aside class="tk" aria-label="Tickets">
+        <div class="tabs" id="tkTabs" role="tablist"></div>
+        <div class="tkhead"><div><b id="tkNom">Ticket 1</b><small id="tkN">Sin productos</small></div><button type="button" class="tkx" id="tkVaciar">Vaciar</button></div>
+        <div class="tklines" id="cartLines"></div>
+        <div class="tkfoot">
+          <div class="tktot"><span>Total</span><b class="num" id="cartTotal">$0.00</b></div>
+          <button class="btn primary lg" id="btnCobrar" disabled>Cobrar</button>
+        </div>
+      </aside>
+    </div>
   </section>
 
   <!-- RECIBO -->
@@ -662,26 +766,6 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
   </section>
 </main>
 
-<div class="cartbar" id="cartbar" hidden>
-  <button class="cartsum" id="btnCarrito"><small id="cbN">Sin productos</small><b id="cbVer">Toca uno</b></button>
-  <button class="btn primary lg" id="btnCobrar" disabled>Cobrar <span class="num" id="cbTotal">$0.00</span></button>
-</div>
-
-<!-- Hoja: carrito -->
-<div class="sheet" id="sh-carrito" hidden>
-  <div class="scrim" data-close></div>
-  <div class="card" role="dialog" aria-label="Carrito">
-    <div class="grab"></div>
-    <h3>Venta actual</h3>
-    <div id="cartLines"></div>
-    <div class="totalbox"><span>Total</span><b class="num" id="cartTotal">$0.00</b></div>
-    <div class="actions">
-      <button class="btn ghost" id="cartVaciar">Vaciar</button>
-      <button class="btn primary" id="cartCobrar">Cobrar</button>
-    </div>
-  </div>
-</div>
-
 <!-- Hoja: capturar precio -->
 <div class="sheet" id="sh-precio" hidden>
   <div class="scrim" data-close></div>
@@ -696,6 +780,7 @@ input[type=search],input[type=tel]{border:1px solid var(--line);background:var(-
       <div class="step"><button type="button" id="ppMenos" aria-label="Quitar uno">−</button><span class="num" id="ppCant">1</span><button type="button" id="ppMas" aria-label="Agregar uno">+</button></div>
     </div>
     <button class="btn primary lg" type="button" id="ppAgregar" disabled>Agregar</button>
+    <button class="btn danger" type="button" id="ppQuitar" hidden>Eliminar del ticket</button>
   </div>
 </div>
 
@@ -1483,13 +1568,17 @@ function go(v){
   view = v;
   ['login','inicio','venta','recibo','corte','mes','egresos','apartados','apartado','ajustes'].forEach(x=>$('v-'+x).hidden = x!==v);
   $('btnBack').hidden = !['inicio','recibo','corte','mes','egresos','apartados','apartado','ajustes'].includes(v);
-  $('btnMenu').hidden = v!=='venta';
+  $('btnMenu').hidden = true;
+  $('menubar').hidden = v==='login';
+  const activo = {recibo:'venta', apartado:'apartados'}[v] || v;
+  $('menubar').querySelectorAll('[data-go]').forEach(b=>{ if(b.dataset.go===activo) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  if(yo) $('mbUsu').textContent = yo.nombre;
   $('btnImp').hidden = !(v==='venta' || v==='recibo');
   $('ttlSub').hidden = v!=='venta';
   $('sync').classList.toggle('mini', v==='venta');
   $('ttl').textContent = v==='login' ? cfg.linea1 : TITLES[v];
   if(v==='login') renderLogin();
-  $('cartbar').hidden = v!=='venta';
+  document.body.classList.toggle('en-venta', v==='venta');
   if(v!=='venta' && typeof ocultarExito==='function') ocultarExito();
   document.querySelectorAll('.sheet').forEach(s=>s.hidden=true);
   window.scrollTo(0,0);
@@ -1541,11 +1630,24 @@ $('formLogin').addEventListener('submit', async e=>{
     err.textContent = ex.message; $('lgPass').value=''; $('lgPass').focus();
   }finally{ $('lgEntrar').disabled = false; }
 });
-$('btnSalir').onclick = ()=>{
-  const salir = async ()=>{ try{ await api('logout', {}); }catch(e){} yo=null; lgUser=null; cart=[]; lsDel('pos_yo'); go('login'); };
-  if(pendientes.length) confirmar('Hay '+pendientes.length+' venta(s) sin enviar', 'Se enviarán con tu nombre en cuanto alguien entre con internet. ¿Cerrar sesión de todos modos?', 'Cerrar sesión', salir);
-  else salir();
-};
+function cambiarUsuario(){
+  const salir = async ()=>{ try{ await api('logout', {}); }catch(e){} yo=null; lgUser=null; lsDel('pos_yo'); go('login'); };
+  if(pendientes.length) confirmar('Hay '+pendientes.length+' venta(s) sin enviar', 'Se enviarán con tu nombre en cuanto alguien entre con internet. ¿Cambiar de usuario de todos modos?', 'Cambiar de usuario', salir);
+  else confirmar('¿Cambiar de usuario?', 'Sale '+(yo?yo.nombre:'')+' y otra persona entra con su contraseña. Los tickets abiertos se conservan.', 'Cambiar de usuario', salir, 'primary');
+}
+$('btnSalir').onclick = cambiarUsuario;
+$('menubar').addEventListener('click', e=>{
+  const b = e.target.closest('[data-go]'); if(!b || b.tagName==='A') return;
+  const k = b.dataset.go;
+  if(k==='venta') go('venta');
+  else if(k==='inicio') go('inicio');
+  else if(k==='corte') $('btnCorte').click();
+  else if(k==='mes') $('btnMes').click();
+  else if(k==='egresos') $('btnEgresos').click();
+  else if(k==='apartados') $('btnApartados').click();
+  else if(k==='ajustes') go('ajustes');
+  else if(k==='usuario') cambiarUsuario();
+});
 
 function refresh(){
   if(view==='venta') actualizarSub();
@@ -1621,7 +1723,33 @@ function renderInicio(){
 }
 
 /* ---------- Venta ---------- */
-let cart = []; let otroN = 0;
+/* Varios tickets abiertos a la vez; «cart» es siempre el del ticket activo */
+let tickets = [], tkIdx = 0, cart = [], otroN = 0;
+(function cargarTickets(){
+  const g = lsGet('pos_tickets', null);
+  if(g && Array.isArray(g.t) && g.t.length){
+    tickets = g.t.filter(t=>t && Array.isArray(t.cart)).map(t=>({n:+t.n||1, cart:t.cart.filter(c=>c && c.k && c.cant>0 && c.precio>=0)}));
+    tkIdx = Math.min(Math.max(0, +g.i||0), tickets.length-1);
+    otroN = +g.o||0;
+  }
+  if(!tickets.length){ tickets = [{n:1, cart:[]}]; tkIdx = 0; }
+  cart = tickets[tkIdx].cart;
+})();
+function guardarTickets(){ lsSet('pos_tickets', {t:tickets, i:tkIdx, o:otroN}); }
+/* Alto del encabezado, para acomodar la pantalla de venta debajo */
+(function(){ const h=document.querySelector('header.top'); const f=()=>document.documentElement.style.setProperty('--hh', h.getBoundingClientRect().bottom+'px');
+  f(); if(window.ResizeObserver) new ResizeObserver(f).observe(h); addEventListener('resize', f); })();
+function cambiarTicket(i){ tkIdx = i; cart = tickets[i].cart; ocultarExito(); renderCart(); }
+function nuevoTicket(){
+  const n = Math.max(0, ...tickets.map(t=>t.n)) + 1;
+  tickets.push({n, cart:[]}); cambiarTicket(tickets.length-1);
+  const tabs = $('tkTabs'); tabs.scrollLeft = tabs.scrollWidth;
+}
+function cerrarTicket(i){
+  tickets.splice(i,1);
+  if(!tickets.length) tickets = [{n:1, cart:[]}];
+  cambiarTicket(Math.min(i, tickets.length-1));
+}
 function vibrar(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 function renderGrid(){
   $('grid').innerHTML = BASE.map(([k])=>{
@@ -1666,7 +1794,7 @@ function montarPad(el, onChange){
 }
 
 /* Captura de precio para productos sin precio fijo */
-let ppK = null, ppCant = 1;
+let ppK = null, ppCant = 1, ppEdit = null;
 function preciosRecientes(k){
   const vistos = [];
   for(const v of sales){ if(v.estado==='cancelada') continue; for(const it of v.items){ if(it.k===k && it.precio>0 && !vistos.includes(it.precio)) vistos.push(it.precio); if(vistos.length>=4) return vistos; } }
@@ -1676,11 +1804,12 @@ function pintarPP(){
   const n = ppPad.get();
   $('ppCant').textContent = ppCant;
   $('ppAgregar').disabled = !(n>0);
-  $('ppAgregar').textContent = n>0 ? 'Agregar '+(ppCant>1?ppCant+' × ':'')+money(n)+(ppCant>1?' = '+money(n*ppCant):'') : 'Escribe el precio';
+  const verbo = ppEdit===null ? 'Agregar ' : 'Guardar ';
+  $('ppAgregar').textContent = n>0 ? verbo+(ppCant>1?ppCant+' × ':'')+money(n)+(ppCant>1?' = '+money(n*ppCant):'') : 'Escribe el precio';
 }
 const ppPad = montarPad($('ppPad'), v=>{ $('ppVer').textContent = v ? '$'+v : '$0'; pintarPP(); });
 function openPrecio(k){
-  ppK = k; ppCant = 1;
+  ppK = k; ppCant = 1; ppEdit = null; $('ppQuitar').hidden = true;
   const p = cfg.productos[k];
   $('ppIco').innerHTML = ICONS[k];
   $('ppNom').textContent = k==='otros' ? 'Otro producto' : p.nombre;
@@ -1693,20 +1822,48 @@ function openPrecio(k){
   ppPad.set(p.precio>0 ? p.precio : '');
   openSheet('sh-precio');
 }
+function openEditar(i){
+  const c = cart[i]; if(!c) return;
+  ppK = c.k; ppCant = c.cant; ppEdit = i;
+  $('ppIco').innerHTML = ICONS[c.k] || ICONS.otros;
+  $('ppNom').textContent = 'Modificar · '+c.nombre;
+  $('ppDescBox').hidden = c.k!=='otros';
+  $('ppDesc').value = c.k==='otros' && c.nombre!=='Otros' ? c.nombre : '';
+  const ops = OPCIONES[c.k] || [];
+  const p = cfg.productos[c.k];
+  const lista = ops.concat(p && p.fijo && p.precio>0 && !ops.includes(p.precio) ? [p.precio] : []);
+  $('ppRecientes').innerHTML = lista.map(x=>`<button type="button" class="add${ops.includes(x)?' opc':''}" data-v="${x}">${money(x)}</button>`).join('');
+  $('ppRecientes').hidden = !lista.length;
+  $('ppQuitar').hidden = false;
+  ppPad.set(c.precio);
+  openSheet('sh-precio');
+}
+function guardarEdicion(precio){
+  const c = cart[ppEdit]; if(!c || !(precio>0)) return;
+  c.precio = r2(precio); c.cant = ppCant;
+  if(c.k==='otros') c.nombre = $('ppDesc').value.trim() || 'Otros';
+  else {
+    const id = c.k+'@'+c.precio, j = cart.findIndex((x,n)=>n!==ppEdit && x.id===id);
+    if(j>=0){ cart[j].cant += c.cant; cart.splice(ppEdit,1); } else c.id = id;
+  }
+  ppEdit = null; closeSheet('sh-precio'); renderCart(); vibrar(10);
+}
+$('ppQuitar').onclick = ()=>{ if(ppEdit===null) return; cart.splice(ppEdit,1); ppEdit = null; closeSheet('sh-precio'); renderCart(); };
 function agregarPP(precio){
+  if(ppEdit!==null){ guardarEdicion(precio); return; }
   if(!(precio>0)) return;
   const nombre = ppK==='otros' ? ($('ppDesc').value.trim() || 'Otros') : cfg.productos[ppK].nombre;
   addItem(ppK, nombre, precio, ppCant); closeSheet('sh-precio'); vibrar(10);
   const t = $('grid').querySelector(`[data-k="${ppK}"]`); if(t){ t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); }
 }
-$('ppRecientes').addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) agregarPP(+b.dataset.v); });
+$('ppRecientes').addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(!b) return; if(ppEdit!==null) ppPad.set(b.dataset.v); else agregarPP(+b.dataset.v); });
 $('ppMenos').onclick = ()=>{ ppCant=Math.max(1,ppCant-1); pintarPP(); };
 $('ppMas').onclick = ()=>{ ppCant++; pintarPP(); };
 $('ppAgregar').onclick = ()=>agregarPP(r2(ppPad.get()));
 
 function addItem(k, nombre, precio, cant){
   precio = r2(precio);
-  const id = k==='otros' ? 'o'+(++otroN) : k+'@'+precio;
+  const id = k==='otros' ? 'o'+Date.now().toString(36)+(++otroN) : k+'@'+precio;
   const ex = cart.find(c=>c.id===id);
   if(ex) ex.cant += cant; else cart.push({id,k,nombre,precio,cant});
   ocultarExito();
@@ -1720,32 +1877,56 @@ function updateBadges(){
     t.querySelector('.menos').hidden = !q;
   });
 }
+const IC_LAPIZ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
+const IC_BOTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+function ticketTotal(t){ return r2(t.cart.reduce((s,c)=>s+c.cant*c.precio,0)); }
+function renderTabs(){
+  $('tkTabs').innerHTML = tickets.map((t,i)=>{
+    const n = t.cart.reduce((s,c)=>s+c.cant,0);
+    return `<button type="button" class="tab" role="tab" data-tk="${i}" aria-selected="${i===tkIdx}"><b>Ticket ${t.n}</b><small class="num">${n?money(ticketTotal(t)):'vacío'}</small></button>`;
+  }).join('') + '<button type="button" class="tab nuevo" id="tkNuevo" aria-label="Nuevo ticket">+</button>';
+}
 function renderCart(){
   const n = cart.reduce((s,c)=>s+c.cant,0), tot = cartTotal();
-  $('cbN').textContent = n ? 'Ver venta' : 'Sin productos';
-  $('cbVer').textContent = n ? `${n} artículo${n>1?'s':''}` : 'Toca uno';
-  $('cbTotal').textContent = money(tot);
-  $('btnCobrar').disabled = !n || tot<=0;
-  $('cartCobrar').disabled = !n || tot<=0;
+  renderTabs();
+  $('tkNom').textContent = 'Ticket '+tickets[tkIdx].n;
+  $('tkN').textContent = n ? `${n} artículo${n>1?'s':''}` : 'Sin productos';
+  const vac = $('tkVaciar');
+  vac.hidden = !n && tickets.length<2;
+  vac.textContent = n ? 'Vaciar' : 'Cerrar ticket';
   $('cartTotal').textContent = money(tot);
+  $('btnCobrar').disabled = !n || tot<=0;
+  $('btnCobrar').textContent = n ? 'Cobrar '+money(tot) : 'Cobrar';
   $('cartLines').innerHTML = cart.length ? cart.map((c,i)=>`
-    <div class="line">
-      <div class="n">${esc(c.nombre)}</div><div class="t num">${money(c.cant*c.precio)}</div>
-      <div class="ctl">
-        <div class="step"><button data-i="${i}" data-d="-1" aria-label="Quitar uno">−</button><span class="num">${c.cant}</span><button data-i="${i}" data-d="1" aria-label="Agregar uno">+</button></div>
-        <span class="pricein num">${money(c.precio)} c/u</span>
-        <button class="rm" data-rm="${i}">Quitar</button>
+    <div class="tl">
+      <div class="tln"><b>${esc(c.nombre)}</b><small class="num">${c.cant} × ${money(c.precio)}</small></div>
+      <b class="tlt num">${money(c.cant*c.precio)}</b>
+      <div class="tlb">
+        <div class="step"><button type="button" data-i="${i}" data-d="-1" aria-label="Quitar uno">−</button><span class="num">${c.cant}</span><button type="button" data-i="${i}" data-d="1" aria-label="Agregar uno">+</button></div>
+        <button type="button" class="ib ed" data-ed="${i}" aria-label="Modificar precio de ${esc(c.nombre)}">${IC_LAPIZ}</button>
+        <button type="button" class="ib del" data-rm="${i}" aria-label="Eliminar ${esc(c.nombre)}">${IC_BOTE}</button>
       </div>
-    </div>`).join('') : '<div class="empty">No hay productos en la venta.</div>';
+    </div>`).join('') : '<div class="empty">Toca un producto del menú para agregarlo a este ticket.</div>';
+  guardarTickets();
   if(view==='venta') updateBadges();
 }
 $('cartLines').addEventListener('click', e=>{
-  const d = e.target.closest('[data-d]'), rm = e.target.closest('[data-rm]');
-  if(d){ const c=cart[+d.dataset.i]; c.cant+=+d.dataset.d; if(c.cant<1) cart.splice(+d.dataset.i,1); renderCart(); if(!cart.length) closeSheet('sh-carrito'); }
-  if(rm){ cart.splice(+rm.dataset.rm,1); renderCart(); if(!cart.length) closeSheet('sh-carrito'); }
+  const d = e.target.closest('[data-d]'), rm = e.target.closest('[data-rm]'), ed = e.target.closest('[data-ed]');
+  if(d){ const c=cart[+d.dataset.i]; c.cant+=+d.dataset.d; if(c.cant<1) cart.splice(+d.dataset.i,1); renderCart(); vibrar(8); }
+  if(rm){ cart.splice(+rm.dataset.rm,1); renderCart(); vibrar(8); }
+  if(ed) openEditar(+ed.dataset.ed);
 });
-$('btnCarrito').onclick = ()=>{ if(cart.length) openSheet('sh-carrito'); };
-$('cartVaciar').onclick = ()=>{ if(!cart.length) return; cart=[]; renderCart(); closeSheet('sh-carrito'); };
+$('tkTabs').addEventListener('click', e=>{
+  if(e.target.closest('#tkNuevo')){ nuevoTicket(); return; }
+  const b = e.target.closest('[data-tk]'); if(b) cambiarTicket(+b.dataset.tk);
+});
+$('tkVaciar').onclick = ()=>{
+  const t = tickets[tkIdx];
+  if(!cart.length){ if(tickets.length>1) cerrarTicket(tkIdx); return; }
+  confirmar('¿Vaciar el ticket '+t.n+'?', 'Se quitan todos sus productos ('+money(cartTotal())+').', 'Vaciar', ()=>{
+    if(tickets.length>1) cerrarTicket(tickets.indexOf(t)); else { t.cart.length = 0; renderCart(); }
+  });
+};
 
 /* ---------- Cobro con un toque ---------- */
 let metodo = 'efectivo';
@@ -1759,7 +1940,6 @@ const pPad = montarPad($('pPad'), v=>{
 });
 function openCobro(){
   if(!cart.length) return;
-  closeSheet('sh-carrito');
   const t = cartTotal();
   $('pTotal').textContent = money(t);
   const billetes = [20,50,100,200,500,1000].filter(x=>x>t).slice(0,3);
@@ -1784,7 +1964,6 @@ function setMetodo(m){
 }
 $('pMetodo').querySelectorAll('button').forEach(b=>b.onclick=()=>setMetodo(b.dataset.m));
 $('btnCobrar').onclick = openCobro;
-$('cartCobrar').onclick = openCobro;
 $('pRegistrar').onclick = ()=>cobrar(metodo, cartTotal());
 $('pOtraOk').onclick = ()=>{ const rec = r2(pPad.get()); if(rec>=cartTotal()) cobrar('efectivo', rec); };
 
@@ -1805,9 +1984,8 @@ function cobrar(m, recibido){
     vendedor: yo ? yo.nombre : '', por: yo ? yo.usuario : ''
   };
   pendientes.push(v); guardarPendientes(); merge([v]); setSync();
-  cart = []; otroN = 0;
-  closeSheet('sh-cobro'); closeSheet('sh-carrito');
-  renderCart(); actualizarSub();
+  closeSheet('sh-cobro');
+  cerrarTicket(tkIdx); actualizarSub();
   mostrarExito(v); vibrar(30);
   enviarPendientes();
   imprimirAuto(v);

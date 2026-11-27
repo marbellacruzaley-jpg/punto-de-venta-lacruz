@@ -36,6 +36,10 @@ Si la impresora no aparece o no imprime, usa el respaldo **RawBT**: instala la a
 
 - **Productos con precio fijo** (Sal $20, Aceite $20, Microdosis $30, Recorte $20): un toque los agrega. El botón **−** del mosaico quita uno.
 - **Productos sin precio fijo** (Misal, Cuadro y los demás): se abre un teclado numérico grande (no el del celular). Los últimos precios usados aparecen como botones **+ $50**: un toque y queda agregado.
+- **Menú superior con íconos** (en todas las pantallas): Vender, Resumen, Corte del día, Corte mensual, Gastos, Apartados, Informes, Ajustes y **Cambiar de usuario** (muestra quién atiende; los tickets abiertos se conservan). En celular solo se ven los íconos.
+- **Pantalla de venta**: a la izquierda el menú de productos con botones pequeños; a la derecha los tickets.
+- **Varios tickets a la vez**: el botón **+** abre otro ticket (por ejemplo, para atender a otra persona mientras la primera decide). Toca la pestaña de un ticket para cambiarte a él. Los tickets abiertos se conservan aunque se cierre la app.
+- En cada ticket se ve la lista de productos: **−/+** cambia la cantidad, el **lápiz** modifica el precio (y la cantidad) y el **bote de basura** elimina el producto. Al cobrar, el ticket se cierra y queda el siguiente.
 - **Corona de adviento**: tiene dos precios. Al tocarla aparecen **+ $200** y **+ $250**; un toque agrega la que se vendió (también se puede escribir otro precio).
 - **Cobrar**: en efectivo, un solo toque registra la venta: **Pago exacto** o el billete con que pagan (el botón ya muestra el cambio). **Otra cantidad** abre el teclado. Para transferencia o tarjeta, elige la pestaña y toca **Registrar**.
 - **Después de cobrar** la caja queda lista para la siguiente venta. Un aviso verde muestra el folio y el cambio, con botones para ver el recibo o reimprimir.
